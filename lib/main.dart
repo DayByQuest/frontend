@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/repository/user_repository.dart';
+import 'package:get_it/get_it.dart';
+import './model/dataSource/remote_data_source.dart';
 
 void main() {
+  setUpGetIt();
   runApp(const MyApp());
+}
+
+GetIt getIt = GetIt.instance;
+void setUpGetIt() {
+  getIt.registerSingleton<RemoteDataSource>(RemoteDataSource());
 }
 
 class MyApp extends StatelessWidget {
