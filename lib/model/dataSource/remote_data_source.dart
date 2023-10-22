@@ -66,7 +66,7 @@ class RemoteDataSource {
         throw Exception(commonErrorHandler(response));
       }
       debugPrint(response.data);
-      Tracker tracker = response.data.tracker;
+      Tracker tracker = Tracker(tracker: response.data.tracker);
       return tracker;
     } catch (e) {
       rethrow;
