@@ -30,4 +30,15 @@ class User {
   int get followerCount => _followerCount;
   int get postCount => _postCount;
   bool get blocking => _blocking;
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+        username: json['username'],
+        name: json['name'],
+        imageUrl: json['imageUrl'],
+        followingCount: json['followingCount'] ?? 0,
+        followerCount: json['followerCount'] ?? 0,
+        postCount: json['postCount'] ?? 0,
+        blocking: json['blocking'] ?? false);
+  }
 }

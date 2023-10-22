@@ -1,10 +1,10 @@
-class badges {
+class Badge {
   final String _name;
   final String _imageUrl;
   final String _id;
   final String _acquiredAt;
 
-  badges(
+  Badge(
       {required String name,
       required String imageUrl,
       required String id,
@@ -19,21 +19,3 @@ class badges {
   String get id => _id;
   String get acquiredAt => _acquiredAt;
 }
-
-// {
-// 	badges: [
-// 		{
-// 			"name": "뱃지이름",
-// 			"imageUrl": "...",
-// 			"id": 1
-// 			"acquiredAt": "..."
-// 		},		
-// 		{
-// 			"name": "뱃지이름",
-// 			"imageUrl": "...",
-// 			"id": 1
-// 			"acquiredAt": "..."
-// 		},
-// 	],
-// 	"hasNextPage": true
-// }
