@@ -1,5 +1,7 @@
 import 'package:provider/provider.dart';
 
+import '../../model/class/badge.dart' as BadgeClass;
+import '../../model/class/user.dart';
 import './my_profile_page_model.dart';
 import 'package:flutter/material.dart';
 import './../../model/repository/user_repository.dart';
@@ -21,34 +23,21 @@ class MyProfilePage extends StatelessWidget {
   }
 }
 
-class MyProfileView extends StatefulWidget {
-  const MyProfileView({Key? key}) : super(key: key);
-
-  @override
-  State<MyProfileView> createState() => _MyProfileViewState();
-}
-
-class _MyProfileViewState extends State<MyProfileView> {
+class MyProfileView extends StatelessWidget {
   late MyProfileViewModel viewModel;
 
-  @override
-  void initState() {
-    super.initState();
-    //viewModel = Provider.of<MyProfileViewModel>(context, listen: true);
-  }
+  MyProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    viewModel = Provider.of<MyProfileViewModel>(context, listen: true);
+    viewModel = Provider.of<MyProfileViewModel>(context, listen: false);
+    bool isLoading =
+        context.watch<MyProfileViewModel>().status == Status.loading;
 
-    if (viewModel.status != Status.loaded) {
+    if (isLoading) {
       viewModel.load();
       return Center(child: Text("loading"));
     } else {
-      for (int i = 0; i < viewModel.tracker.length; i++) {
-        debugPrint(viewModel.tracker[i].toString());
-      }
-
       return ListView(
         physics: const ScrollPhysics(),
         children: [
@@ -58,11 +47,9 @@ class _MyProfileViewState extends State<MyProfileView> {
             height: 16,
           ),
           TrackerView(),
-          SizedBox.expand(
-            child: FractionallySizedBox(
-              heightFactor: 0.025,
-            ),
-          ), // 각 Expanded 위젯 간의 간격
+          SizedBox(
+            height: 16,
+          ),
           BadgeView(),
         ],
       );
@@ -77,6 +64,7 @@ class BadgeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<BadgeClass.Badge> badge = context.read<MyProfileViewModel>().badge;
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -91,12 +79,12 @@ class BadgeView extends StatelessWidget {
           crossAxisCount: 5,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          children: List.generate(10, (index) {
+          children: List.generate(badge.length, (index) {
             return Container(
               margin: const EdgeInsets.all(4.0),
               child: AspectRatio(
                 aspectRatio: 1,
-                child: Image.network('https://picsum.photos/200/200'),
+                child: Image.network(badge[index].imageUrl),
               ),
             );
           }),
@@ -113,13 +101,15 @@ class TrackerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<int> tracker = context.read<MyProfileViewModel>().tracker;
+
     return Column(
       children: [
-        const Align(
+        Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'total: 306퀘스트 완료',
-            style: TextStyle(
+            'total: ${tracker.length} 퀘스트 완료',
+            style: const TextStyle(
               fontSize: 14,
             ),
           ),
@@ -135,7 +125,7 @@ class TrackerView extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(), // 추가
           children: List.generate(60, (index) {
             return Container(
-              color: Color.fromRGBO(35, 236, 116, 1.0),
+              color: Color.fromRGBO(35, 236, 116, tracker[index].toDouble()),
             );
           }),
         ),
@@ -151,6 +141,20 @@ class ProfileInfomation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User user = context.read<MyProfileViewModel>().user;
+    String postCount = '0';
+    String followerCount = '0';
+    String followingCount = '0';
+
+    // ignore: unrelated_type_equality_checks
+    if (user.postCount != Null) {
+      postCount = user.postCount >= 999 ? "999+" : user.postCount.toString();
+      followerCount =
+          user.followerCount >= 999 ? "999+" : user.followerCount.toString();
+      followingCount =
+          user.followingCount >= 999 ? "999+" : user.followingCount.toString();
+    }
+
     return Container(
       constraints: BoxConstraints(maxWidth: 800),
       child: AspectRatio(
@@ -165,16 +169,16 @@ class ProfileInfomation extends StatelessWidget {
               },
               child: CircleAvatar(
                 radius: 40, // 원하는 크기 설정
-                backgroundImage: NetworkImage(''),
+                backgroundImage: NetworkImage(user.imageUrl),
               ),
             ),
             // 게시물 수
             InkWell(
               onTap: () {},
-              child: const Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('100', style: TextStyle(fontSize: 18)),
+                  Text(postCount, style: TextStyle(fontSize: 18)),
                   Text('게시물', style: TextStyle(fontSize: 14)),
                 ],
               ),
@@ -182,10 +186,10 @@ class ProfileInfomation extends StatelessWidget {
             // 팔로워 수
             InkWell(
               onTap: () {},
-              child: const Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('999+', style: TextStyle(fontSize: 18)),
+                  Text(followerCount, style: TextStyle(fontSize: 18)),
                   Text('팔로워', style: TextStyle(fontSize: 14)),
                 ],
               ),
@@ -193,11 +197,11 @@ class ProfileInfomation extends StatelessWidget {
             // 팔로잉 수
             InkWell(
               onTap: () {},
-              child: const Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('300', style: TextStyle(fontSize: 18)),
-                  Text('팔로워', style: TextStyle(fontSize: 14)),
+                  Text(followingCount, style: TextStyle(fontSize: 18)),
+                  Text('팔로잉', style: TextStyle(fontSize: 14)),
                 ],
               ),
             ),
@@ -255,7 +259,7 @@ class MyMenuBar extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(8, 15, 0, 0),
                 margin: EdgeInsets.all(0),
                 child: const Text(
-                  '계정 공개 범위',
+                  '내 관심사 설정',
                   style: TextStyle(
                     fontSize: 16,
                   ),
