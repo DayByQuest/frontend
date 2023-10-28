@@ -2,15 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 
 import '../../model/class/user.dart';
+import '../common/Status.dart';
 import './../../model/class/badge.dart' as BadgeClass;
 import './../../model/class/tracker.dart';
-
-enum Status {
-  initial,
-  loading,
-  loaded,
-  error,
-}
 
 class MyProfileViewModel with ChangeNotifier {
   final UserRepository _userRepository;

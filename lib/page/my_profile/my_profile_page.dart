@@ -1,11 +1,14 @@
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/class/badge.dart' as BadgeClass;
 import '../../model/class/user.dart';
+import '../common/Status.dart';
 import './my_profile_page_model.dart';
 import 'package:flutter/material.dart';
 import './../../model/repository/user_repository.dart';
 import './../../model/dataSource/mock_data_source.dart';
+import 'account_disclosure/account_disclosure_page.dart';
 
 class MyProfilePage extends StatelessWidget {
   const MyProfilePage({super.key});
@@ -121,8 +124,8 @@ class TrackerView extends StatelessWidget {
           crossAxisCount: 12,
           crossAxisSpacing: 4,
           mainAxisSpacing: 4,
-          shrinkWrap: true, // 추가
-          physics: NeverScrollableScrollPhysics(), // 추가
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
           children: List.generate(60, (index) {
             return Container(
               color: Color.fromRGBO(35, 236, 116, tracker[index].toDouble()),
@@ -213,7 +216,10 @@ class ProfileInfomation extends StatelessWidget {
 }
 
 class MyMenuBar extends StatelessWidget {
-  const MyMenuBar({Key? key}) : super(key: key);
+  MenuController menu = MenuController();
+  bool? isClose = false;
+
+  MyMenuBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -224,6 +230,14 @@ class MyMenuBar extends StatelessWidget {
       ),
       actions: [
         SubmenuButton(
+          controller: menu,
+          onOpen: () => {
+            if (isClose ?? false)
+              {
+                menu.close(),
+                isClose = false,
+              }
+          },
           alignmentOffset: Offset(-275, 0),
           menuStyle: const MenuStyle(
               alignment: Alignment.bottomRight,
@@ -234,7 +248,9 @@ class MyMenuBar extends StatelessWidget {
               )),
           menuChildren: [
             MenuItemButton(
-              onPressed: () {},
+              onPressed: () async {
+                isClose = await context.push<bool>('/account-disclosure');
+              },
               child: Container(
                 width: 252,
                 height: 48,
@@ -252,7 +268,9 @@ class MyMenuBar extends StatelessWidget {
               color: Colors.black,
             ),
             MenuItemButton(
-              onPressed: () {},
+              onPressed: () async {
+                isClose = await context.push<bool>('/myinterest');
+              },
               child: Container(
                 width: 252,
                 height: 48,
