@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+
 import './remote_data_source.dart';
 import 'package:mockito/mockito.dart';
 import './../class/user.dart';
@@ -115,5 +117,15 @@ class MockDataSource extends Mock implements RemoteDataSource {
       "공부"
     ];
     return interest;
+  }
+
+  @override
+  Future<bool> getVisibility() async {
+    return false;
+  }
+
+  @override
+  Future<void> patchVisibility(bool isVisibility) async {
+    debugPrint('비공개 설정! ${isVisibility.toString()}');
   }
 }

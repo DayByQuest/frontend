@@ -14,6 +14,16 @@ class RemoteDataSource {
   );
   final dio = Dio();
 
+  void throwError(Response response) {
+    if (response.statusCode != 200) {
+      throw Exception(statusErrorHandler(response));
+    }
+    if (response.data.code) {
+      throw Exception(commonErrorHandler(response));
+    }
+    return;
+  }
+
   Future<User> getMyProfile() async {
     Response response;
     String url = '/profile';
@@ -87,6 +97,22 @@ class RemoteDataSource {
       if (response.data.code) {
         throw Exception(commonErrorHandler(response));
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> getVisibility() async {
+    Response response;
+    String url = '/profile/visibility';
+    const String PRIVATE = 'PRIVATE';
+    const String PUBLIC = 'PUBLIC';
+
+    try {
+      response = await dio.get(url, options: options);
+      throwError(response);
+      debugPrint(response.data);
+      return response.data == PRIVATE ? true : false;
     } catch (e) {
       rethrow;
     }

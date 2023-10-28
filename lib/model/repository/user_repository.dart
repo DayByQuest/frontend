@@ -8,6 +8,7 @@ import './../class/tracker.dart';
 
 class UserRepository {
   final RemoteDataSource _RemoteDataSource;
+
   UserRepository({RemoteDataSource? remoteDataSource})
       : _RemoteDataSource = remoteDataSource ?? getIt.get<RemoteDataSource>();
 
@@ -55,6 +56,22 @@ class UserRepository {
   Future<List<String>> getRemoteInterest() async {
     try {
       return _RemoteDataSource.getInterest();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<bool> getRemoteVisibility() async {
+    try {
+      return _RemoteDataSource.getVisibility();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> patchRemoteVisibility(bool isVisibility) async {
+    try {
+      _RemoteDataSource.patchVisibility(isVisibility);
     } catch (e) {
       throw Exception(e.toString());
     }
