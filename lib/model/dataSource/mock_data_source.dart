@@ -120,6 +120,15 @@ class MockDataSource extends Mock implements RemoteDataSource {
   }
 
   @override
+  Future<void> patchInterest(List<String> interest) async {
+    debugPrint("관심사 잘 넘어왔는지 확인!");
+    debugPrint(interest.toString());
+    return Future.delayed(Duration(seconds: 1), () {
+      return;
+    });
+  }
+
+  @override
   Future<bool> getVisibility() async {
     return false;
   }

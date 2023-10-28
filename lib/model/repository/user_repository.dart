@@ -61,6 +61,14 @@ class UserRepository {
     }
   }
 
+  Future<void> patchRemoteInterest(List<String> interest) async {
+    try {
+      return _RemoteDataSource.patchInterest(interest);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   Future<bool> getRemoteVisibility() async {
     try {
       return _RemoteDataSource.getVisibility();

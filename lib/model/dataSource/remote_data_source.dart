@@ -203,16 +203,12 @@ class RemoteDataSource {
   Future<List<String>> getInterest() async {
     Response response;
     String url = '/interest';
+    List<String> interest = [];
     try {
       response = await dio.get(url, options: options);
-      if (response.statusCode != 200) {
-        throw Exception(statusErrorHandler(response));
-      }
-      if (response.data.code) {
-        throw Exception(commonErrorHandler(response));
-      }
+      throwError(response);
       debugPrint(response.data);
-      List<String> interest = response.data.interestNames;
+      interest.addAll(response.data.interestNames);
       return interest;
     } catch (e) {
       rethrow;
@@ -224,12 +220,8 @@ class RemoteDataSource {
     String url = '/profile/interest';
     try {
       response = await dio.patch(url, data: interest);
-      if (response.statusCode != 200) {
-        throw Exception(statusErrorHandler(response));
-      }
-      if (response.data.code) {
-        throw Exception(commonErrorHandler(response));
-      }
+      throwError(response);
+      debugPrint(response.toString());
     } catch (e) {
       rethrow;
     }
