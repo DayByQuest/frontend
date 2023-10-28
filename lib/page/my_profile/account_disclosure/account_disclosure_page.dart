@@ -27,17 +27,17 @@ class AccountDisclosurePage extends StatelessWidget {
 }
 
 class AccountDisclosureView extends StatelessWidget {
-  late AccountDisclosureViewModel viewModel;
   final BuildContext context;
 
-  AccountDisclosureView({
+  const AccountDisclosureView({
     super.key,
     required this.context,
   });
 
   @override
   Widget build(BuildContext context) {
-    viewModel = context.read<AccountDisclosureViewModel>();
+    final AccountDisclosureViewModel viewModel =
+        context.read<AccountDisclosureViewModel>();
 
     bool isLoading =
         context.watch<AccountDisclosureViewModel>().status == Status.loading;
