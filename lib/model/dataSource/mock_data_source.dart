@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import './remote_data_source.dart';
 import 'package:mockito/mockito.dart';
@@ -136,5 +137,12 @@ class MockDataSource extends Mock implements RemoteDataSource {
   @override
   Future<void> patchVisibility(bool isVisibility) async {
     debugPrint('비공개 설정! ${isVisibility.toString()}');
+  }
+
+  @override
+  Future<void> patchProfileImage(XFile image) async {
+    debugPrint('image 잘 건네짐');
+    debugPrint(image.toString());
+    return;
   }
 }

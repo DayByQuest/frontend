@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/main.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../dataSource/remote_data_source.dart';
 import 'package:get_it/get_it.dart';
@@ -80,6 +81,14 @@ class UserRepository {
   Future<void> patchRemoteVisibility(bool isVisibility) async {
     try {
       _RemoteDataSource.patchVisibility(isVisibility);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> patchRemoteProfileImage(XFile image) async {
+    try {
+      _RemoteDataSource.patchProfileImage(image);
     } catch (e) {
       throw Exception(e.toString());
     }

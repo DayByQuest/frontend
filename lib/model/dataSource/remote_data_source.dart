@@ -91,12 +91,7 @@ class RemoteDataSource {
     });
     try {
       response = await dio.patch(url, data: formData);
-      if (response.statusCode != 200) {
-        throw Exception(statusErrorHandler(response));
-      }
-      if (response.data.code) {
-        throw Exception(commonErrorHandler(response));
-      }
+      throwError(response);
     } catch (e) {
       rethrow;
     }
