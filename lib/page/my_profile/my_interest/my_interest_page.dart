@@ -6,6 +6,7 @@ import 'package:flutter_application_1/page/my_profile/my_interest/my_interest_pa
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/ExpanedBtn.dart';
 import '../../common/Loding.dart';
 import '../../common/Status.dart';
 
@@ -82,29 +83,12 @@ class MyInterestView extends StatelessWidget {
               height: 16,
             ),
             ImageCheckboxGrid(),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton(
-                    onPressed: hasNewInterest
-                        ? () async {
-                            await viewModel.changeInterest();
-                            context.pop(true);
-                          }
-                        : null,
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                        hasNewInterest ? const Color(0xFFD6A2E8) : Colors.grey,
-                      ),
-                    ),
-                    child: const Text(
-                      '완료',
-                      style: TextStyle(),
-                    ),
-                  ),
-                ),
-              ],
-            )
+            ExpandedBtn(
+              isShow: hasNewInterest,
+              onPressFunc: viewModel.changeInterest,
+              context: context,
+              btnTitle: "완료",
+            ),
           ],
         ),
       ),
