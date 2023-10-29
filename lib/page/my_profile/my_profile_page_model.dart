@@ -14,11 +14,13 @@ class MyProfileViewModel with ChangeNotifier {
   late User _user;
   late Tracker _tracker;
   late List<BadgeClass.Badge> _badge;
+  bool _isClose = false;
   Status status = Status.loading;
 
   User get user => _user;
   List<int> get tracker => _tracker.tracker;
   List<BadgeClass.Badge> get badge => _badge;
+  bool get isClose => _isClose;
 
   void load() async {
     try {
@@ -32,5 +34,14 @@ class MyProfileViewModel with ChangeNotifier {
       // 추후 경고창으로 전환.
       debugPrint(e.toString());
     }
+  }
+
+  void setStatusLoding() {
+    status = Status.loading;
+  }
+
+  void setIsClose(bool isClose) {
+    _isClose = isClose;
+    notifyListeners();
   }
 }

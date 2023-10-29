@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class BackSpaceAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const BackSpaceAppBar({
-    required Key key,
-    required this.appBar,
-    required this.title,
-  }) : super(key: key);
+  const BackSpaceAppBar(
+      {required Key key,
+      required this.appBar,
+      required this.title,
+      required this.isContextPopTrue})
+      : super(key: key);
 
   final AppBar appBar;
   final String title;
+  final bool isContextPopTrue;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class BackSpaceAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.black,
         ), // 뒤로가기 아이콘
         onPressed: () {
-          context.pop(true);
+          context.pop(isContextPopTrue);
         },
       ),
       title: Text(

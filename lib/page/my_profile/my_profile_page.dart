@@ -26,10 +26,15 @@ class MyProfilePage extends StatelessWidget {
   }
 }
 
-class MyProfileView extends StatelessWidget {
-  late MyProfileViewModel viewModel;
-
+class MyProfileView extends StatefulWidget {
   MyProfileView({super.key});
+
+  @override
+  State<MyProfileView> createState() => _MyProfileViewState();
+}
+
+class _MyProfileViewState extends State<MyProfileView> {
+  late MyProfileViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,7 @@ class MyProfileView extends StatelessWidget {
 
     if (isLoading) {
       viewModel.load();
-      return Center(child: Text("loading"));
+      return const Center(child: Text("loading"));
     } else {
       return ListView(
         physics: const ScrollPhysics(),
@@ -77,11 +82,11 @@ class BadgeView extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.0), // GridView 주위에 16px의 패딩 설정
+        padding: const EdgeInsets.all(16.0), // GridView 주위에 16px의 패딩 설정
         child: GridView.count(
           crossAxisCount: 5,
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: List.generate(badge.length, (index) {
             return Container(
               margin: const EdgeInsets.all(4.0),
@@ -117,7 +122,7 @@ class TrackerView extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
         GridView.count(
@@ -125,7 +130,7 @@ class TrackerView extends StatelessWidget {
           crossAxisSpacing: 4,
           mainAxisSpacing: 4,
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: List.generate(60, (index) {
             return Container(
               color: Color.fromRGBO(35, 236, 116, tracker[index].toDouble()),
@@ -144,12 +149,16 @@ class ProfileInfomation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User user = context.read<MyProfileViewModel>().user;
+    MyProfileViewModel viewModel = context.read<MyProfileViewModel>();
+    User user = viewModel.user;
+    void setClose(bool setClose) => viewModel.setIsClose(setClose);
+
+    bool isClose = context.watch<MyProfileViewModel>().isClose;
+
     String postCount = '0';
     String followerCount = '0';
     String followingCount = '0';
 
-    // ignore: unrelated_type_equality_checks
     if (user.postCount != Null) {
       postCount = user.postCount >= 999 ? "999+" : user.postCount.toString();
       followerCount =
@@ -159,7 +168,7 @@ class ProfileInfomation extends StatelessWidget {
     }
 
     return Container(
-      constraints: BoxConstraints(maxWidth: 800),
+      constraints: const BoxConstraints(maxWidth: 800),
       child: AspectRatio(
         aspectRatio: 1 / 0.2935779816513761,
         child: Row(
@@ -167,8 +176,16 @@ class ProfileInfomation extends StatelessWidget {
           children: [
             // 프로필 사진
             InkWell(
-              onTap: () {
-                // 프로필 사진 클릭 시 실행할 작업
+              onTap: () async {
+                bool? isLoad = await context.push<bool>(
+                    '/profile-image-edit?imageurl=${user.imageUrl}');
+
+                setClose(true);
+
+                if (isLoad ?? false) {
+                  debugPrint("동작! ${isLoad}");
+                  viewModel.setStatusLoding();
+                }
               },
               child: CircleAvatar(
                 radius: 40, // 원하는 크기 설정
@@ -181,8 +198,8 @@ class ProfileInfomation extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(postCount, style: TextStyle(fontSize: 18)),
-                  Text('게시물', style: TextStyle(fontSize: 14)),
+                  Text(postCount, style: const TextStyle(fontSize: 18)),
+                  const Text('게시물', style: TextStyle(fontSize: 14)),
                 ],
               ),
             ),
@@ -192,8 +209,8 @@ class ProfileInfomation extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(followerCount, style: TextStyle(fontSize: 18)),
-                  Text('팔로워', style: TextStyle(fontSize: 14)),
+                  Text(followerCount, style: const TextStyle(fontSize: 18)),
+                  const Text('팔로워', style: TextStyle(fontSize: 14)),
                 ],
               ),
             ),
@@ -203,8 +220,8 @@ class ProfileInfomation extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(followingCount, style: TextStyle(fontSize: 18)),
-                  Text('팔로잉', style: TextStyle(fontSize: 14)),
+                  Text(followingCount, style: const TextStyle(fontSize: 18)),
+                  const Text('팔로잉', style: TextStyle(fontSize: 14)),
                 ],
               ),
             ),
@@ -216,13 +233,16 @@ class ProfileInfomation extends StatelessWidget {
 }
 
 class MyMenuBar extends StatelessWidget {
-  MenuController menu = MenuController();
-  bool? isClose = false;
-
   MyMenuBar({Key? key}) : super(key: key);
+
+  MenuController menu = MenuController();
 
   @override
   Widget build(BuildContext context) {
+    bool isClose = context.watch<MyProfileViewModel>().isClose;
+    void setClose(bool setClose) =>
+        context.read<MyProfileViewModel>().setIsClose(setClose);
+
     return AppBar(
       title: const Text(
         "Username",
@@ -232,13 +252,14 @@ class MyMenuBar extends StatelessWidget {
         SubmenuButton(
           controller: menu,
           onOpen: () => {
-            if (isClose ?? false)
+            //debugPrint("메뉴 열림! ${isClose}"),
+            if (isClose)
               {
                 menu.close(),
-                isClose = false,
+                setClose(false),
               }
           },
-          alignmentOffset: Offset(-275, 0),
+          alignmentOffset: const Offset(-275, 0),
           menuStyle: const MenuStyle(
               alignment: Alignment.bottomRight,
               backgroundColor:
@@ -249,13 +270,15 @@ class MyMenuBar extends StatelessWidget {
           menuChildren: [
             MenuItemButton(
               onPressed: () async {
-                isClose = await context.push<bool>('/account-disclosure');
+                context.go('/account-disclosure');
+                setClose(true);
+                //debugPrint('isClose $isClose');
               },
               child: Container(
                 width: 252,
                 height: 48,
-                padding: EdgeInsets.fromLTRB(8, 15, 0, 0),
-                margin: EdgeInsets.all(0),
+                padding: const EdgeInsets.fromLTRB(8, 15, 0, 0),
+                margin: const EdgeInsets.all(0),
                 child: const Text(
                   '계정 공개 범위',
                   style: TextStyle(
@@ -264,18 +287,19 @@ class MyMenuBar extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(
+            const Divider(
               color: Colors.black,
             ),
             MenuItemButton(
               onPressed: () async {
-                isClose = await context.push<bool>('/myinterest');
+                context.go('/myinterest');
+                setClose(true);
               },
               child: Container(
                 width: 252,
                 height: 48,
-                padding: EdgeInsets.fromLTRB(8, 15, 0, 0),
-                margin: EdgeInsets.all(0),
+                padding: const EdgeInsets.fromLTRB(8, 15, 0, 0),
+                margin: const EdgeInsets.all(0),
                 child: const Text(
                   '내 관심사 설정',
                   style: TextStyle(

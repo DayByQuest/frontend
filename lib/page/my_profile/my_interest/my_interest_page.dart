@@ -48,7 +48,9 @@ class MyInterestView extends StatelessWidget {
 
     if (isLoding) {
       viewModel.load();
-      return const Loading();
+      return Loading(
+        context: context,
+      );
     }
 
     return Scaffold(
@@ -56,6 +58,7 @@ class MyInterestView extends StatelessWidget {
         key: UniqueKey(),
         appBar: AppBar(),
         title: "내 관심사 설정",
+        isContextPopTrue: true,
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),

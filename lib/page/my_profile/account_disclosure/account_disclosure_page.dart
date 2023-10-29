@@ -58,6 +58,7 @@ class AccountDisclosureView extends StatelessWidget {
         key: UniqueKey(),
         appBar: AppBar(),
         title: "계정 공개 범위",
+        isContextPopTrue: true,
       ),
       body: Container(
         padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
