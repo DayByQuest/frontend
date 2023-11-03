@@ -221,4 +221,92 @@ class RemoteDataSource {
       rethrow;
     }
   }
+
+  Future<(List<User>, bool hasNextPage, int lastId)> getFollowingList(
+      int lastId, int limit) async {
+    Response response;
+    String lastIdUrl = 'lastId=$lastId&';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    String url = '/followings?${lastIdUrl}limit=$limit';
+    List<User> followingList = [];
+
+    try {
+      response = await dio.get(url, options: options);
+      throwError(response);
+      debugPrint(response.data);
+      List<Map<String, dynamic>> jsonData = response.data?.users;
+      bool hasNextPage = limit < (jsonData.length);
+      int nextLastId = response.data?.lastId;
+
+      for (Map<String, dynamic> item in jsonData) {
+        User user = User.fromJson(item);
+        followingList.add(user);
+      }
+
+      return (followingList, hasNextPage, nextLastId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<User>, bool hasNextPage, int lastId)> getFollowerList(
+      int lastId, int limit) async {
+    Response response;
+    String lastIdUrl = 'lastId=$lastId&';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    String url = '/followers?${lastIdUrl}page=$limit';
+    List<User> followerList = [];
+
+    try {
+      response = await dio.get(url, options: options);
+      throwError(response);
+      debugPrint(response.data);
+      List<Map<String, dynamic>> jsonData = response.data?.users;
+      bool hasNextPage = limit < (jsonData.length);
+      int nextLastId = response.data?.lastId;
+
+      for (Map<String, dynamic> item in jsonData) {
+        User user = User.fromJson(item);
+        followerList.add(user);
+      }
+
+      return (followerList, hasNextPage, nextLastId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postUserFollow(String username) async {
+    Response response;
+    String url = '/profile/$username/follow';
+
+    try {
+      response = await dio.post(url);
+      throwError(response);
+      debugPrint(response.toString());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteUserfollow(String username) async {
+    Response response;
+    String url = '/profile/$username/follower';
+
+    try {
+      response = await dio.post(url);
+      throwError(response);
+      debugPrint(response.toString());
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

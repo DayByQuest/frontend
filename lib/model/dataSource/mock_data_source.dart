@@ -145,4 +145,64 @@ class MockDataSource extends Mock implements RemoteDataSource {
     debugPrint(image.toString());
     return;
   }
+
+  @override
+  Future<(List<User>, bool hasNextPage, int lastId)> getFollowingList(
+      int lastId, int limit) async {
+    List<User> followingList = [];
+    bool hasNextPage = true;
+    debugPrint("mockData getFollowingList followingList lastId: $lastId");
+
+    String username = "abcdefghijklmnoadwqz";
+    String name = "김김승승태태";
+    String imageUrl = "https://picsum.photos/200/300";
+    bool following = 50 < Random.secure().nextInt(100);
+
+    for (int i = 0; i < 10; i++) {
+      User user = User(
+        imageUrl: imageUrl,
+        name: name,
+        username: username,
+        follwing: following,
+      );
+      followingList.add(user);
+    }
+
+    return (followingList, hasNextPage, lastId + 1);
+  }
+
+  @override
+  Future<(List<User>, bool hasNextPage, int lastId)> getFollowerList(
+      int lastId, int limit) async {
+    List<User> followerList = [];
+    bool hasNextPage = true;
+    debugPrint("mockData getFollowerList 팔로워 리스트 라스트 아이디값: $lastId");
+
+    String username = "abcdefghijklmnoadwqz";
+    String name = "김김승승태태";
+    String imageUrl = "https://picsum.photos/200/300";
+    bool following = 50 < Random.secure().nextInt(100);
+
+    for (int i = 0; i < 10; i++) {
+      User user = User(
+        imageUrl: imageUrl,
+        name: name,
+        username: username,
+        follwing: following,
+      );
+      followerList.add(user);
+    }
+
+    return (followerList, hasNextPage, lastId + 1);
+  }
+
+  @override
+  Future<void> postUserFollow(String username) async {
+    debugPrint('postUserFollow: $username 잘 전송됨, 팔로우 완료!');
+  }
+
+  @override
+  Future<void> deleteUserfollow(String username) async {
+    debugPrint('deleteUserfollow: $username 잘 전송됨, 언팔로우 완료!');
+  }
 }

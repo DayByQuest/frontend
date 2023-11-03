@@ -93,4 +93,38 @@ class UserRepository {
       throw Exception(e.toString());
     }
   }
+
+  Future<(List<User>, bool hasNextPage, int lastId)> getRemoteFollowingList(
+      int lastId, int limit) async {
+    try {
+      return _RemoteDataSource.getFollowingList(lastId, limit);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<(List<User>, bool hasNextPage, int lastId)> getRemoteFollowerList(
+      int lastId, int limit) async {
+    try {
+      return _RemoteDataSource.getFollowerList(lastId, limit);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> postRemoteUserFollow(String username) async {
+    try {
+      _RemoteDataSource.postUserFollow(username);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> deleteRemoteUserFollow(String username) async {
+    try {
+      _RemoteDataSource.deleteUserfollow(username);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
