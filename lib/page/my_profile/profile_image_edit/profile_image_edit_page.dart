@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/Buttons.dart';
 import '../../common/Loding.dart';
 import '../../common/Status.dart';
 
@@ -152,63 +153,6 @@ class ImageCircleAvartar extends StatelessWidget {
           ? FileImage(File(image!.path)) as ImageProvider<Object>
           : NetworkImage(imageUrl),
       radius: 100,
-    );
-  }
-}
-
-class CommonBtn extends StatelessWidget {
-  const CommonBtn({
-    super.key,
-    required this.isPurple,
-    required this.onPressFunc,
-    required this.context,
-    required this.btnTitle,
-  });
-
-  final String btnTitle;
-  final bool isPurple;
-  final Function onPressFunc;
-  final BuildContext context;
-
-  @override
-  Widget build(BuildContext _) {
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton(
-            style: ButtonStyle(
-              fixedSize: MaterialStateProperty.all(
-                const Size.fromHeight(48),
-              ),
-              shape: MaterialStateProperty.all(
-                const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-              ),
-              side: MaterialStateProperty.all(
-                BorderSide(
-                  color: isPurple ? Color(0xFF82589F) : Colors.black,
-                ),
-              ),
-              backgroundColor: MaterialStateProperty.all(
-                isPurple ? Color(0xFFD6A2E8) : null,
-              ),
-            ),
-            onPressed: () async {
-              onPressFunc();
-            },
-            child: Text(
-              btnTitle,
-              style: TextStyle(
-                fontSize: 22,
-                color: isPurple ? Colors.white : Colors.black,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
