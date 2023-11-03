@@ -8,7 +8,6 @@ import './my_profile_page_model.dart';
 import 'package:flutter/material.dart';
 import './../../model/repository/user_repository.dart';
 import './../../model/dataSource/mock_data_source.dart';
-import 'account_disclosure/account_disclosure_page.dart';
 
 class MyProfilePage extends StatelessWidget {
   const MyProfilePage({super.key});
@@ -26,19 +25,12 @@ class MyProfilePage extends StatelessWidget {
   }
 }
 
-class MyProfileView extends StatefulWidget {
+class MyProfileView extends StatelessWidget {
   MyProfileView({super.key});
 
   @override
-  State<MyProfileView> createState() => _MyProfileViewState();
-}
-
-class _MyProfileViewState extends State<MyProfileView> {
-  late MyProfileViewModel viewModel;
-
-  @override
   Widget build(BuildContext context) {
-    viewModel = Provider.of<MyProfileViewModel>(context, listen: false);
+    final MyProfileViewModel viewModel = context.read<MyProfileViewModel>();
     bool isLoading =
         context.watch<MyProfileViewModel>().status == Status.loading;
 
@@ -153,8 +145,6 @@ class ProfileInfomation extends StatelessWidget {
     User user = viewModel.user;
     void setClose(bool setClose) => viewModel.setIsClose(setClose);
 
-    bool isClose = context.watch<MyProfileViewModel>().isClose;
-
     String postCount = '0';
     String followerCount = '0';
     String followingCount = '0';
@@ -179,7 +169,6 @@ class ProfileInfomation extends StatelessWidget {
               onTap: () async {
                 bool? isLoad = await context.push<bool>(
                     '/profile-image-edit?imageurl=${user.imageUrl}');
-
                 setClose(true);
 
                 if (isLoad ?? false) {
@@ -205,7 +194,10 @@ class ProfileInfomation extends StatelessWidget {
             ),
             // 팔로워 수
             InkWell(
-              onTap: () {},
+              onTap: () async {
+                context.go('/my-follower-list');
+                setClose(true);
+              },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -216,7 +208,10 @@ class ProfileInfomation extends StatelessWidget {
             ),
             // 팔로잉 수
             InkWell(
-              onTap: () {},
+              onTap: () {
+                context.go('/my-following-list');
+                setClose(true);
+              },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -232,9 +227,14 @@ class ProfileInfomation extends StatelessWidget {
   }
 }
 
-class MyMenuBar extends StatelessWidget {
-  MyMenuBar({Key? key}) : super(key: key);
+class MyMenuBar extends StatefulWidget {
+  const MyMenuBar({Key? key}) : super(key: key);
 
+  @override
+  State<MyMenuBar> createState() => _MyMenuBarState();
+}
+
+class _MyMenuBarState extends State<MyMenuBar> {
   MenuController menu = MenuController();
 
   @override
