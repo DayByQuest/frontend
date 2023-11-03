@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/my_profile/my_follower_list/my_follower_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_following_list/my_following_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_interest/my_interest_page.dart';
@@ -7,9 +6,7 @@ import 'package:flutter_application_1/page/my_profile/my_post/my_post_page.dart'
 import 'package:flutter_application_1/page/my_profile/profile_image_edit/profile_image_edit_page.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import './model/dataSource/remote_data_source.dart';
-import './model/dataSource/mock_data_source.dart';
 import './page/my_profile/my_profile_page.dart';
 import 'page/my_profile/account_disclosure/account_disclosure_page.dart';
 
@@ -47,7 +44,10 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: 'profile-image-edit',
           builder: (context, state) {
-            return ProfileImageEditPage();
+            String url = state.uri.queryParameters['imageurl'] ?? 'null';
+            return ProfileImageEditPage(
+              imageUrl: url,
+            );
           },
         ),
         GoRoute(
@@ -113,9 +113,9 @@ class _MyHomePageState extends State<MyHomePage> {
       home: Scaffold(
         body: (_selectedIndex != 4
             ? Center(child: Text("home"))
-            : SafeArea(
+            : const SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
                   child: MyProfilePage(),
                 ),
               )),
