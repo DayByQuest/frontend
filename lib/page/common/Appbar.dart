@@ -3,11 +3,10 @@ import 'package:go_router/go_router.dart';
 
 class BackSpaceAppBar extends StatelessWidget implements PreferredSizeWidget {
   const BackSpaceAppBar(
-      {required Key key,
+      {super.key,
       required this.appBar,
       required this.title,
-      required this.isContextPopTrue})
-      : super(key: key);
+      required this.isContextPopTrue});
 
   final AppBar appBar;
   final String title;
