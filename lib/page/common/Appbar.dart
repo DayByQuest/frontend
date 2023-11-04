@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class BackSpaceAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const BackSpaceAppBar(
-      {super.key,
-      required this.appBar,
-      required this.title,
-      required this.isContextPopTrue});
+  const BackSpaceAppBar({
+    super.key,
+    required this.appBar,
+    required this.title,
+    required this.isContextPopTrue,
+    this.actions,
+  });
 
   final AppBar appBar;
   final String title;
   final bool isContextPopTrue;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +37,7 @@ class BackSpaceAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.black,
         ),
       ),
+      actions: actions,
     );
   }
 
