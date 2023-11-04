@@ -68,8 +68,8 @@ class MockDataSource extends Mock implements RemoteDataSource {
   }
 
   @override
-  Future<(List<BadgeClass.Badge>, bool hasNextPage)> getMyBadge(
-      int page) async {
+  Future<(List<BadgeClass.Badge>, bool hasNextPage, int lastId)> getMyBadge(
+      int lastId) async {
     String name = "김김승승태태";
     String imageUrl = "https://picsum.photos/200/300";
     String id = "aaaa";
@@ -78,12 +78,10 @@ class MockDataSource extends Mock implements RemoteDataSource {
     List<BadgeClass.Badge> badges = [];
     for (int i = 0; i < 10; i++) {
       BadgeClass.Badge newBadge = BadgeClass.Badge(
-          name: name, imageUrl: imageUrl, id: id, acquiredAt: acquiredAt);
+          name: name, imageUrl: imageUrl, id: i, acquiredAt: acquiredAt);
       badges.add(newBadge);
     }
-    return Future.delayed(Duration(seconds: 1), () {
-      return (badges, true);
-    });
+    return (badges, true, lastId + 1);
   }
 
   @override
@@ -96,13 +94,22 @@ class MockDataSource extends Mock implements RemoteDataSource {
     List<BadgeClass.Badge> badges = [];
     for (int i = 0; i < 10; i++) {
       BadgeClass.Badge newBadge = BadgeClass.Badge(
-          name: name, imageUrl: imageUrl, id: id, acquiredAt: acquiredAt);
+          name: name, imageUrl: imageUrl, id: i, acquiredAt: acquiredAt);
       badges.add(newBadge);
     }
 
     return Future.delayed(Duration(seconds: 1), () {
       return badges;
     });
+  }
+
+  @override
+  Future<void> patchBadge(List<int> badgeIdList) async {
+    try {
+      debugPrint('patchBadge: badgeIdList - ${badgeIdList.toString()}');
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

@@ -37,10 +37,10 @@ class UserRepository {
     }
   }
 
-  Future<(List<BadgeClass.Badge>, bool hasNextPage)> getRemoteMyBadge(
-      username) async {
+  Future<(List<BadgeClass.Badge>, bool hasNextPage, int lastId)>
+      getRemoteMyBadge(int lastId) async {
     try {
-      return _RemoteDataSource.getMyBadge(username);
+      return _RemoteDataSource.getMyBadge(lastId);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -51,6 +51,15 @@ class UserRepository {
       return _RemoteDataSource.getBadge(username);
     } catch (e) {
       throw Exception(e.toString());
+    }
+  }
+
+  Future<void> patchRemoteBadge(List<int> badgeIdList) async {
+    try {
+      await _RemoteDataSource.patchBadge(badgeIdList);
+      return;
+    } catch (e) {
+      rethrow;
     }
   }
 

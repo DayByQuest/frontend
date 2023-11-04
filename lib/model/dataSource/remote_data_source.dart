@@ -132,33 +132,39 @@ class RemoteDataSource {
     }
   }
 
-  Future<(List<BadgeClass.Badge>, bool hasNextPage)> getMyBadge(
-      int page) async {
+  Future<(List<BadgeClass.Badge>, bool hasNextPage, int lastId)> getMyBadge(
+      int lastId) async {
     Response response;
-    String url = '/badge?limit=10&page=${page}';
+
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    String url = '/badge?limit=10$lastIdUrl';
+
     try {
       response = await dio.get(url, options: options);
-      if (response.statusCode != 200) {
-        throw Exception(statusErrorHandler(response));
-      }
-      if (response.data.code) {
-        throw Exception(commonErrorHandler(response));
-      }
+      throwError(response);
       debugPrint(response.data);
       List<Map<String, dynamic>> jsonDate = response.data.bages;
+      bool hasNextPage = 10 <= response.data.length;
+      int lastId = response.data.lastId;
       List<BadgeClass.Badge> badges = [];
+
       for (int i = 0; i < jsonDate.length; i++) {
         Map<String, dynamic> badge = jsonDate[i];
         String name = badge['name'];
         String imageUrl = badge['imageUrl'];
-        String id = badge['id'];
+        int id = badge['id'];
         String acquiredAt = badge['acquiredAt'];
         BadgeClass.Badge newBadge = BadgeClass.Badge(
             name: name, imageUrl: imageUrl, id: id, acquiredAt: acquiredAt);
         badges.add(newBadge);
       }
-      bool hasNextPage = response.data.hasNextPage;
-      return (badges, hasNextPage);
+
+      return (badges, hasNextPage, lastId);
     } catch (e) {
       rethrow;
     }
@@ -182,7 +188,7 @@ class RemoteDataSource {
         Map<String, dynamic> badge = jsonDate[i];
         String name = badge['name'];
         String imageUrl = badge['imageUrl'];
-        String id = badge['id'];
+        int id = badge['id'];
         String acquiredAt = badge['acquiredAt'];
         BadgeClass.Badge newBadge = BadgeClass.Badge(
             name: name, imageUrl: imageUrl, id: id, acquiredAt: acquiredAt);
@@ -190,6 +196,20 @@ class RemoteDataSource {
       }
 
       return badges;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> patchBadge(List<int> badgeIdList) async {
+    Response response;
+    String url = '/badge';
+
+    try {
+      response = await dio.patch(url, data: badgeIdList);
+      throwError(response);
+      debugPrint(response.toString());
+      return;
     } catch (e) {
       rethrow;
     }
