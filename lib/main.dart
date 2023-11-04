@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import './model/dataSource/remote_data_source.dart';
 import './page/my_profile/my_profile_page.dart';
 import 'page/my_profile/account_disclosure/account_disclosure_page.dart';
+import 'page/my_profile/my_badge_edit copy/my_badge_edit_page.dart';
 
 void main() {
   setUpGetIt();
@@ -66,6 +67,12 @@ final GoRouter _router = GoRouter(
           path: 'my-following-list',
           builder: (context, state) {
             return MyFollowingListPage();
+          },
+        ),
+        GoRoute(
+          path: 'badge-edit',
+          builder: (BuildContext context, GoRouterState state) {
+            return MyBadgeEditPage();
           },
         ),
       ],
