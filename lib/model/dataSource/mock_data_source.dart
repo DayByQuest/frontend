@@ -207,6 +207,15 @@ class MockDataSource extends Mock implements RemoteDataSource {
   }
 
   @override
+  Future<void> deleteFollower(String username) async {
+    try {
+      debugPrint('deleteFollower: $username 잘 전송됨.');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<void> postUserFollow(String username) async {
     debugPrint('postUserFollow: $username 잘 전송됨, 팔로우 완료!');
   }

@@ -121,6 +121,14 @@ class UserRepository {
     }
   }
 
+  Future<void> deleteRemoteFollower(String username) async {
+    try {
+      return _RemoteDataSource.deleteFollower(username);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> postRemoteUserFollow(String username) async {
     try {
       _RemoteDataSource.postUserFollow(username);

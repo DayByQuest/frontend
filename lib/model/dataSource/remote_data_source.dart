@@ -318,6 +318,21 @@ class RemoteDataSource {
     }
   }
 
+  Future<void> deleteFollower(String username) async {
+    Response response;
+    String url = '/profile/${username}/follower';
+
+    try {
+      response = await dio.delete(url);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> postUserFollow(String username) async {
     Response response;
     String url = '/profile/$username/follow';
