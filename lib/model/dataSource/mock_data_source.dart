@@ -42,14 +42,17 @@ class MockDataSource extends Mock implements RemoteDataSource {
     int followerCount = 0;
     int postCount = 0;
     bool blocking = false;
+    bool follwing = true;
     User user = User(
-        username: username,
-        name: name,
-        imageUrl: imageUrl,
-        followingCount: followingCount,
-        followerCount: followerCount,
-        postCount: postCount,
-        blocking: blocking);
+      username: username,
+      name: name,
+      imageUrl: imageUrl,
+      followingCount: followingCount,
+      followerCount: followerCount,
+      postCount: postCount,
+      blocking: blocking,
+      follwing: follwing,
+    );
 
     return Future.delayed(Duration(seconds: 1), () {
       return user;
