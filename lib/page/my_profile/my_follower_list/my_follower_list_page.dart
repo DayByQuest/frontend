@@ -4,6 +4,7 @@ import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/my_profile/my_follower_list/my_follower_list_page_model.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import '../../../model/class/user.dart';
@@ -97,12 +98,17 @@ class ListItem extends StatelessWidget {
           width: double.infinity,
           child: Row(
             children: [
-              Container(
-                width: 48,
-                height: 48,
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
+              InkWell(
+                onTap: () {
+                  context.push('/user-profile?username=$username');
+                },
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               const SizedBox(

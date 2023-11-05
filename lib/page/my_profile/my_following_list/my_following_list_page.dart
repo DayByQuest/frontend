@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
@@ -98,12 +99,17 @@ class ListItem extends StatelessWidget {
           width: double.infinity,
           child: Row(
             children: [
-              Container(
-                width: 48,
-                height: 48,
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
+              InkWell(
+                onTap: () {
+                  context.push('/user-profile?username=$username');
+                },
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               const SizedBox(
