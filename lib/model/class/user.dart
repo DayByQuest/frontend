@@ -7,6 +7,7 @@ class User {
   final int _postCount;
   final bool _blocking;
   bool following;
+  bool isDelete;
 
   User({
     required String username,
@@ -17,6 +18,7 @@ class User {
     int? postCount,
     bool? blocking,
     bool? follwing,
+    bool? isDelete,
   })  : _username = username,
         _name = name,
         _imageUrl = imageUrl,
@@ -24,7 +26,8 @@ class User {
         _followerCount = followerCount ?? 0,
         _postCount = postCount ?? 0,
         _blocking = blocking ?? false,
-        following = follwing ?? false;
+        following = follwing ?? false,
+        isDelete = isDelete ?? false;
 
   String get username => _username;
   String get name => _name;
