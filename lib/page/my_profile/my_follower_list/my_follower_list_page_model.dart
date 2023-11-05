@@ -48,21 +48,10 @@ class MyFollowerListViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> postFollow(String username, int index) async {
-    try {
-      await _userRepository.postRemoteUserFollow(username);
-      _followerList[index].following = !_followerList[index].following;
-      debugPrint("postFollow: $index 교체!");
-      notifyListeners();
-    } catch (e) {
-      debugPrint('postFollow error: ${e.toString()}');
-    }
-  }
-
-  Future<void> deleteFollow(String username, int index) async {
+  Future<void> deleteFollower(String username, int index) async {
     try {
       await _userRepository.deleteRemoteUserFollow(username);
-      _followerList[index].following = !_followerList[index].following;
+      _followerList[index].isDelete = true;
       notifyListeners();
     } catch (e) {
       debugPrint('deleteFollow error: ${e.toString()}');

@@ -82,14 +82,42 @@ class ListItem extends StatelessWidget {
     String imageUrl = user.imageUrl;
     String name = user.name;
     String username = user.username;
-    bool isFollwing = user.following;
+    bool? isDelete = user.isDelete;
 
-    void follow() async {
-      await viewModel.postFollow(username, index);
+    Future<void> deleteFollower() async {
+      await viewModel.deleteFollower(username, index);
     }
 
-    void unFollow() async {
-      await viewModel.deleteFollow(username, index);
+    Future<void> _showMyDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('AlertDialog Title'),
+            content: Text('$name 님을 팔로워 리스트에서 삭제하시겠어요?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('취소'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('삭제'),
+                onPressed: () async {
+                  await deleteFollower();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    if (isDelete) {
+      return Container();
     }
 
     return Column(
@@ -137,10 +165,10 @@ class ListItem extends StatelessWidget {
                 width: 77,
                 height: 28,
                 child: CommonBtn(
-                  isPurple: isFollwing,
-                  onPressFunc: isFollwing ? unFollow : follow,
+                  isPurple: false,
+                  onPressFunc: _showMyDialog,
                   context: context,
-                  btnTitle: isFollwing ? "팔로잉" : "팔로우",
+                  btnTitle: '삭제',
                   fontSize: 16,
                 ),
               )
