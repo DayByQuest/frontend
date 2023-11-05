@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import './../class/user.dart';
 import './../class/badge.dart' as BadgeClass;
@@ -7,19 +8,27 @@ import './../class/tracker.dart';
 import './error_handler.dart';
 
 class RemoteDataSource {
-  Options options = Options(
-    headers: {
-      'Authorization': 'UserId 1',
-    },
-  );
-  final dio = Dio();
+  final String? API_BASE_URL;
+  final Dio dio;
+  final Options options;
 
-  void throwError(Response response) {
-    if (response.statusCode != 200) {
-      throw Exception(statusErrorHandler(response));
-    }
-    if (response.data.code) {
-      throw Exception(commonErrorHandler(response));
+  RemoteDataSource()
+      : API_BASE_URL = dotenv.env['API_BASE_URL'],
+        dio = Dio(),
+        options = Options(
+          headers: {
+            'Authorization': 'UserId 1',
+          },
+        ) {
+    debugPrint('RemoteDataSource API_BASE_URL $API_BASE_URL');
+    dio.options.baseUrl = API_BASE_URL!;
+  }
+
+  void throwError(DioException e) {
+    if (e.response != null) {
+      debugPrint('DioException: ${e.response?.data.toString()}');
+    } else {
+      debugPrint(e.message);
     }
     return;
   }
@@ -28,17 +37,17 @@ class RemoteDataSource {
     Response response;
     String url = '/profile';
     try {
+      debugPrint('getMyProfile:start');
       response = await dio.get(url, options: options);
-      if (response.statusCode != 200) {
-        throw Exception(statusErrorHandler(response));
-      }
-      if (response.data.code) {
-        throw Exception(commonErrorHandler(response));
-      }
-      debugPrint(response.data);
+      debugPrint('getMyProfile: ${response.toString()}');
+      //debugPrint(response.data);
       Map<String, dynamic> jsonData = response.data;
       User user = User.fromJson(jsonData);
+
       return user;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -49,16 +58,13 @@ class RemoteDataSource {
     String url = '/profile${username}';
     try {
       response = await dio.get(url, options: options);
-      if (response.statusCode != 200) {
-        throw Exception(statusErrorHandler(response));
-      }
-      if (response.data.code) {
-        throw Exception(commonErrorHandler(response));
-      }
       debugPrint(response.data);
       Map<String, dynamic> jsonData = response.data;
       User user = User.fromJson(jsonData);
       return user;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -66,18 +72,15 @@ class RemoteDataSource {
 
   Future<Tracker> getTracker(String username) async {
     Response response;
-    String url = '/profile/${username}/tracker';
+    String url = '/profile/${'username'}/tracker';
     try {
       response = await dio.get(url, options: options);
-      if (response.statusCode != 200) {
-        throw Exception(statusErrorHandler(response));
-      }
-      if (response.data.code) {
-        throw Exception(commonErrorHandler(response));
-      }
       debugPrint(response.data);
       Tracker tracker = Tracker(tracker: response.data.tracker);
       return tracker;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -91,7 +94,9 @@ class RemoteDataSource {
     });
     try {
       response = await dio.patch(url, data: formData);
-      throwError(response);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -105,9 +110,11 @@ class RemoteDataSource {
 
     try {
       response = await dio.get(url, options: options);
-      throwError(response);
       debugPrint(response.data);
       return response.data == PRIVATE ? true : false;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -121,12 +128,9 @@ class RemoteDataSource {
     };
     try {
       response = await dio.patch(url, data: data);
-      if (response.statusCode != 200) {
-        throw Exception(statusErrorHandler(response));
-      }
-      if (response.data.code) {
-        throw Exception(commonErrorHandler(response));
-      }
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -146,7 +150,6 @@ class RemoteDataSource {
 
     try {
       response = await dio.get(url, options: options);
-      throwError(response);
       debugPrint(response.data);
       List<Map<String, dynamic>> jsonDate = response.data.bages;
       bool hasNextPage = 10 <= response.data.length;
@@ -165,6 +168,9 @@ class RemoteDataSource {
       }
 
       return (badges, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -175,15 +181,10 @@ class RemoteDataSource {
     String url = '/badge/${username}';
     try {
       response = await dio.get(url, options: options);
-      if (response.statusCode != 200) {
-        throw Exception(statusErrorHandler(response));
-      }
-      if (response.data.code) {
-        throw Exception(commonErrorHandler(response));
-      }
       debugPrint(response.data);
       List<Map<String, dynamic>> jsonDate = response.data.bages;
       List<BadgeClass.Badge> badges = [];
+
       for (int i = 0; i < jsonDate.length; i++) {
         Map<String, dynamic> badge = jsonDate[i];
         String name = badge['name'];
@@ -196,6 +197,9 @@ class RemoteDataSource {
       }
 
       return badges;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -207,9 +211,11 @@ class RemoteDataSource {
 
     try {
       response = await dio.patch(url, data: badgeIdList);
-      throwError(response);
       debugPrint(response.toString());
       return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -221,10 +227,12 @@ class RemoteDataSource {
     List<String> interest = [];
     try {
       response = await dio.get(url, options: options);
-      throwError(response);
       debugPrint(response.data);
       interest.addAll(response.data.interestNames);
       return interest;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -235,8 +243,10 @@ class RemoteDataSource {
     String url = '/profile/interest';
     try {
       response = await dio.patch(url, data: interest);
-      throwError(response);
       debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -256,7 +266,6 @@ class RemoteDataSource {
 
     try {
       response = await dio.get(url, options: options);
-      throwError(response);
       debugPrint(response.data);
       List<Map<String, dynamic>> jsonData = response.data?.users;
       bool hasNextPage = limit < (jsonData.length);
@@ -268,6 +277,9 @@ class RemoteDataSource {
       }
 
       return (followingList, hasNextPage, nextLastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -287,7 +299,6 @@ class RemoteDataSource {
 
     try {
       response = await dio.get(url, options: options);
-      throwError(response);
       debugPrint(response.data);
       List<Map<String, dynamic>> jsonData = response.data?.users;
       bool hasNextPage = limit < (jsonData.length);
@@ -299,6 +310,9 @@ class RemoteDataSource {
       }
 
       return (followerList, hasNextPage, nextLastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -310,8 +324,10 @@ class RemoteDataSource {
 
     try {
       response = await dio.post(url);
-      throwError(response);
       debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -323,8 +339,10 @@ class RemoteDataSource {
 
     try {
       response = await dio.post(url);
-      throwError(response);
       debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
     } catch (e) {
       rethrow;
     }
