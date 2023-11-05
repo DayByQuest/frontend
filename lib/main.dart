@@ -4,6 +4,7 @@ import 'package:flutter_application_1/page/my_profile/my_following_list/my_follo
 import 'package:flutter_application_1/page/my_profile/my_interest/my_interest_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_post/my_post_page.dart';
 import 'package:flutter_application_1/page/my_profile/profile_image_edit/profile_image_edit_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import './model/dataSource/remote_data_source.dart';
@@ -11,7 +12,8 @@ import './page/my_profile/my_profile_page.dart';
 import 'page/my_profile/account_disclosure/account_disclosure_page.dart';
 import 'page/my_profile/my_badge_edit copy/my_badge_edit_page.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
   setUpGetIt();
   runApp(const MyApp());
 }
