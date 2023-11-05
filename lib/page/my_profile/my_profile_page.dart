@@ -64,30 +64,43 @@ class BadgeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<BadgeClass.Badge> badge = context.read<MyProfileViewModel>().badge;
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
-          width: 2.0,
+    MyProfileViewModel viewModel = context.read<MyProfileViewModel>();
+    List<BadgeClass.Badge> badge = viewModel.badge;
+    void setClose(bool setClose) => viewModel.setIsClose(setClose);
+
+    return InkWell(
+      onTap: () async {
+        context.go('/badge-edit');
+        setClose(true);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(30),
         ),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0), // GridView 주위에 16px의 패딩 설정
-        child: GridView.count(
-          crossAxisCount: 5,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: List.generate(badge.length, (index) {
-            return Container(
-              margin: const EdgeInsets.all(4.0),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Image.network(badge[index].imageUrl),
-              ),
-            );
-          }),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // GridView 주위에 16px의 패딩 설정
+          child: GridView.count(
+            crossAxisCount: 5,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            children: List.generate(badge.length, (index) {
+              return Container(
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Image.network(
+                    badge[index].imageUrl,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              );
+            }),
+          ),
         ),
       ),
     );
