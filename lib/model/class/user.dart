@@ -38,7 +38,7 @@ class User {
     return User(
         username: json['username'],
         name: json['name'],
-        imageUrl: json['imageUrl'],
+        imageUrl: '${json['imageIdentifier']}',
         followingCount: json['followingCount'] ?? 0,
         followerCount: json['followerCount'] ?? 0,
         postCount: json['postCount'] ?? 0,
