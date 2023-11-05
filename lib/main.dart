@@ -4,6 +4,7 @@ import 'package:flutter_application_1/page/my_profile/my_following_list/my_follo
 import 'package:flutter_application_1/page/my_profile/my_interest/my_interest_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_post/my_post_page.dart';
 import 'package:flutter_application_1/page/my_profile/profile_image_edit/profile_image_edit_page.dart';
+import 'package:flutter_application_1/page/profile/profile_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -75,6 +76,15 @@ final GoRouter _router = GoRouter(
           path: 'badge-edit',
           builder: (BuildContext context, GoRouterState state) {
             return MyBadgeEditPage();
+          },
+        ),
+        GoRoute(
+          path: 'user-profile',
+          builder: (context, state) {
+            String username = state.uri.queryParameters['username'] ?? 'null';
+            return ProfilePage(
+              username: username,
+            );
           },
         ),
       ],
