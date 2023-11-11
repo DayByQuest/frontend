@@ -158,6 +158,7 @@ class ProfileInfomation extends StatelessWidget {
     User user = viewModel.user;
     void setClose(bool setClose) => viewModel.setIsClose(setClose);
 
+    String username = user.username;
     String postCount = '0';
     String followerCount = '0';
     String followingCount = '0';
@@ -196,7 +197,10 @@ class ProfileInfomation extends StatelessWidget {
             ),
             // 게시물 수
             InkWell(
-              onTap: () {},
+              onTap: () {
+                context.go('/my-post?username=$username');
+                setClose(true);
+              },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
