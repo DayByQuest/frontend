@@ -57,7 +57,8 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: 'my-post',
           builder: (context, state) {
-            return MyPostPage();
+            String username = state.uri.queryParameters['username'] ?? 'null';
+            return MyPostPage(username: username);
           },
         ),
         GoRoute(
