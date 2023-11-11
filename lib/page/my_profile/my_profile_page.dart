@@ -16,9 +16,8 @@ class MyProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MyProfileViewModel>(
         create: (_) {
-          final MyProfileViewModel viewModel = MyProfileViewModel(
-              userRepository:
-                  UserRepository(remoteDataSource: MockDataSource()));
+          final MyProfileViewModel viewModel =
+              MyProfileViewModel(userRepository: UserRepository());
           return viewModel;
         },
         child: MyProfileView());
@@ -162,6 +161,8 @@ class ProfileInfomation extends StatelessWidget {
     String postCount = '0';
     String followerCount = '0';
     String followingCount = '0';
+
+    debugPrint('user.imageUrl: ${user.imageUrl}');
 
     if (user.postCount != Null) {
       postCount = user.postCount >= 999 ? "999+" : user.postCount.toString();

@@ -25,8 +25,8 @@ class MyProfileViewModel with ChangeNotifier {
   void load() async {
     try {
       _user = await _userRepository.getRemoteMyProfile();
-      _tracker = await _userRepository.getRemoteTracker("username");
-      _badge = await _userRepository.getRemoteBadge("username");
+      _tracker = await _userRepository.getRemoteTracker("username1");
+      _badge = await _userRepository.getRemoteBadge("username1");
       status = Status.loaded;
       notifyListeners();
       debugPrint("loding됨!");

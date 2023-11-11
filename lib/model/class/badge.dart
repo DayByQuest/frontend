@@ -18,4 +18,13 @@ class Badge {
   String get imageUrl => _imageUrl;
   int get id => _id;
   String get acquiredAt => _acquiredAt;
+
+  factory Badge.fromJson(Map<String, dynamic> json) {
+    return Badge(
+      name: json['name'],
+      imageUrl: json['imageUrl'],
+      id: json['id'],
+      acquiredAt: json['acquiredAt'],
+    );
+  }
 }

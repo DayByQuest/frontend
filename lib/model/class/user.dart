@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class User {
   final String _username;
   final String _name;
@@ -8,6 +10,8 @@ class User {
   final bool _blocking;
   bool following;
   bool isDelete;
+
+  static String? IMAGE_BASE_URL = dotenv.env['IMAGE_BASE_URL'] ?? '';
 
   User({
     required String username,
@@ -41,7 +45,7 @@ class User {
     return User(
         username: json['username'],
         name: json['name'],
-        imageUrl: '${json['imageIdentifier']}',
+        imageUrl: '${IMAGE_BASE_URL}${json['imageIdentifier']}',
         followingCount: json['followingCount'] ?? 0,
         followerCount: json['followerCount'] ?? 0,
         postCount: json['postCount'] ?? 0,

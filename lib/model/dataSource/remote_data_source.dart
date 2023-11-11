@@ -40,13 +40,12 @@ class RemoteDataSource {
     Response response;
     String url = '/profile';
     try {
-      debugPrint('getMyProfile:start');
+      //debugPrint('getMyProfile:start');
       response = await dio.get(url, options: options);
-      debugPrint('getMyProfile: ${response.toString()}');
-      //debugPrint(response.data);
+      //debugPrint('getMyProfile: ${response.toString()}');
       Map<String, dynamic> jsonData = response.data;
       User user = User.fromJson(jsonData);
-
+      //debugPrint('getMyProfile:end');
       return user;
     } on DioException catch (e) {
       throwError(e);
@@ -75,11 +74,13 @@ class RemoteDataSource {
 
   Future<Tracker> getTracker(String username) async {
     Response response;
-    String url = '/profile/${'username'}/tracker';
+    String url = '/profile/${username}/tracker';
     try {
+      //debugPrint('getTracker:start');
       response = await dio.get(url, options: options);
-      debugPrint(response.data);
-      Tracker tracker = Tracker(tracker: response.data.tracker);
+      Map<String, dynamic> jsonData = response.data;
+      Tracker tracker = Tracker.fromJson(jsonData);
+      //debugPrint('getTracker:end');
       return tracker;
     } on DioException catch (e) {
       throwError(e);
@@ -183,22 +184,14 @@ class RemoteDataSource {
     Response response;
     String url = '/badge/${username}';
     try {
+      //debugPrint('getBadge:start $username');
       response = await dio.get(url, options: options);
-      debugPrint(response.data);
-      List<Map<String, dynamic>> jsonDate = response.data.bages;
-      List<BadgeClass.Badge> badges = [];
-
-      for (int i = 0; i < jsonDate.length; i++) {
-        Map<String, dynamic> badge = jsonDate[i];
-        String name = badge['name'];
-        String imageUrl = badge['imageUrl'];
-        int id = badge['id'];
-        String acquiredAt = badge['acquiredAt'];
-        BadgeClass.Badge newBadge = BadgeClass.Badge(
-            name: name, imageUrl: imageUrl, id: id, acquiredAt: acquiredAt);
-        badges.add(newBadge);
-      }
-
+      Map<String, dynamic> jsonDate = response.data;
+      //debugPrint('getBadge:jsonDate ${jsonDate.toString()}');
+      List<dynamic> badgeJson = jsonDate['badges'];
+      List<BadgeClass.Badge> badges =
+          badgeJson.map((badge) => BadgeClass.Badge.fromJson(badge)).toList();
+      //debugPrint('getBadge:end');
       return badges;
     } on DioException catch (e) {
       throwError(e);
