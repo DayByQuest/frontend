@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
+import '../class/post.dart';
 import './../class/user.dart';
 import './../class/badge.dart' as BadgeClass;
 import './../class/tracker.dart';
@@ -351,6 +354,103 @@ class RemoteDataSource {
   Future<void> deleteUserfollow(String username) async {
     Response response;
     String url = '/profile/$username/follower';
+
+    try {
+      response = await dio.post(url);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Post> userPosts, bool hasNextPage)> getUserPost(
+      int limit, int page) async {
+    Response response;
+    String url = '/profile/{username}/post?limit=$limit&page=$page';
+
+    try {
+      response = await dio.get(url, options: options);
+      debugPrint(response.data);
+      Map<String, dynamic> jsonData = json.decode(response.data);
+      List<dynamic> postsJson = jsonData['posts'];
+      List<Post> userPosts =
+          postsJson.map((postJson) => Post.fromJson(postJson)).toList();
+      bool hasNextPage = jsonData['hasNextPage'];
+      return (userPosts, hasNextPage);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postLike(int postId) async {
+    Response response;
+    String url = '/post/$postId/like';
+
+    try {
+      response = await dio.post(url);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteLike(int postId) async {
+    Response response;
+    String url = '/post/$postId/like';
+
+    try {
+      response = await dio.delete(url);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postDislike(int postId) async {
+    Response response;
+    String url = '/post/$postId/dislike';
+
+    try {
+      response = await dio.post(url);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteDislike(int postId) async {
+    Response response;
+    String url = '/post/$postId/like';
+
+    try {
+      response = await dio.delete(url);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postSwipe(int postId) async {
+    Response response;
+    String url = '/post/$postId/swipe';
 
     try {
       response = await dio.post(url);

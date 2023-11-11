@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../class/post.dart';
 import './remote_data_source.dart';
 import 'package:mockito/mockito.dart';
 import './../class/user.dart';
@@ -223,5 +225,99 @@ class MockDataSource extends Mock implements RemoteDataSource {
   @override
   Future<void> deleteUserfollow(String username) async {
     debugPrint('deleteUserfollow: $username 잘 전송됨, 언팔로우 완료!');
+  }
+
+  @override
+  Future<(List<Post> userPosts, bool hasNextPage)> getUserPost(
+      int limit, int page) async {
+    try {
+      final mockData = {
+        "posts": List.generate(5, (index) {
+          return {
+            "author": {
+              "username": "username",
+              "name": "한글이름",
+              "imageIdentifier": "https://picsum.photos/200/300",
+              "postCount": 0,
+              "following": false,
+              "blocking": false,
+            },
+            "id": index + 1,
+            "content": "글 내용입니다",
+            "updatedAt": "날짜",
+            "liked": false,
+            "images": [
+              {
+                "imageUrl": "https://picsum.photos/200/300",
+              },
+              {
+                "imageUrl": "https://picsum.photos/200/300",
+              },
+            ],
+          };
+        }),
+        "hasNextPage": true,
+      };
+      final jsonStr = json.encode(mockData);
+      dynamic response = {'data': jsonStr};
+
+      //debugPrint('response $response');
+      Map<String, dynamic> jsonData = json.decode(response['data']);
+      List<dynamic> postsJson = jsonData['posts'];
+      //debugPrint('postsJson[0] ${postsJson[0]}');
+      List<Post> userPosts =
+          postsJson.map((postJson) => Post.fromJson(postJson)).toList();
+
+      bool hasNextPage = jsonData['hasNextPage'];
+      //debugPrint("getUserPost: 값 반환!");
+      return (userPosts, hasNextPage);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> postLike(int postId) async {
+    try {
+      debugPrint('postLike $postId 전송!');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteLike(int postId) async {
+    try {
+      debugPrint('deleteLike $postId 전송!');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> postDislike(int postId) async {
+    try {
+      debugPrint('postDislike $postId 전송!');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteDislike(int postId) async {
+    try {
+      debugPrint('deleteDislike $postId 전송!');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> postSwipe(int postId) async {
+    try {
+      debugPrint('postSwipe $postId 전송!');
+    } catch (e) {
+      rethrow;
+    }
   }
 }
