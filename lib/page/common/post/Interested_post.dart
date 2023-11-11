@@ -1,8 +1,5 @@
-import 'package:card_swiper/card_swiper.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/post_image.dart';
-import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/my_profile/my_post/my_post_page_model.dart';
 
 import 'author_profile.dart';

@@ -1,5 +1,3 @@
-import 'package:card_swiper/card_swiper.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -11,8 +9,8 @@ import '../../../model/class/user.dart';
 import '../../../model/dataSource/mock_data_source.dart';
 import '../../../model/repository/post_repository.dart';
 import '../../common/Appbar.dart';
-import '../../common/Buttons.dart';
-import '../../common/post/.dart';
+import '../../common/post/Interested_post.dart';
+import '../../common/post/uninterested_post.dart';
 import 'my_post_page_model.dart';
 
 class MyPostPage extends StatelessWidget {
