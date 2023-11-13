@@ -29,7 +29,7 @@ class UninterestedPost extends StatelessWidget {
                 '감사합니다. 보내주신 피드백은 피드를 개선하는데 사용됩니다.',
                 style: TextStyle(
                   fontSize: 14,
-                  height: 1.2,
+                  height: 1.1,
                 ),
               ),
             ),
@@ -43,7 +43,7 @@ class UninterestedPost extends StatelessWidget {
                 },
                 context: context,
                 btnTitle: '취소',
-                fontSize: 16,
+                fontSize: 14,
               ),
             )
           ],
