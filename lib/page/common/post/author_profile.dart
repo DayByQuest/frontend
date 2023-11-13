@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/page/my_profile/my_post/my_post_page_model.dart';
 
 class AuthorProfile extends StatelessWidget {
+  final String userImageUrl;
+  final String username;
+  final viewModel;
+  final int postId;
+  final int postIndex;
+  final Function clickAuthorTap;
+
   const AuthorProfile({
     super.key,
     required this.userImageUrl,
@@ -9,13 +16,8 @@ class AuthorProfile extends StatelessWidget {
     required this.viewModel,
     required this.postId,
     required this.postIndex,
+    required this.clickAuthorTap,
   });
-
-  final String userImageUrl;
-  final String username;
-  final MyPostViewModel viewModel;
-  final int postId;
-  final int postIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,9 @@ class AuthorProfile extends StatelessWidget {
       child: Row(
         children: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              clickAuthorTap();
+            },
             child: Row(
               children: [
                 CircleAvatar(
