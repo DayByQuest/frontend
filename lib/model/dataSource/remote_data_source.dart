@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/comment.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -512,7 +513,7 @@ class RemoteDataSource {
     String url = '/group/$groupId/dislike';
 
     try {
-      response = await dio.post(url);
+      response = await dio.post(url, options: options);
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -527,7 +528,7 @@ class RemoteDataSource {
     String url = '/group/$groupId/dislike';
 
     try {
-      response = await dio.delete(url);
+      response = await dio.delete(url, options: options);
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -542,7 +543,7 @@ class RemoteDataSource {
     String url = '/group/$groupId/user';
 
     try {
-      response = await dio.post(url);
+      response = await dio.post(url, options: options);
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -557,7 +558,72 @@ class RemoteDataSource {
     String url = '/group/$groupId/user';
 
     try {
-      response = await dio.delete(url);
+      response = await dio.delete(url, options: options);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Post> getDetailPost(int postId) async {
+    Response response;
+    String url = '/post/$postId';
+    try {
+      response = await dio.post(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      Post detailPost = Post.fromJson(jsonData);
+      return detailPost;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Comment>, bool hasNextPage, int lastId)> getComment(
+      int postId, int limit, int lastId) async {
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    Response response;
+    String url = '/comment/$postId?limit=$limit$lastIdUrl';
+
+    try {
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> commentsJson = jsonData['comments'];
+      List<Comment> comments = commentsJson
+          .map((commentJson) => Comment.fromJson(commentJson))
+          .toList();
+      bool hasNextPage = limit <= comments.length;
+      int lastId = jsonData['lastId'];
+
+      return (comments, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postComment(int postId, String comment) async {
+    Response response;
+    String url = '/comment/$postId';
+
+    try {
+      response = await dio.post(
+        url,
+        options: options,
+        data: {'content': comment},
+      );
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);

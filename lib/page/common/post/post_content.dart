@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class PostContent extends StatelessWidget {
-  const PostContent({
+  PostContent({
     super.key,
     required this.width,
     required this.content,
+    this.maxLine = 2,
   });
 
   final double width;
   final String content;
+  int? maxLine;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class PostContent extends StatelessWidget {
         style: const TextStyle(
           fontSize: 14,
         ),
-        maxLines: 2,
+        maxLines: maxLine,
         overflow: TextOverflow.ellipsis,
       ),
     );
