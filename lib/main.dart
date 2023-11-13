@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/page/feed/feed_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_follower_list/my_follower_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_following_list/my_following_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_interest/my_interest_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_post/my_post_page.dart';
 import 'package:flutter_application_1/page/my_profile/profile_image_edit/profile_image_edit_page.dart';
+import 'package:flutter_application_1/page/post/detail_post_page.dart';
 import 'package:flutter_application_1/page/profile/profile_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
@@ -88,6 +90,16 @@ final GoRouter _router = GoRouter(
             );
           },
         ),
+        GoRoute(
+          path: 'detail',
+          builder: (context, state) {
+            String stringPostId = state.uri.queryParameters['postId'] ?? '0';
+            int postId = int.parse(stringPostId);
+            return DetailPage(
+              postId: postId,
+            );
+          },
+        ),
       ],
     ),
   ],
@@ -125,20 +137,40 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget bodyWidget;
+
+    switch (_selectedIndex) {
+      case 0:
+        bodyWidget = FeedPage();
+        break;
+      case 1:
+        bodyWidget = Center(child: Text("Search"));
+        break;
+      case 2:
+        bodyWidget = Center(child: Text("Add"));
+        break;
+      case 3:
+        bodyWidget = Center(child: Text("Group"));
+        break;
+      case 4:
+        bodyWidget = const SafeArea(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: MyProfilePage(),
+          ),
+        );
+        break;
+      default:
+        bodyWidget = Container();
+    }
+
     return MaterialApp(
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: Scaffold(
-        body: (_selectedIndex != 4
-            ? Center(child: Text("home"))
-            : const SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
-                  child: MyProfilePage(),
-                ),
-              )),
+        body: bodyWidget,
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(

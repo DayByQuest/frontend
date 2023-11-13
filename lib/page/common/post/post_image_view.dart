@@ -18,8 +18,6 @@ class PostImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('buildaaaaaaaaa: ${imageList.toString()}');
-
     return SizedBox(
       // 이미지
       width: width,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../class/post.dart';
@@ -12,11 +13,14 @@ import './../class/badge.dart' as BadgeClass;
 import './../class/tracker.dart';
 
 class MockDataSource extends Mock implements RemoteDataSource {
+  String IMAGE_IDENTIFIER = 'base.png';
+  String IMAGE_URL = 'https://picsum.photos/200/300';
+
   @override
   Future<User> getMyProfile() async {
     String username = "abcdefghijklmno";
     String name = "김김승승태태";
-    String imageUrl = "https://picsum.photos/200/300";
+    String imageUrl = IMAGE_URL;
     int followingCount = 999;
     int followerCount = 0;
     int postCount = 0;
@@ -39,7 +43,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
   Future<User> getUserProfile(String username) async {
     String username = "abcdefghijklmno";
     String name = "김김승승태태";
-    String imageUrl = "https://picsum.photos/200/300";
+    String imageUrl = IMAGE_URL;
     int followingCount = 999;
     int followerCount = 0;
     int postCount = 0;
@@ -76,7 +80,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
   Future<(List<BadgeClass.Badge>, bool hasNextPage, int lastId)> getMyBadge(
       int lastId) async {
     String name = "김김승승태태";
-    String imageUrl = "https://picsum.photos/200/300";
+    String imageUrl = IMAGE_URL;
     String id = "aaaa";
     String acquiredAt = "2000/00/00";
 
@@ -92,7 +96,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
   @override
   Future<List<BadgeClass.Badge>> getBadge(String username) async {
     String name = "김김승승태태";
-    String imageUrl = "https://picsum.photos/200/300";
+    String imageUrl = IMAGE_URL;
     String id = "aaaa";
     String acquiredAt = "2000/00/00";
 
@@ -167,7 +171,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
 
     String username = "abcdefghijklmnoadwqz";
     String name = "김김승승태태";
-    String imageUrl = "https://picsum.photos/200/300";
+    String imageUrl = IMAGE_URL;
     bool following = 50 < Random.secure().nextInt(100);
 
     for (int i = 0; i < 10; i++) {
@@ -192,7 +196,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
 
     String username = "abcdefghijklmnoadwqz";
     String name = "김김승승태태";
-    String imageUrl = "https://picsum.photos/200/300";
+    String imageUrl = IMAGE_URL;
     bool following = 50 < Random.secure().nextInt(100);
 
     for (int i = 0; i < 10; i++) {
@@ -237,7 +241,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
             "author": {
               "username": "username",
               "name": "한글이름",
-              "imageIdentifier": "https://picsum.photos/200/300",
+              "imageIdentifier": IMAGE_IDENTIFIER,
               "postCount": 0,
               "following": false,
               "blocking": false,
@@ -248,10 +252,10 @@ class MockDataSource extends Mock implements RemoteDataSource {
             "liked": false,
             "images": [
               {
-                "imageUrl": "https://picsum.photos/200/300",
+                "imageIdentifier": IMAGE_IDENTIFIER,
               },
               {
-                "imageUrl": "https://picsum.photos/200/300",
+                "imageIdentifier": IMAGE_IDENTIFIER,
               },
             ],
           };
@@ -316,6 +320,150 @@ class MockDataSource extends Mock implements RemoteDataSource {
   Future<void> postSwipe(int postId) async {
     try {
       debugPrint('postSwipe $postId 전송!');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<(List<Post>, bool hasNextPage, int lastId)> getFeed(
+      int limit, int lastId) async {
+    try {
+      String response = '''
+    {
+      "posts": [
+        {
+          "author": {
+            "username": "username",
+            "name": "한글이름",
+            "imageIdentifier": "${IMAGE_IDENTIFIER}",
+            "postCount": 0,
+            "following": false,
+            "blocking": false
+          },
+          "id": 1,
+          "content": "글 내용입니다",
+          "updatedAt": "날짜",
+          "liked": true,
+          "images": [
+            {
+              "imageIdentifier":"$IMAGE_IDENTIFIER"
+            },
+            {
+              "imageIdentifier": "${IMAGE_IDENTIFIER}"
+            },
+                        {
+              "imageIdentifier": "${IMAGE_IDENTIFIER}"
+            }
+          ]
+        },
+        {
+          "author": {
+            "username": "username",
+            "name": "한글이름",
+             "imageIdentifier":"${IMAGE_IDENTIFIER}",
+            "postCount": 0,
+            "following": false,
+            "blocking": false
+          },
+          "id": 1,
+          "content": "글 내용입니다",
+          "updatedAt": "날짜",
+          "liked": true,
+          "images": [
+            {
+              "imageIdentifier": "${IMAGE_IDENTIFIER}"
+            },
+            {
+              "imageIdentifier": "${IMAGE_IDENTIFIER}"
+            },
+                        {
+              "imageIdentifier": "${IMAGE_IDENTIFIER}"
+            }
+          ]
+        }
+      ],
+      "lastId": 6
+    }
+  ''';
+      Map<String, dynamic> jsonMap = json.decode(response);
+      List<dynamic> postsJson = jsonMap['posts'];
+      debugPrint('postsJson: ${postsJson.toString()}');
+      List<Post> posts =
+          postsJson.map((postJson) => Post.fromJson(postJson)).toList();
+
+      bool hasNextPage = limit <= posts.length;
+      int lastId = jsonMap['lastId'];
+
+      debugPrint('getFeed: 동작');
+
+      return (posts, true, lastId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<GroupPost>> getGroupPost() async {
+    String jsonData = '''
+    {
+      "groups": [
+        {
+          "groupId": 1,
+          "name": "그룹이름",
+          "description": "설명",
+          "imageIdentifier": "${IMAGE_IDENTIFIER}",
+          "userCount": 5
+        }
+      ]
+    }
+  ''';
+
+    try {
+      debugPrint('getGroupPost: 시작');
+      Map<String, dynamic> jsonMap = json.decode(jsonData);
+      List<dynamic> groupsJson = jsonMap['groups'];
+      List<GroupPost> groupPosts =
+          groupsJson.map((groupJson) => GroupPost.fromJson(groupJson)).toList();
+
+      debugPrint('getGroupPost: 동작');
+      return groupPosts;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> postGroupDislike(int groupId) async {
+    try {
+      debugPrint('groupDislike: $groupId');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteGroupDislike(int groupId) async {
+    try {
+      debugPrint('deleteGroupDislike: $groupId');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> postGroupJoin(int groupId) async {
+    try {
+      debugPrint('postGroupJoin: $groupId');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteGroupJoin(int groupId) async {
+    try {
+      debugPrint('deleteGroupJoin: $groupId');
     } catch (e) {
       rethrow;
     }

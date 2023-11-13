@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/feed.dart';
+import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import '../class/post.dart';
@@ -447,6 +449,115 @@ class RemoteDataSource {
 
     try {
       response = await dio.post(url);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Post>, bool hasNextPage, int lastId)> getFeed(
+      int limit, int lastId) async {
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    Response response;
+    String url = '/feed?limit=5$lastIdUrl';
+
+    try {
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> postsJson = jsonData['posts'];
+      List<Post> posts =
+          postsJson.map((postJson) => Post.fromJson(postJson)).toList();
+      bool hasNextPage = limit <= posts.length;
+      int lastId = jsonData['lastId'];
+
+      return (posts, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<GroupPost>> getGroupPost() async {
+    Response response;
+    String url = '/group/recommendation';
+
+    try {
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> groupsJson = jsonData['groups'];
+      List<GroupPost> groupPosts =
+          groupsJson.map((groupJson) => GroupPost.fromJson(groupJson)).toList();
+
+      return groupPosts;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postGroupDislike(int groupId) async {
+    Response response;
+    String url = '/group/$groupId/dislike';
+
+    try {
+      response = await dio.post(url);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteGroupDislike(int groupId) async {
+    Response response;
+    String url = '/group/$groupId/dislike';
+
+    try {
+      response = await dio.delete(url);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postGroupJoin(int groupId) async {
+    Response response;
+    String url = '/group/$groupId/user';
+
+    try {
+      response = await dio.post(url);
+      debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteGroupJoin(int groupId) async {
+    Response response;
+    String url = '/group/$groupId/user';
+
+    try {
+      response = await dio.delete(url);
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
