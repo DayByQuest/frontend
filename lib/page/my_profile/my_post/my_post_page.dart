@@ -115,6 +115,8 @@ class MyPost extends StatelessWidget {
           changeCurIdx: changeCurIdx,
           changeLikePost: changeLikePost,
           clickAuthorTap: () {},
+          isClose: false,
+          setClose: () {},
         ),
         secondChild: UninterestedPost(
           cancleUninterestedPost: cancelUninterestedPost,

@@ -7,7 +7,9 @@ class AuthorProfile extends StatelessWidget {
   final viewModel;
   final int postId;
   final int postIndex;
+  final bool isClose;
   final Function clickAuthorTap;
+  final Function setClose;
 
   const AuthorProfile({
     super.key,
@@ -17,6 +19,8 @@ class AuthorProfile extends StatelessWidget {
     required this.postId,
     required this.postIndex,
     required this.clickAuthorTap,
+    required this.isClose,
+    required this.setClose,
   });
 
   @override
@@ -52,7 +56,12 @@ class AuthorProfile extends StatelessWidget {
           ),
           SubmenuButton(
             controller: menu,
-            onOpen: () => {},
+            onOpen: () {
+              if (isClose) {
+                menu.close();
+                setClose(false);
+              }
+            },
             alignmentOffset: const Offset(-275, 0),
             menuStyle: const MenuStyle(
                 alignment: Alignment.bottomRight,

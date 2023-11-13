@@ -17,6 +17,7 @@ class FeedViewModel with ChangeNotifier {
   bool _hasNextPage = true;
   int _lastId = -1;
   final int _limit = 10;
+  bool _isClose = false;
 
   FeedViewModel({
     required PostRepository postRepository,
@@ -29,6 +30,7 @@ class FeedViewModel with ChangeNotifier {
   }
 
   PagingController<int, Feed> get pagingController => _pagingController;
+  bool get isClose => _isClose;
 
   Future<void> loadFeedList(int lastId) async {
     if (!_hasNextPage) {
@@ -168,5 +170,10 @@ class FeedViewModel with ChangeNotifier {
     } catch (e) {
       debugPrint('groupJoin: ${e.toString()}');
     }
+  }
+
+  void setIsClose(bool isClose) {
+    _isClose = isClose;
+    notifyListeners();
   }
 }
