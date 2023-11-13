@@ -14,7 +14,7 @@ class CommonBtn extends StatelessWidget {
   final bool isPurple;
   final Function onPressFunc;
   final BuildContext context;
-  final int fontSize;
+  final double fontSize;
 
   @override
   Widget build(BuildContext _) {
@@ -48,7 +48,7 @@ class CommonBtn extends StatelessWidget {
             child: Text(
               btnTitle,
               style: TextStyle(
-                fontSize: fontSize.toDouble(),
+                fontSize: fontSize,
                 color: isPurple ? Colors.white : Colors.black,
               ),
             ),

@@ -8,26 +8,9 @@ import 'post_content.dart';
 import 'post_image_view.dart';
 
 class InterestedPost extends StatelessWidget {
-  const InterestedPost({
-    super.key,
-    required this.userImageUrl,
-    required this.username,
-    required this.viewModel,
-    required this.postId,
-    required this.postIndex,
-    required this.width,
-    required this.content,
-    required this.postImageList,
-    required this.imageLength,
-    required this.curImageIndex,
-    required this.isLike,
-    required this.changeCurIdx,
-    required this.changeLikePost,
-  });
-
   final String userImageUrl;
   final String username;
-  final MyPostViewModel viewModel;
+  final viewModel;
   final int postId;
   final int postIndex;
   final double width;
@@ -38,6 +21,24 @@ class InterestedPost extends StatelessWidget {
   final bool isLike;
   final Function changeCurIdx;
   final Function changeLikePost;
+  final Function clickAuthorTap;
+
+  const InterestedPost(
+      {super.key,
+      required this.userImageUrl,
+      required this.username,
+      required this.viewModel,
+      required this.postId,
+      required this.postIndex,
+      required this.width,
+      required this.content,
+      required this.postImageList,
+      required this.imageLength,
+      required this.curImageIndex,
+      required this.isLike,
+      required this.changeCurIdx,
+      required this.changeLikePost,
+      required this.clickAuthorTap});
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +50,7 @@ class InterestedPost extends StatelessWidget {
           viewModel: viewModel,
           postId: postId,
           postIndex: postIndex,
+          clickAuthorTap: clickAuthorTap,
         ),
         const SizedBox(
           height: 8,
