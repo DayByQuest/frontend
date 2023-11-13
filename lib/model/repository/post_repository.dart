@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/model/class/group_post.dart';
 
 import '../class/post.dart';
 import '../dataSource/remote_data_source.dart';
@@ -53,6 +54,39 @@ class PostRepository {
   Future<void> postRemoteSwipe(int postId) async {
     try {
       _RemoteDataSource.postSwipe(postId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Post>, bool hasNextPage, int lastId)> getRemoteFeed(
+      int limit, int lastId) async {
+    try {
+      return _RemoteDataSource.getFeed(limit, lastId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<GroupPost>> getRemoteGroupPost() async {
+    try {
+      return _RemoteDataSource.getGroupPost();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postRemoteGroupDislike(int groupId) async {
+    try {
+      _RemoteDataSource.postGroupDislike(groupId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteRemoteGroupDislike(int groupId) async {
+    try {
+      _RemoteDataSource.deleteDislike(groupId);
     } catch (e) {
       rethrow;
     }
