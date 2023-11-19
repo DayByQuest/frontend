@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/comment.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -464,6 +465,91 @@ class MockDataSource extends Mock implements RemoteDataSource {
   Future<void> deleteGroupJoin(int groupId) async {
     try {
       debugPrint('deleteGroupJoin: $groupId');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Post> getDetailPost(int postId) async {
+    try {
+      Map<String, dynamic> jsonData = {
+        "author": {
+          "username": "mockUsername",
+          "name": "모크이름",
+          "imageIdentifier": "$IMAGE_IDENTIFIER",
+          "postCount": 0,
+          "following": false,
+          "blocking": false
+        },
+        "id": 1,
+        "content": "모크 내용입니다",
+        "updatedAt": "모크날짜",
+        "liked": false,
+        "images": [
+          {"imageIdentifier": "$IMAGE_IDENTIFIER"},
+          {"imageIdentifier": "$IMAGE_IDENTIFIER"}
+        ],
+        "quest": {"id": 1, "title": "모크 퀘스트 이름", "state": "성공"}
+      };
+
+      Post detailPost = Post.fromJson(jsonData);
+      return detailPost;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<(List<Comment>, bool hasNextPage, int lastId)> getComment(
+      int postId, int limit, int lastId) async {
+    try {
+      Map<String, dynamic> jsonData = {
+        "comments": [
+          {
+            "author": {
+              "username": "username",
+              "name": "한글이름",
+              "imageIdentifier": "$IMAGE_IDENTIFIER",
+              "postCount": 0,
+              "following": false,
+              "blocking": false
+            },
+            "id": 1,
+            "content": "댓글 내용",
+          },
+          {
+            "author": {
+              "username": "username",
+              "name": "한글이름",
+              "imageIdentifier": "$IMAGE_IDENTIFIER",
+              "postCount": 0,
+              "following": false,
+              "blocking": false
+            },
+            "id": 1,
+            "content": "댓글 내용",
+          },
+        ],
+        "lastId": 5
+      };
+      List<dynamic> commentsJson = jsonData['comments'];
+      List<Comment> comments = commentsJson
+          .map((commentJson) => Comment.fromJson(commentJson))
+          .toList();
+      bool hasNextPage = limit <= comments.length;
+      int lastId = jsonData['lastId'];
+
+      return (comments, true, lastId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> postComment(int postId, String comment) async {
+    try {
+      debugPrint('postComment: $comment');
     } catch (e) {
       rethrow;
     }

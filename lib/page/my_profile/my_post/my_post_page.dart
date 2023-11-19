@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
@@ -96,25 +97,36 @@ class MyPost extends StatelessWidget {
       viewModel.cancelUninterestedPost(postId, postIndex);
     }
 
+    void moveDetailPage() {
+      context.push('/detail?postId=$postId');
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: AnimatedCrossFade(
         duration: const Duration(milliseconds: 300),
-        firstChild: InterestedPost(
-          userImageUrl: userImageUrl,
-          username: username,
-          viewModel: viewModel,
-          postId: postId,
-          postIndex: postIndex,
-          width: width,
-          content: content,
-          postImageList: postImageList,
-          imageLength: imageLength,
-          curImageIndex: curImageIndex,
-          isLike: isLike,
-          changeCurIdx: changeCurIdx,
-          changeLikePost: changeLikePost,
-          clickAuthorTap: () {},
+        firstChild: InkWell(
+          onTap: () {
+            moveDetailPage();
+          },
+          child: InterestedPost(
+            userImageUrl: userImageUrl,
+            username: username,
+            viewModel: viewModel,
+            postId: postId,
+            postIndex: postIndex,
+            width: width,
+            content: content,
+            postImageList: postImageList,
+            imageLength: imageLength,
+            curImageIndex: curImageIndex,
+            isLike: isLike,
+            changeCurIdx: changeCurIdx,
+            changeLikePost: changeLikePost,
+            clickAuthorTap: () {},
+            isClose: false,
+            setClose: () {},
+          ),
         ),
         secondChild: UninterestedPost(
           cancleUninterestedPost: cancelUninterestedPost,

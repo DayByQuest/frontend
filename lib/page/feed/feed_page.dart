@@ -125,6 +125,7 @@ class PostItem extends StatelessWidget {
     List<PostImage> postImageList = List.from(postImages.postImageList);
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
+    bool isClose = context.watch<FeedViewModel>().isClose;
 
     void changeCurIdx(nextImageIndex) {
       viewModel.changeCurImageIndex(nextImageIndex, feedIndex, postId);
@@ -148,12 +149,19 @@ class PostItem extends StatelessWidget {
       context.push('/detail?postId=$postId');
     }
 
+    void setClose(bool setClose) {
+      viewModel.setIsClose(setClose);
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: AnimatedCrossFade(
         duration: const Duration(milliseconds: 300),
         firstChild: InkWell(
-          onTap: moveDetailPage,
+          onTap: () {
+            moveDetailPage();
+            setClose(true);
+          },
           child: InterestedPost(
             userImageUrl: userImageUrl,
             username: username,
@@ -169,6 +177,8 @@ class PostItem extends StatelessWidget {
             changeCurIdx: changeCurIdx,
             changeLikePost: changeLikePost,
             clickAuthorTap: moveAuthorProfile,
+            isClose: isClose,
+            setClose: setClose,
           ),
         ),
         secondChild: UninterestedPost(
@@ -201,6 +211,7 @@ class GroupPostItem extends StatelessWidget {
     bool isUnInterested = groupPost.unInterested;
     String groupName = groupPost.name;
     String groupImage = groupPost.imageUrl;
+    bool isClose = context.watch<FeedViewModel>().isClose;
 
     void changeJoinGroup() {
       isJoin
@@ -214,6 +225,10 @@ class GroupPostItem extends StatelessWidget {
 
     void cancelUninterestedGroup() {
       viewModel.cancelUninterestedGroupPost(groupId, feedIndex);
+    }
+
+    void setClose(bool setClose) {
+      viewModel.setIsClose(setClose);
     }
 
     return Padding(
@@ -267,6 +282,12 @@ class GroupPostItem extends StatelessWidget {
                 ),
                 SubmenuButton(
                   controller: menu,
+                  onOpen: () {
+                    if (isClose) {
+                      menu.close();
+                      setClose(false);
+                    }
+                  },
                   alignmentOffset: const Offset(-275, 0),
                   menuStyle: const MenuStyle(
                       alignment: Alignment.bottomRight,

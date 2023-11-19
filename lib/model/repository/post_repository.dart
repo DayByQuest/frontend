@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/model/class/comment.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
 
 import '../class/post.dart';
@@ -87,6 +88,31 @@ class PostRepository {
   Future<void> deleteRemoteGroupDislike(int groupId) async {
     try {
       _RemoteDataSource.deleteDislike(groupId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Post> getRemoteDetailPost(int postId) async {
+    try {
+      return _RemoteDataSource.getDetailPost(postId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Comment>, bool hasNextPage, int lastId)> getRemoteComment(
+      int postId, int limit, int lastId) async {
+    try {
+      return _RemoteDataSource.getComment(postId, limit, lastId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postRemoteComment(int postId, String comment) async {
+    try {
+      _RemoteDataSource.postComment(postId, comment);
     } catch (e) {
       rethrow;
     }

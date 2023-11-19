@@ -19,26 +19,31 @@ class InterestedPost extends StatelessWidget {
   final int imageLength;
   final int curImageIndex;
   final bool isLike;
+  final bool isClose;
   final Function changeCurIdx;
   final Function changeLikePost;
   final Function clickAuthorTap;
+  final Function setClose;
 
-  const InterestedPost(
-      {super.key,
-      required this.userImageUrl,
-      required this.username,
-      required this.viewModel,
-      required this.postId,
-      required this.postIndex,
-      required this.width,
-      required this.content,
-      required this.postImageList,
-      required this.imageLength,
-      required this.curImageIndex,
-      required this.isLike,
-      required this.changeCurIdx,
-      required this.changeLikePost,
-      required this.clickAuthorTap});
+  const InterestedPost({
+    super.key,
+    required this.userImageUrl,
+    required this.username,
+    required this.viewModel,
+    required this.postId,
+    required this.postIndex,
+    required this.width,
+    required this.content,
+    required this.postImageList,
+    required this.imageLength,
+    required this.curImageIndex,
+    required this.isLike,
+    required this.changeCurIdx,
+    required this.changeLikePost,
+    required this.clickAuthorTap,
+    required this.isClose,
+    required this.setClose,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +56,8 @@ class InterestedPost extends StatelessWidget {
           postId: postId,
           postIndex: postIndex,
           clickAuthorTap: clickAuthorTap,
+          isClose: isClose,
+          setClose: setClose,
         ),
         const SizedBox(
           height: 8,

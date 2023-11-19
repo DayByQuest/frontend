@@ -1,5 +1,6 @@
 import 'package:flutter_application_1/model/class/post_image.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
+import 'package:flutter_application_1/model/class/quest.dart';
 import 'package:flutter_application_1/model/class/user.dart';
 
 class Post {
@@ -12,6 +13,8 @@ class Post {
   // 관심없음 유무를 확인할 수 있다. true라면 관심없음 표기.
   bool unInterested;
 
+  final Quest? quest; // Quest가 nullable로 변경
+
   Post({
     required this.author,
     required this.id,
@@ -19,6 +22,7 @@ class Post {
     this.liked = false,
     this.unInterested = false,
     required this.postImages,
+    this.quest,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,7 @@ class Post {
             .map((imageJson) => PostImage.fromJson(imageJson))
             .toList(),
       ),
+      quest: json['quest'] != null ? Quest.fromJson(json['quest']) : null,
     );
   }
 }
