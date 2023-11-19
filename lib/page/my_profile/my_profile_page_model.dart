@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../model/class/user.dart';
 import '../common/Status.dart';
@@ -22,11 +23,13 @@ class MyProfileViewModel with ChangeNotifier {
   List<BadgeClass.Badge> get badge => _badge;
   bool get isClose => _isClose;
 
+  static String USER_NAME = dotenv.env['USER_NAME'] ?? '';
+
   void load() async {
     try {
       _user = await _userRepository.getRemoteMyProfile();
-      _tracker = await _userRepository.getRemoteTracker("username1");
-      _badge = await _userRepository.getRemoteBadge("username1");
+      _tracker = await _userRepository.getRemoteTracker(USER_NAME);
+      _badge = await _userRepository.getRemoteBadge(USER_NAME);
       status = Status.loaded;
       notifyListeners();
       debugPrint("loding됨!");
