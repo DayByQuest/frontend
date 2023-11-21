@@ -1,12 +1,19 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
+import 'package:flutter_application_1/model/class/interest.dart';
+import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_plus/image_picker_plus.dart';
+import 'package:http_parser/http_parser.dart';
+
 import '../class/post.dart';
 import './../class/user.dart';
 import './../class/badge.dart' as BadgeClass;
@@ -17,6 +24,7 @@ class RemoteDataSource {
   final String? API_BASE_URL;
   final Dio dio;
   final Options options;
+  static String USER_NAME = dotenv.env['USER_NAME'] ?? '';
 
   RemoteDataSource()
       : API_BASE_URL = dotenv.env['API_BASE_URL'],
@@ -209,7 +217,11 @@ class RemoteDataSource {
     String url = '/badge';
 
     try {
-      response = await dio.patch(url, data: badgeIdList);
+      response = await dio.patch(
+        url,
+        data: badgeIdList,
+        options: options,
+      );
       debugPrint(response.toString());
       return;
     } on DioException catch (e) {
@@ -220,15 +232,22 @@ class RemoteDataSource {
     }
   }
 
-  Future<List<String>> getInterest() async {
+  Future<List<Interest>> getInterest() async {
     Response response;
     String url = '/interest';
-    List<String> interest = [];
+
     try {
-      response = await dio.get(url, options: options);
-      debugPrint(response.data);
-      interest.addAll(response.data.interestNames);
-      return interest;
+      debugPrint('getInterest start');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      Map<String, dynamic> jsonData = response.data;
+      List<Interest> interests = (jsonData['interests'] as List)
+          .map((interestJson) => Interest.fromJson(interestJson))
+          .toList();
+      debugPrint('getInterest end');
+      return interests;
     } on DioException catch (e) {
       throwError(e);
       rethrow;
@@ -241,7 +260,11 @@ class RemoteDataSource {
     Response response;
     String url = '/profile/interest';
     try {
-      response = await dio.patch(url, data: interest);
+      response = await dio.patch(
+        url,
+        data: interest,
+        options: options,
+      );
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -264,7 +287,10 @@ class RemoteDataSource {
     List<User> followingList = [];
 
     try {
-      response = await dio.get(url, options: options);
+      response = await dio.get(
+        url,
+        options: options,
+      );
       debugPrint(response.data);
       List<Map<String, dynamic>> jsonData = response.data?.users;
       bool hasNextPage = limit < (jsonData.length);
@@ -297,7 +323,10 @@ class RemoteDataSource {
     List<User> followerList = [];
 
     try {
-      response = await dio.get(url, options: options);
+      response = await dio.get(
+        url,
+        options: options,
+      );
       debugPrint(response.data);
       List<Map<String, dynamic>> jsonData = response.data?.users;
       bool hasNextPage = limit < (jsonData.length);
@@ -322,7 +351,10 @@ class RemoteDataSource {
     String url = '/profile/${username}/follower';
 
     try {
-      response = await dio.delete(url);
+      response = await dio.delete(
+        url,
+        options: options,
+      );
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -337,7 +369,10 @@ class RemoteDataSource {
     String url = '/profile/$username/follow';
 
     try {
-      response = await dio.post(url);
+      response = await dio.post(
+        url,
+        options: options,
+      );
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -352,7 +387,10 @@ class RemoteDataSource {
     String url = '/profile/$username/follower';
 
     try {
-      response = await dio.post(url);
+      response = await dio.delete(
+        url,
+        options: options,
+      );
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -362,20 +400,38 @@ class RemoteDataSource {
     }
   }
 
-  Future<(List<Post> userPosts, bool hasNextPage)> getUserPost(
-      int limit, int page) async {
+  Future<(List<Post> userPosts, bool hasNextPage, int lastId)> getUserPost(
+      int limit, int lastId) async {
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
     Response response;
-    String url = '/profile/{username}/post?limit=$limit&page=$page';
+    String url = '/profile/${USER_NAME}/post?limit=$limit$lastIdUrl';
+
+    ///profile/{username}/post?limit=5&lastid=2
 
     try {
+      debugPrint('getUserPost start $url');
+
       response = await dio.get(url, options: options);
-      debugPrint(response.data);
-      Map<String, dynamic> jsonData = json.decode(response.data);
+      Map<String, dynamic> jsonData = response.data;
       List<dynamic> postsJson = jsonData['posts'];
+
+      Post data = Post.fromJson(postsJson[0]);
+      //debugPrint('getUserPost data ${data.postImages.postImageList[0]}');
+
       List<Post> userPosts =
           postsJson.map((postJson) => Post.fromJson(postJson)).toList();
-      bool hasNextPage = jsonData['hasNextPage'];
-      return (userPosts, hasNextPage);
+      debugPrint('getUserPost userPosts ${userPosts}');
+
+      bool hasNextPage = limit <= userPosts.length;
+      int lastId = jsonData['lastId'];
+
+      debugPrint('getUserPost end');
+      return (userPosts, hasNextPage, lastId);
     } on DioException catch (e) {
       throwError(e);
       rethrow;
@@ -389,7 +445,10 @@ class RemoteDataSource {
     String url = '/post/$postId/like';
 
     try {
-      response = await dio.post(url);
+      response = await dio.post(
+        url,
+        options: options,
+      );
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -404,7 +463,10 @@ class RemoteDataSource {
     String url = '/post/$postId/like';
 
     try {
-      response = await dio.delete(url);
+      response = await dio.delete(
+        url,
+        options: options,
+      );
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -419,7 +481,10 @@ class RemoteDataSource {
     String url = '/post/$postId/dislike';
 
     try {
-      response = await dio.post(url);
+      response = await dio.post(
+        url,
+        options: options,
+      );
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -434,7 +499,10 @@ class RemoteDataSource {
     String url = '/post/$postId/like';
 
     try {
-      response = await dio.delete(url);
+      response = await dio.delete(
+        url,
+        options: options,
+      );
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -449,7 +517,10 @@ class RemoteDataSource {
     String url = '/post/$postId/swipe';
 
     try {
-      response = await dio.post(url);
+      response = await dio.post(
+        url,
+        options: options,
+      );
       debugPrint(response.toString());
     } on DioException catch (e) {
       throwError(e);
@@ -572,8 +643,9 @@ class RemoteDataSource {
     Response response;
     String url = '/post/$postId';
     try {
-      response = await dio.post(url, options: options);
+      response = await dio.get(url, options: options);
       Map<String, dynamic> jsonData = response.data;
+      debugPrint('jsonData: $jsonData');
       Post detailPost = Post.fromJson(jsonData);
       return detailPost;
     } on DioException catch (e) {
@@ -625,6 +697,162 @@ class RemoteDataSource {
         data: {'content': comment},
       );
       debugPrint(response.toString());
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<QuestDetail>> getQuest(state) async {
+    Response response;
+    String url = '/quest?state=$state';
+
+    try {
+      debugPrint('getQuest start');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> questJson = jsonData['quests'];
+      debugPrint('questJson $questJson');
+      List<QuestDetail> questList =
+          questJson.map((quest) => QuestDetail.fromJson(quest)).toList();
+
+      debugPrint('getQuest end');
+      return questList;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postCreatePost(List<SelectedByte> selectedByte, String content,
+      {int? questId}) async {
+    Response response;
+    String url = '/post';
+
+    FormData formData = FormData();
+
+    // JSON 데이터 추가
+    Map<String, dynamic> jsonData = questId != null
+        ? {"content": "${content}", "questId": "$questId"}
+        : {"content": "${content}"};
+    final jsonBody = jsonEncode(jsonData);
+    final EncodeJsonData = MultipartFile.fromString(
+      jsonBody,
+      contentType: MediaType.parse('application/json'),
+    );
+
+    formData.files.add(MapEntry(
+      'request',
+      EncodeJsonData,
+    ));
+
+    for (int i = 0; i < selectedByte.length; i++) {
+      // 이미지 파일 추가
+      formData.files.add(MapEntry(
+        "images",
+        await MultipartFile.fromFile(
+          selectedByte[i].selectedFile.absolute.path,
+        ),
+      ));
+    }
+
+    try {
+      response = await dio.post(
+        url,
+        data: formData,
+        options: options,
+      );
+      debugPrint('postCreatePost 성공: ${response.toString()}');
+    } on DioException catch (e) {
+      debugPrint('DioException: ${e.response}');
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<int> createGroupQuest(
+      List<SelectedByte> selectedByte, String description, int groupId) async {
+    Response response;
+    String url = '/group/quest';
+
+    FormData formData = FormData();
+
+    // JSON 데이터 추가
+    Map<String, dynamic> jsonData = {
+      "imageDescription": "$description",
+      "groupId": "$groupId"
+    };
+    final jsonBody = jsonEncode(jsonData);
+    final encodeJsonData = MultipartFile.fromString(
+      jsonBody,
+      contentType: MediaType.parse('application/json'),
+    );
+    formData.files.add(MapEntry(
+      'request',
+      encodeJsonData,
+    ));
+
+    for (int i = 0; i < selectedByte.length; i++) {
+      // 이미지 파일 추가
+      formData.files.add(MapEntry(
+        "images",
+        await MultipartFile.fromFile(
+          selectedByte[i].selectedFile.absolute.path,
+        ),
+      ));
+    }
+
+    try {
+      response = await dio.post(
+        url,
+        data: formData,
+        options: options,
+      );
+      Map<String, dynamic> responseData = response.data;
+      int questId = responseData["questId"];
+      debugPrint('createGroupQuest 성공: ${questId}');
+      return questId;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> createGroupQuestDetail(String title, String content,
+      String expiredAt, String interest, String label, int questId) async {
+    Response response;
+    String url = '/group/$questId/quest/detail';
+
+    Map<String, dynamic> jsonData = {
+      "title": title,
+      "content": content,
+      "expiredAt": expiredAt,
+      "interest": interest,
+      "label": label,
+      "questId": questId,
+    };
+
+    String encodeJsonData = jsonEncode(jsonData);
+
+    try {
+      response = await dio.post(
+        url,
+        options: options,
+        data: encodeJsonData,
+      );
+
+      debugPrint('createGroupQuestDetail 성공: ${response}');
+      return;
     } on DioException catch (e) {
       throwError(e);
       rethrow;

@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/model/class/interest.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../dataSource/remote_data_source.dart';
@@ -63,7 +64,7 @@ class UserRepository {
     }
   }
 
-  Future<List<String>> getRemoteInterest() async {
+  Future<List<Interest>> getRemoteInterest() async {
     try {
       return _RemoteDataSource.getInterest();
     } catch (e) {
