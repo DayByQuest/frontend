@@ -12,13 +12,14 @@ class DetailViewModel with ChangeNotifier {
   final PostRepository _postRepository;
   final UserRepository _userRepository;
 
-  final postId;
+  final int postId;
   final PagingController<int, Comment> _pagingController =
       PagingController(firstPageKey: 0);
 
   final List<Comment> commentList = [];
   final int _limit = 10;
   late Post _post;
+  bool hasQuest = false;
   bool _hasNextPage = true;
   int _lastId = -1;
   bool _isClose = false;
@@ -41,7 +42,9 @@ class DetailViewModel with ChangeNotifier {
 
   void load() async {
     try {
+      debugPrint("loding시작! postId: $postId");
       _post = await _postRepository.getRemoteDetailPost(postId);
+      hasQuest = _post.quest != null;
       status = Status.loaded;
       notifyListeners();
       debugPrint("loding됨!");
