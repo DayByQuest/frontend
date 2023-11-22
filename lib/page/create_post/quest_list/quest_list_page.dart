@@ -59,7 +59,7 @@ class QuestListView extends StatelessWidget {
       return Scaffold(
         appBar: BackSpaceAppBar(
             appBar: AppBar(), title: '퀘스트 태그', isContextPopTrue: false),
-        body: Center(
+        body: const Center(
           child: Text('수행 중인 퀘스트가 없습니다.'),
         ),
       );

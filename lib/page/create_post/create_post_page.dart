@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:card_swiper/card_swiper.dart';
-import 'package:flutter_application_1/model/dataSource/remote_data_source.dart';
+
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
@@ -12,7 +12,7 @@ import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
+
 import '../common/Gap.dart';
 
 class createPostPage extends StatelessWidget {
@@ -37,7 +37,7 @@ class createPostPage extends StatelessWidget {
 
         return viewModel;
       },
-      child: CreatePostView(),
+      child: const CreatePostView(),
     );
   }
 }
@@ -50,7 +50,7 @@ class CreatePostView extends StatefulWidget {
 }
 
 class _CreatePostViewState extends State<CreatePostView> {
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -180,121 +180,3 @@ class _CreatePostViewState extends State<CreatePostView> {
     );
   }
 }
-
-// class DisplayImages extends StatefulWidget {
-//   final List<SelectedByte> selectedBytes;
-//   final SelectedImagesDetails details;
-//   const DisplayImages({
-//     Key? key,
-//     required this.details,
-//     required this.selectedBytes,
-//   }) : super(key: key);
-
-//   @override
-//   State<DisplayImages> createState() => _DisplayImagesState();
-// }
-
-// class _DisplayImagesState extends State<DisplayImages> {
-//   TextEditingController _textEditingController = TextEditingController();
-
-//   Widget build(BuildContext context) {
-//     int imageLength = widget.selectedBytes.length;
-//     double width = MediaQuery.of(context).size.width - 32;
-
-//     return GestureDetector(
-//       onTap: () {
-//         FocusScope.of(context).unfocus();
-//       },
-//       child: Scaffold(
-//         appBar: BackSpaceAppBar(
-//           appBar: AppBar(),
-//           title: '게시글 생성',
-//           isContextPopTrue: false,
-//         ),
-//         body: Padding(
-//           padding: const EdgeInsets.all(16),
-//           child: ListView(
-//             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-//             children: [
-//               SizedBox(
-//                 width: width,
-//                 height: width,
-//                 child: Swiper(
-//                   itemBuilder: (BuildContext context, int index) {
-//                     return Image.file(
-//                       widget.selectedBytes[index].selectedFile,
-//                       fit: BoxFit.contain,
-//                     );
-//                   },
-//                   itemCount: imageLength,
-//                   loop: false,
-//                 ),
-//               ),
-//               const Gap16(),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Text(
-//                     '퀘스트 태그하기',
-//                     style: TextStyle(fontSize: 16),
-//                   ),
-//                   InkWell(
-//                     onTap: () {
-//                       Navigator.of(context).push(
-//                         MaterialPageRoute(
-//                           builder: (BuildContext context) {
-//                             return QuestListPage();
-//                           },
-//                         ),
-//                       ).then((value) {
-//                         if (value != false) {
-//                           String questTitle = value['questTitle'];
-//                           int questId = value['questId'];
-
-//                           debugPrint(
-//                               'questTitle: $questTitle, questId: $questId');
-//                         }
-//                       });
-//                     },
-//                     child: Row(
-//                       crossAxisAlignment: CrossAxisAlignment.center,
-//                       children: [
-//                         Text('태그 없음'),
-//                         Gap8(),
-//                         Icon(Icons.arrow_forward),
-//                       ],
-//                     ),
-//                   )
-//                 ],
-//               ),
-//               const Gap16(),
-//               TextField(
-//                 controller: _textEditingController,
-//                 maxLines: null,
-//                 decoration: InputDecoration(
-//                   border: InputBorder.none,
-//                   hintText: '텍스트를 입력하세요...',
-//                 ),
-//                 onSubmitted: (value) {},
-//               ),
-//               const Gap16(),
-//               SizedBox(
-//                 height: 48,
-//                 child: CommonBtn(
-//                   isPurple: false,
-//                   onPressFunc: () async {
-//                     // await RemoteDataSource()
-//                     //     .postCreatePost(widget.selectedBytes);
-//                     // context.pop();
-//                   },
-//                   context: context,
-//                   btnTitle: '생성',
-//                 ),
-//               )
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
