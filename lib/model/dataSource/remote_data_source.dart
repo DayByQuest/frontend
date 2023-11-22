@@ -108,7 +108,13 @@ class RemoteDataSource {
       'image': await MultipartFile.fromFile(image.path),
     });
     try {
-      response = await dio.patch(url, data: formData);
+      response = await dio.patch(
+        url,
+        data: formData,
+        options: options,
+      );
+      debugPrint('patchProfileImage response: ${response.toString()}');
+      return;
     } on DioException catch (e) {
       throwError(e);
       rethrow;
@@ -266,12 +272,17 @@ class RemoteDataSource {
     Response response;
     String url = '/profile/interest';
     try {
+      debugPrint('patchInterest start');
+      Map<String, dynamic> data = {
+        "interest": interest,
+      };
+      final jsonData = jsonEncode(data);
       response = await dio.patch(
         url,
-        data: interest,
+        data: jsonData,
         options: options,
       );
-      debugPrint(response.toString());
+      debugPrint('patchInterest end: ${response.toString()}');
     } on DioException catch (e) {
       throwError(e);
       rethrow;
@@ -290,23 +301,21 @@ class RemoteDataSource {
     }
 
     String url = '/followings?${lastIdUrl}limit=$limit';
-    List<User> followingList = [];
 
     try {
       response = await dio.get(
         url,
         options: options,
       );
-      debugPrint(response.data);
-      List<Map<String, dynamic>> jsonData = response.data?.users;
-      bool hasNextPage = limit < (jsonData.length);
-      int nextLastId = response.data?.lastId;
-
-      for (Map<String, dynamic> item in jsonData) {
-        User user = User.fromJson(item);
-        followingList.add(user);
-      }
-
+      debugPrint('getFollowingList start');
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getFollowingList ${jsonData.toString()}');
+      List<dynamic> usersJson = jsonData['users'];
+      List<User> followingList =
+          usersJson.map((userJson) => User.fromJson(userJson)).toList();
+      bool hasNextPage = limit <= (usersJson.length);
+      int nextLastId = jsonData['lastId'];
+      debugPrint('getFollowingList end');
       return (followingList, hasNextPage, nextLastId);
     } on DioException catch (e) {
       throwError(e);
@@ -325,24 +334,22 @@ class RemoteDataSource {
       lastIdUrl = '';
     }
 
-    String url = '/followers?${lastIdUrl}page=$limit';
-    List<User> followerList = [];
+    String url = '/followers?${lastIdUrl}limit=$limit';
 
     try {
+      debugPrint("getFollowerList start: $url");
       response = await dio.get(
         url,
         options: options,
       );
-      debugPrint(response.data);
-      List<Map<String, dynamic>> jsonData = response.data?.users;
-      bool hasNextPage = limit < (jsonData.length);
-      int nextLastId = response.data?.lastId;
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> usersJson = jsonData['users'];
+      bool hasNextPage = limit <= (usersJson.length);
+      int nextLastId = jsonData['lastId'];
+      List<User> followerList =
+          usersJson.map((userJson) => User.fromJson(userJson)).toList();
 
-      for (Map<String, dynamic> item in jsonData) {
-        User user = User.fromJson(item);
-        followerList.add(user);
-      }
-
+      debugPrint("getFollowerList end");
       return (followerList, hasNextPage, nextLastId);
     } on DioException catch (e) {
       throwError(e);
@@ -390,7 +397,7 @@ class RemoteDataSource {
 
   Future<void> deleteUserfollow(String username) async {
     Response response;
-    String url = '/profile/$username/follower';
+    String url = '/profile/$username/follow';
 
     try {
       response = await dio.delete(

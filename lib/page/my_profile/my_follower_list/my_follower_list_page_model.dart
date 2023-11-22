@@ -7,7 +7,7 @@ import '../../../model/repository/user_repository.dart';
 class MyFollowerListViewModel with ChangeNotifier {
   final UserRepository _userRepository;
   final PagingController<int, User> _pagingController =
-      PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: -1);
   final List<User> _followerList = [];
   bool _hasNextPage = true;
   int _lastId = -1;
@@ -30,6 +30,7 @@ class MyFollowerListViewModel with ChangeNotifier {
     }
 
     try {
+      debugPrint("loadFollowerList: start! _lastId: $lastId");
       final result =
           await _userRepository.getRemoteFollowerList(lastId, _limit);
       final List<User> newFollowerList = result.$1;
@@ -42,7 +43,7 @@ class MyFollowerListViewModel with ChangeNotifier {
       } else {
         _pagingController.appendLastPage(newFollowerList);
       }
-      debugPrint("loadFollowerList: 동작중! _lastId: $lastId");
+      debugPrint("loadFollowerList: end! _lastId: $lastId");
     } catch (e) {
       debugPrint('loadFollowerList error: ${e.toString()}');
     }
@@ -50,7 +51,7 @@ class MyFollowerListViewModel with ChangeNotifier {
 
   Future<void> deleteFollower(String username, int index) async {
     try {
-      await _userRepository.deleteRemoteUserFollow(username);
+      await _userRepository.deleteRemoteFollower(username);
       _followerList[index].isDelete = true;
       notifyListeners();
     } catch (e) {

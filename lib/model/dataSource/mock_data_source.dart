@@ -60,7 +60,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
       followerCount: followerCount,
       postCount: postCount,
       blocking: blocking,
-      follwing: follwing,
+      following: follwing,
     );
 
     return Future.delayed(Duration(seconds: 1), () {
@@ -167,7 +167,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
         imageUrl: imageUrl,
         name: name,
         username: username,
-        follwing: following,
+        following: following,
       );
       followingList.add(user);
     }
@@ -192,7 +192,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
         imageUrl: imageUrl,
         name: name,
         username: username,
-        follwing: following,
+        following: following,
       );
       followerList.add(user);
     }

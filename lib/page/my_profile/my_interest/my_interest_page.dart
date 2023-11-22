@@ -18,8 +18,8 @@ class MyInterestPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MyInterestViewModel>(
       create: (_) {
-        final MyInterestViewModel viewModel = MyInterestViewModel(
-            userRepository: UserRepository(remoteDataSource: MockDataSource()));
+        final MyInterestViewModel viewModel =
+            MyInterestViewModel(userRepository: UserRepository());
         return viewModel;
       },
       child: MyInterestView(
@@ -118,7 +118,9 @@ class ImageCheckboxGrid extends StatelessWidget {
         interest.length,
         (index) {
           return ImageCheckbox(
-              imageUrl: imageUrl, name: '${interest[index].name}');
+            imageUrl: interest[index].imageUrl,
+            name: interest[index].name,
+          );
         },
       ),
     );

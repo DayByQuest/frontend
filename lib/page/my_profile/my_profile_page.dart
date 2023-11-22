@@ -155,7 +155,7 @@ class ProfileInfomation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MyProfileViewModel viewModel = context.read<MyProfileViewModel>();
-    User user = viewModel.user;
+    User user = context.watch<MyProfileViewModel>().user;
     void setClose(bool setClose) => viewModel.setIsClose(setClose);
 
     String username = user.username;
@@ -188,7 +188,7 @@ class ProfileInfomation extends StatelessWidget {
                 setClose(true);
 
                 if (isLoad ?? false) {
-                  debugPrint("동작! ${isLoad}");
+                  debugPrint("뒤로가기 감지 동작! ${isLoad}");
                   viewModel.setStatusLoding();
                 }
               },

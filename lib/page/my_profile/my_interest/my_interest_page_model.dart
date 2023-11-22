@@ -20,9 +20,15 @@ class MyInterestViewModel with ChangeNotifier {
 
   void load() async {
     try {
+      if (_interest.isNotEmpty) {
+        return;
+      }
+
+      debugPrint('load start');
       _interest = await _userRepository.getRemoteInterest();
       _status = Status.loaded;
       notifyListeners();
+      debugPrint('load end');
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -34,11 +40,14 @@ class MyInterestViewModel with ChangeNotifier {
         throw Exception('관심사 선택을 안함');
       }
 
+      List<String> interestList = _selectedInterest.toList();
+      debugPrint('changeInterest start ${interestList.toList()}');
       _status = Status.loading;
       notifyListeners();
-      await _userRepository.patchRemoteInterest(_selectedInterest.toList());
+      await _userRepository.patchRemoteInterest(interestList);
       _status = Status.loaded;
       notifyListeners();
+      debugPrint('changeInterest end');
     } catch (e) {
       debugPrint(e.toString());
     }
