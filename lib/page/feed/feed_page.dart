@@ -25,12 +25,8 @@ class FeedPage extends StatelessWidget {
     return ChangeNotifierProvider<FeedViewModel>(
       create: (_) {
         final FeedViewModel viewModel = FeedViewModel(
-          postRepository: PostRepository(
-            remoteDataSource: MockDataSource(),
-          ),
-          groupRepositoty: GroupRepositoty(
-            remoteDataSource: MockDataSource(),
-          ),
+          postRepository: PostRepository(),
+          groupRepositoty: GroupRepositoty(),
         );
         return viewModel;
       },

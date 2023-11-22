@@ -555,14 +555,16 @@ class RemoteDataSource {
     String url = '/feed?limit=5$lastIdUrl';
 
     try {
+      debugPrint('getFeed start: $url');
       response = await dio.get(url, options: options);
       Map<String, dynamic> jsonData = response.data;
+      debugPrint('getFeed jsonData: ${jsonData.toString()}');
       List<dynamic> postsJson = jsonData['posts'];
       List<Post> posts =
           postsJson.map((postJson) => Post.fromJson(postJson)).toList();
       bool hasNextPage = limit <= posts.length;
       int lastId = jsonData['lastId'];
-
+      debugPrint('getFeed end');
       return (posts, hasNextPage, lastId);
     } on DioException catch (e) {
       throwError(e);
