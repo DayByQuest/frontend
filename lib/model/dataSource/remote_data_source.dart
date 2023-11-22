@@ -125,8 +125,9 @@ class RemoteDataSource {
 
     try {
       response = await dio.get(url, options: options);
-      debugPrint(response.data);
-      return response.data == PRIVATE ? true : false;
+      debugPrint(response.toString());
+      Map<String, dynamic> json = response.data;
+      return json['visibility'] == PRIVATE ? true : false;
     } on DioException catch (e) {
       throwError(e);
       rethrow;
@@ -141,8 +142,13 @@ class RemoteDataSource {
     Map<String, dynamic> data = {
       "visibility": (isVisibility ? "PRIVATE" : "PUBLIC")
     };
+    final jsonData = jsonEncode(data);
     try {
-      response = await dio.patch(url, data: data);
+      response = await dio.patch(
+        url,
+        data: jsonData,
+        options: options,
+      );
     } on DioException catch (e) {
       throwError(e);
       rethrow;
