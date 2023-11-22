@@ -483,36 +483,39 @@ class _MyDatePickerState extends State<MyDatePicker> {
   }
 }
 
-class LabelInput extends StatelessWidget {
+class LabelInput extends StatefulWidget {
   const LabelInput({super.key});
+
+  @override
+  State<LabelInput> createState() => _LabelInputState();
+}
+
+class _LabelInputState extends State<LabelInput> {
+  TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width - 32;
     CreateDetailGroupQuestViewModel viewModel =
         context.read<CreateDetailGroupQuestViewModel>();
+    Status status = context.watch<CreateDetailGroupQuestViewModel>().status;
+    bool isLoding = status == Status.loading;
     List<String> labelList =
         context.watch<CreateDetailGroupQuestViewModel>().labelList;
     int selectLabelIndex =
         context.watch<CreateDetailGroupQuestViewModel>().selectLabelIndex;
-    Status status = context.watch<CreateDetailGroupQuestViewModel>().status;
-    bool isLoding = status == Status.loading;
-    bool hasSelectLabelIndex = -1 < selectLabelIndex;
+    bool hasSelectLabel = viewModel.hasLabel();
+
+    void createGroupQuest(BuildContext context) async {
+      await viewModel.createGroupQuestDetail();
+    }
+
+    void setSelectLabel(String input) {
+      viewModel.setLabel(input);
+    }
 
     if (isLoding) {
       return Loading(context: context);
-    }
-
-    void onChaged(curIndex) {
-      viewModel.setLabelIndex(curIndex);
-    }
-
-    void createGroupQuest(BuildContext context) async {
-      if (!hasSelectLabelIndex) {
-        return;
-      }
-
-      await viewModel.createGroupQuestDetail();
     }
 
     return Column(
@@ -530,8 +533,41 @@ class LabelInput extends StatelessWidget {
                 index: index,
                 labelTitle: title,
                 selectLabelIndex: selectLabelIndex,
-                onChange: onChaged,
               );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+          child: TextField(
+            controller: _textEditingController,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 14,
+                horizontal: 10,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(
+                  color: Colors.black,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: Colors.black,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: Colors.black,
+                ),
+              ),
+              hintText: '이미지에 해당되는 라벨이 없다면 직접 추가해주세요.',
+            ),
+            onChanged: (value) {
+              setSelectLabel(value);
             },
           ),
         ),
@@ -540,7 +576,7 @@ class LabelInput extends StatelessWidget {
           child: Container(
             height: 48,
             child: CommonBtn(
-              isPurple: hasSelectLabelIndex,
+              isPurple: hasSelectLabel,
               onPressFunc: () => {
                 createGroupQuest(context),
                 context.pushReplacement('/main'),
@@ -560,22 +596,27 @@ class LabelItem extends StatelessWidget {
   final String labelTitle;
   final int selectLabelIndex;
   late bool isChecked = index == selectLabelIndex;
-  Function onChange;
 
   LabelItem({
     super.key,
     required this.index,
     required this.labelTitle,
     required this.selectLabelIndex,
-    required this.onChange,
   });
 
   @override
   Widget build(BuildContext context) {
+    CreateDetailGroupQuestViewModel viewModel =
+        context.read<CreateDetailGroupQuestViewModel>();
+
+    void onChange() {
+      viewModel.setLabelIndex(isChecked, index);
+    }
+
     return CheckboxListTile(
       value: isChecked,
       onChanged: (bool? value) {
-        onChange(index);
+        onChange();
       },
       title: Text(
         labelTitle,

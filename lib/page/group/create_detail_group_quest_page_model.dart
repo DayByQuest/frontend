@@ -16,12 +16,13 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
   String API_BASE_URL = dotenv.env['API_BASE_URL'] ?? '';
   final int questId;
   Status status = Status.loading;
-  bool hasLabel = false;
+
   String questTitle = '';
   String questContent = '';
   String expiredAt = '';
   String selectInterest = '';
   int selectLabelIndex = -1;
+  String selectLabel = '';
   List<Interest> interest = [];
   List<String> labelList = [];
   final PageController controller = PageController();
@@ -39,7 +40,7 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
     }
 
     String url = '${API_BASE_URL}/group/$questId/quest/labels';
-    debugPrint('testFunc start: $url');
+    debugPrint('testFunc start:');
     status = Status.loaded;
     notifyListeners();
     SSEClient.subscribeToSSE(method: SSERequestType.GET, url: url, header: {
@@ -65,7 +66,7 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
   }
 
   void getInterests() async {
-    if (0 < interest.length) {
+    if (interest.isNotEmpty) {
       return;
     }
 
@@ -79,12 +80,24 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
     }
   }
 
+  bool hasLabel() {
+    if (selectLabel.isEmpty) {
+      return false;
+    }
+
+    return true;
+  }
+
   Future<void> createGroupQuestDetail() async {
+    if (!hasLabel()) {
+      return;
+    }
+
     try {
       debugPrint(
-          "createGroupQuestDetail start: ${questTitle}, ${questContent},${expiredAt}, ${selectInterest}, ${labelList[selectLabelIndex]}, ${questId}}");
+          "createGroupQuestDetail start: ${questTitle}, ${questContent},${expiredAt}, ${selectInterest}, ${selectLabel}, ${questId}}");
       await _groupRepositoty.createGroupQuestDetail(questTitle, questContent,
-          expiredAt, selectInterest, labelList[selectLabelIndex], questId);
+          expiredAt, selectInterest, selectLabel, questId);
     } catch (e) {
       debugPrint("createGroupQuestDetail error: ${e.toString()}");
     }
@@ -105,9 +118,24 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setLabelIndex(int index) {
-    selectLabelIndex = index;
+  void setLabelIndex(bool isChecked, int targerIndex) {
+    if (isChecked) {
+      selectLabelIndex = -1;
+      selectLabel = '';
+      notifyListeners();
+      return;
+    }
+
+    selectLabelIndex = targerIndex;
+    selectLabel = labelList[targerIndex];
     notifyListeners();
+    return;
+  }
+
+  void setLabel(String input) {
+    selectLabel = input;
+    notifyListeners();
+    return;
   }
 
   String twoDigits(int n) {
