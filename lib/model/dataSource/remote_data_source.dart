@@ -68,10 +68,9 @@ class RemoteDataSource {
 
   Future<User> getUserProfile(String username) async {
     Response response;
-    String url = '/profile${username}';
+    String url = '/profile/${username}';
     try {
       response = await dio.get(url, options: options);
-      debugPrint(response.data);
       Map<String, dynamic> jsonData = response.data;
       User user = User.fromJson(jsonData);
       return user;
