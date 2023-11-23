@@ -5,19 +5,20 @@ import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
-import 'package:flutter_application_1/page/group/group_page_model.dart';
-import 'package:flutter_application_1/page/group/create_detail_group_quest_page.dart';
+import 'package:flutter_application_1/page/group/create_group_quest/create_detail_group_quest_page.dart';
+import 'package:flutter_application_1/page/group/create_group_quest/create_group_quest_page_model.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:provider/provider.dart';
 
-class GroupPage extends StatefulWidget {
-  const GroupPage({Key? key}) : super(key: key);
+class CreateGroupQuestPage extends StatefulWidget {
+  const CreateGroupQuestPage({Key? key}) : super(key: key);
   @override
-  State<GroupPage> createState() => _GroupPage();
+  State<CreateGroupQuestPage> createState() => _CreateGroupQuestPage();
 }
 
-class _GroupPage extends State<GroupPage> {
+class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
   @override
   Widget build(BuildContext context) {
     Future<void> selectImageFile() async {
@@ -37,6 +38,18 @@ class _GroupPage extends State<GroupPage> {
         return;
       }
 
+      Navigator.push<void>(
+        context,
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return DescribeImagesPage(
+              selectedBytes: images!.selectedFiles,
+              details: images,
+            );
+          },
+        ),
+      );
+
       if (images != null && images.selectedFiles.length == 3) {
         // Navigator.of(context).push(
         //   MaterialPageRoute(
@@ -48,18 +61,6 @@ class _GroupPage extends State<GroupPage> {
         //     },
         //   ),
         // );
-
-        Navigator.push<void>(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return DescribeImagesPage(
-                selectedBytes: images!.selectedFiles,
-                details: images,
-              );
-            },
-          ),
-        );
       }
     }
 

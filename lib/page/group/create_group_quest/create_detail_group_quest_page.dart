@@ -7,7 +7,8 @@ import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
-import 'package:flutter_application_1/page/group/create_detail_group_quest_page_model.dart';
+import 'package:flutter_application_1/page/group/create_group_quest/create_detail_group_quest_page_model.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

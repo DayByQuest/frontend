@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page.dart';
 import 'package:flutter_application_1/page/feed/feed_page.dart';
-import 'package:flutter_application_1/page/group/create_detail_group_quest_page.dart';
-import 'package:flutter_application_1/page/group/group_page.dart';
+import 'package:flutter_application_1/page/group/groupPage.dart';
+
 import 'package:flutter_application_1/page/my_profile/my_follower_list/my_follower_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_following_list/my_following_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_interest/my_interest_page.dart';
@@ -203,7 +203,8 @@ class _MyHomePageState extends State<MyHomePage> {
         bodyWidget = Container(); //CreatePost();
         break;
       case 3:
-        bodyWidget = GroupPage(); //CreateDetailGroupQuestPage(questId: -1);
+        bodyWidget = GroupPage();
+
         break;
       case 4:
         bodyWidget = const SafeArea(

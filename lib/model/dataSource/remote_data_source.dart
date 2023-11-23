@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
+import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:flutter_application_1/model/class/interest.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
@@ -869,6 +870,30 @@ class RemoteDataSource {
 
       debugPrint('createGroupQuestDetail 성공: ${response}');
       return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Group>> getMyGroupList() async {
+    Response response;
+    String url = '/group';
+
+    try {
+      debugPrint('getMyGroupList start');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> groupsJson = jsonData['groups'];
+      List<Group> groupList =
+          groupsJson.map((groupJson) => Group.fromJson(groupJson)).toList();
+      debugPrint('getMyGroupList end');
+      return groupList;
     } on DioException catch (e) {
       throwError(e);
       rethrow;

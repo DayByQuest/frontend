@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/dataSource/remote_data_source.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
 
@@ -39,6 +40,14 @@ class GroupRepositoty {
     try {
       return _RemoteDataSource.createGroupQuestDetail(
           title, content, expiredAt, interest, label, questId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Group>> getMyGroupList() async {
+    try {
+      return _RemoteDataSource.getMyGroupList();
     } catch (e) {
       rethrow;
     }
