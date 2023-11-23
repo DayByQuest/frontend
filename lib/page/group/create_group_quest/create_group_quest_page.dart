@@ -13,7 +13,12 @@ import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:provider/provider.dart';
 
 class CreateGroupQuestPage extends StatefulWidget {
-  const CreateGroupQuestPage({Key? key}) : super(key: key);
+  final int groupId;
+
+  const CreateGroupQuestPage({
+    Key? key,
+    required this.groupId,
+  }) : super(key: key);
   @override
   State<CreateGroupQuestPage> createState() => _CreateGroupQuestPage();
 }
@@ -38,13 +43,13 @@ class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
         return;
       }
 
-      Navigator.push<void>(
-        context,
-        MaterialPageRoute<void>(
+      Navigator.of(context).push(
+        MaterialPageRoute(
           builder: (BuildContext context) {
             return DescribeImagesPage(
               selectedBytes: images!.selectedFiles,
               details: images,
+              groupId: widget.groupId,
             );
           },
         ),
@@ -77,7 +82,7 @@ class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                '퀘스트를 수행했음을 검증할 수 있는 성공 이미지를 최대 3장 넣어주세요!',
+                '퀘스트를 수행했음을 검증할 수 있는 성공 이미지를 3장 넣어주세요!',
                 style: TextStyle(fontSize: 16),
               ),
               Gap16(),
@@ -103,11 +108,13 @@ class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
 class DescribeImagesPage extends StatelessWidget {
   final List<SelectedByte> selectedBytes;
   final SelectedImagesDetails details;
+  final int groupId;
 
   const DescribeImagesPage({
     super.key,
     required this.details,
     required this.selectedBytes,
+    required this.groupId,
   });
 
   @override
@@ -115,9 +122,11 @@ class DescribeImagesPage extends StatelessWidget {
     return ChangeNotifierProvider<DescribeImagesViewModel>(
       create: (_) {
         final DescribeImagesViewModel viewModel = DescribeImagesViewModel(
-            groupRepositoty: GroupRepositoty(),
-            details: details,
-            selectedBytes: selectedBytes);
+          groupRepositoty: GroupRepositoty(),
+          details: details,
+          selectedBytes: selectedBytes,
+          groupId: groupId,
+        );
         return viewModel;
       },
       child: DescribeImages(

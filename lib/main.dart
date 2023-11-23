@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page.dart';
 import 'package:flutter_application_1/page/feed/feed_page.dart';
+import 'package:flutter_application_1/page/group/create_group_quest/create_group_quest_page.dart';
 import 'package:flutter_application_1/page/group/groupPage.dart';
+import 'package:flutter_application_1/page/group/group_profile/group_profile_page.dart';
 
 import 'package:flutter_application_1/page/my_profile/my_follower_list/my_follower_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_following_list/my_following_list_page.dart';
@@ -104,12 +106,15 @@ final GoRouter _router = GoRouter(
             );
           },
         ),
-        // GoRoute(
-        //   path: 'create',
-        //   builder: (context, state) {
-        //     return createPostPage();
-        //   },
-        // ),
+        GoRoute(
+          path: 'create-group-quest',
+          builder: (context, state) {
+            int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
+            return CreateGroupQuestPage(
+              groupId: groupId,
+            );
+          },
+        ),
         GoRoute(
           path: 'group',
           builder: (context, state) {
@@ -120,6 +125,13 @@ final GoRouter _router = GoRouter(
           path: 'main',
           builder: (context, state) {
             return MyHomePage();
+          },
+        ),
+        GoRoute(
+          path: 'group-profile',
+          builder: (context, state) {
+            int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
+            return GroupProfilePage(groupId: groupId);
           },
         ),
       ],

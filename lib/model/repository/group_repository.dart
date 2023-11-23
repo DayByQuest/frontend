@@ -52,4 +52,12 @@ class GroupRepositoty {
       rethrow;
     }
   }
+
+  Future<Group> getRemoteGroupProfile(int groupId) async {
+    try {
+      return _RemoteDataSource.getGroupProfile(groupId);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

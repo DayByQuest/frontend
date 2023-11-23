@@ -7,6 +7,7 @@ import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/group/my_group_list/my_group_list_page_model.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class MyGroupListPage extends StatelessWidget {
@@ -96,14 +97,22 @@ class GroupItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Group curGroup = context.read<MyGroupListViewModel>().groupList[index];
-    int groupId = curGroup.groupId;
     String imageUrl = curGroup.imageUrl;
     String name = curGroup.name;
     String userCount = '멤버수: ${curGroup.userCount}명';
     String description = curGroup.description;
+    int groupId = curGroup.groupId;
+    String url = '/group-profile?groupId=$groupId';
+
+    void moveUserProfile() {
+      debugPrint("move!");
+      context.go(url);
+    }
 
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        moveUserProfile();
+      },
       child: Column(
         children: [
           Container(
@@ -111,15 +120,12 @@ class GroupItem extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    width: 48,
-                    height: 48,
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                    ),
+                Container(
+                  width: 48,
+                  height: 48,
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 const SizedBox(

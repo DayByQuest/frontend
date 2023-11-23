@@ -901,4 +901,89 @@ class RemoteDataSource {
       rethrow;
     }
   }
+
+  Future<Group> getGroupProfile(int groupId) async {
+    Response response;
+    String url = '/group/$groupId';
+
+    try {
+      debugPrint('getGroupProfile start');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      Map<String, dynamic> jsonData = response.data;
+      Group targetGroup = Group.fromJson(jsonData);
+      debugPrint('getGroupProfile end');
+      return targetGroup;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<QuestDetail>> getGroupQuestList(int groupId) async {
+    Response response;
+    String url = '/group/$groupId/quest';
+
+    try {
+      debugPrint('getGroupQuestList start');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> questsJson = jsonData['quests'];
+      List<QuestDetail> questList = questsJson
+          .map((questJson) => QuestDetail.fromJson(questJson))
+          .toList();
+      debugPrint('getGroupQuestList end');
+      return questList;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postQuestAccept(int questId) async {
+    Response response;
+    String url = '/quest/$questId/accept';
+
+    try {
+      response = await dio.post(
+        url,
+        options: options,
+      );
+      debugPrint('postQuestAccept 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteQuestAccept(int questId) async {
+    Response response;
+    String url = '/quest/$questId/accept';
+
+    try {
+      response = await dio.delete(
+        url,
+        options: options,
+      );
+      debugPrint('deleteQuestAccept 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -36,4 +36,28 @@ class QuestRepository {
       rethrow;
     }
   }
+
+  Future<List<QuestDetail>> getRemoteGroupQuestList(int groupId) async {
+    try {
+      return _RemoteDataSource.getGroupQuestList(groupId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postRemoteQuestAccept(int questId) async {
+    try {
+      return _RemoteDataSource.postQuestAccept(questId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteRemoteQuestAccept(int questId) async {
+    try {
+      return _RemoteDataSource.deleteQuestAccept(questId);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'my_group_list/my_group_list_page.dart';
 
 class GroupPage extends StatelessWidget {
-  const GroupPage({super.key});
+  const GroupPage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
