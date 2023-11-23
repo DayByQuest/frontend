@@ -22,7 +22,7 @@ class GroupPost {
 
   factory GroupPost.fromJson(Map<String, dynamic> json) {
     return GroupPost(
-      groupId: json['groupId'] ?? 0,
+      groupId: json['id'] ?? 0,
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       imageUrl: '${IMAGE_BASE_URL}${json['imageIdentifier']}',

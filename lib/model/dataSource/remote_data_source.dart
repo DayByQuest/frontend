@@ -273,7 +273,7 @@ class RemoteDataSource {
     try {
       debugPrint('patchInterest start');
       Map<String, dynamic> data = {
-        "interest": interest,
+        "interests": interest,
       };
       final jsonData = jsonEncode(data);
       response = await dio.patch(
@@ -581,6 +581,7 @@ class RemoteDataSource {
       response = await dio.get(url, options: options);
       Map<String, dynamic> jsonData = response.data;
       List<dynamic> groupsJson = jsonData['groups'];
+      debugPrint('getGroupPost groupsJson: ${groupsJson.toString()}');
       List<GroupPost> groupPosts =
           groupsJson.map((groupJson) => GroupPost.fromJson(groupJson)).toList();
 
@@ -598,6 +599,7 @@ class RemoteDataSource {
     String url = '/group/$groupId/dislike';
 
     try {
+      debugPrint('postGroupDislike start: $url');
       response = await dio.post(url, options: options);
       debugPrint(response.toString());
     } on DioException catch (e) {

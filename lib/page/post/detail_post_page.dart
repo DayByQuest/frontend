@@ -90,7 +90,7 @@ class DetailViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DetailViewModel viewModel = context.read<DetailViewModel>();
+    final DetailViewModel viewModel = context.watch<DetailViewModel>();
     bool isLoading = context.watch<DetailViewModel>().status == Status.loading;
 
     double width = MediaQuery.of(context).size.width - 32;

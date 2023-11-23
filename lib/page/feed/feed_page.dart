@@ -8,6 +8,7 @@ import 'package:flutter_application_1/model/class/user.dart';
 import 'package:flutter_application_1/model/dataSource/mock_data_source.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
+import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/post/Interested_post.dart';
 import 'package:flutter_application_1/page/common/post/uninterested_post.dart';
 import 'package:flutter_application_1/page/feed/feed_page_model.dart';
@@ -206,10 +207,13 @@ class GroupPostItem extends StatelessWidget {
     int groupId = groupPost.groupId;
     bool isUnInterested = groupPost.unInterested;
     String groupName = groupPost.name;
+    String description = groupPost.description;
     String groupImage = groupPost.imageUrl;
     bool isClose = context.watch<FeedViewModel>().isClose;
 
     void changeJoinGroup() {
+      debugPrint('groupId: $groupId');
+
       isJoin
           ? viewModel.cancleGroupJoin(groupId, feedIndex)
           : viewModel.groupJoin(groupId, feedIndex);
@@ -336,16 +340,14 @@ class GroupPostItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    '저희를 따라와보세요!',
+                    description,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
-            SizedBox(
-              height: 16,
-            ),
+            Gap16(),
           ],
         ),
         secondChild: UninterestedPost(

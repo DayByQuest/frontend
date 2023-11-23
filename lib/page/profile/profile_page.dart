@@ -22,9 +22,7 @@ class ProfilePage extends StatelessWidget {
     return ChangeNotifierProvider<ProfileViewModel>(
         create: (_) {
           final ProfileViewModel viewModel = ProfileViewModel(
-            userRepository: UserRepository(
-              remoteDataSource: MockDataSource(),
-            ),
+            userRepository: UserRepository(),
             username: username,
           );
           return viewModel;
@@ -147,7 +145,8 @@ class TrackerView extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           children: List.generate(60, (index) {
             return Container(
-              color: Color.fromRGBO(35, 236, 116, tracker[index].toDouble()),
+              color: Color.fromRGBO(
+                  35, 236, 116, (tracker[index].toDouble() * 0.06) + 0.1),
             );
           }),
         ),
