@@ -18,8 +18,7 @@ class MyFollowerListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) {
-        return MyFollowerListViewModel(
-            userRepository: UserRepository(remoteDataSource: MockDataSource()));
+        return MyFollowerListViewModel(userRepository: UserRepository());
       },
       child: MyFollowerListView(),
     );

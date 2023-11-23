@@ -6,23 +6,26 @@ import 'package:flutter_application_1/model/class/user.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class DetailViewModel with ChangeNotifier {
   final PostRepository _postRepository;
   final UserRepository _userRepository;
 
-  final postId;
+  final int postId;
   final PagingController<int, Comment> _pagingController =
       PagingController(firstPageKey: 0);
 
   final List<Comment> commentList = [];
   final int _limit = 10;
   late Post _post;
+  bool hasQuest = false;
   bool _hasNextPage = true;
   int _lastId = -1;
   bool _isClose = false;
   Status status = Status.loading;
+  static String? BASE_USER_NAME = dotenv.env['USER_NAME'] ?? '';
 
   DetailViewModel({
     required PostRepository postRepository,
@@ -41,7 +44,9 @@ class DetailViewModel with ChangeNotifier {
 
   void load() async {
     try {
+      debugPrint("loding시작! postId: $postId");
       _post = await _postRepository.getRemoteDetailPost(postId);
+      hasQuest = _post.quest != null;
       status = Status.loaded;
       notifyListeners();
       debugPrint("loding됨!");
@@ -159,14 +164,18 @@ class DetailViewModel with ChangeNotifier {
   Future<void> postComment(int postId, String comment) async {
     try {
       await _postRepository.postRemoteComment(postId, comment);
-      User user =
-          User(username: 'username1', name: 'name', imageUrl: 'nothing.com');
+      debugPrint('문자 입력!');
+      User user = User(
+          username: BASE_USER_NAME!, name: 'name', imageUrl: 'nothing.com');
       Comment newComment = Comment(author: user, id: 1, content: comment);
-      List<Comment> newCommentList = List.from([newComment]);
-      _pagingController.appendPage(newCommentList, _lastId);
+      commentList.add(newComment);
+      _pagingController.itemList = commentList;
+      debugPrint('문자 추가됨!: 길이: ${_pagingController.itemList?.length}');
+      notifyListeners();
+      //List<Comment> newCommentList = List.from([newComment]);
+      //_pagingController.appendPage(newCommentList, _lastId);
     } catch (e) {
       debugPrint(e.toString());
-      _post.liked = true;
     }
   }
 

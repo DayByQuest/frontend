@@ -21,7 +21,7 @@ class User {
     int? followerCount,
     int? postCount,
     bool? blocking,
-    bool? follwing,
+    bool? following,
     bool? isDelete,
   })  : _username = username,
         _name = name,
@@ -30,7 +30,7 @@ class User {
         _followerCount = followerCount ?? 0,
         _postCount = postCount ?? 0,
         _blocking = blocking ?? false,
-        following = follwing ?? false,
+        following = following ?? false,
         isDelete = isDelete ?? false;
 
   String get username => _username;
@@ -43,12 +43,14 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-        username: json['username'],
-        name: json['name'],
-        imageUrl: '${IMAGE_BASE_URL}${json['imageIdentifier']}',
-        followingCount: json['followingCount'] ?? 0,
-        followerCount: json['followerCount'] ?? 0,
-        postCount: json['postCount'] ?? 0,
-        blocking: json['blocking'] ?? false);
+      username: json['username'],
+      name: json['name'],
+      imageUrl: '${IMAGE_BASE_URL}${json['imageIdentifier']}',
+      followingCount: json['followingCount'] ?? 0,
+      followerCount: json['followerCount'] ?? 0,
+      postCount: json['postCount'] ?? 0,
+      blocking: json['blocking'] ?? false,
+      following: json['following'] ?? false,
+    );
   }
 }

@@ -25,8 +25,8 @@ class ProfileImageEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ProfileImageEditViewModel>(
       create: (_) {
-        final ProfileImageEditViewModel viewModel = ProfileImageEditViewModel(
-            userRepository: UserRepository(remoteDataSource: MockDataSource()));
+        final ProfileImageEditViewModel viewModel =
+            ProfileImageEditViewModel(userRepository: UserRepository());
         viewModel.load(imageUrl);
         return viewModel;
       },
@@ -122,10 +122,13 @@ class ImageSelectWidget extends StatelessWidget {
         CommonBtn(
           isPurple: hasImage,
           onPressFunc: hasImage
-              ? () async => {
-                    await viewModel.changeProfileImage(),
-                    context.pop(true),
-                  }
+              ? () async {
+                  await viewModel.changeProfileImage();
+                  debugPrint("중간동작");
+
+                  // 추후 return 타입 생기면 뒤로가기 추가
+                  // context.pop(true);
+                }
               : () {},
           context: context,
           btnTitle: "완료",

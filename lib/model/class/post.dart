@@ -32,8 +32,10 @@ class Post {
       content: json['content'],
       liked: json['liked'] ?? false,
       postImages: PostImages(
-        (json['images'] as List<dynamic>)
-            .map((imageJson) => PostImage.fromJson(imageJson))
+        (json['imageIdentifiers'] as List<dynamic>)
+            .map((imageJson) => PostImage(
+                  imageUrl: imageJson,
+                ))
             .toList(),
       ),
       quest: json['quest'] != null ? Quest.fromJson(json['quest']) : null,

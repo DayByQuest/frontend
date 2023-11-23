@@ -16,6 +16,7 @@ import 'package:flutter_application_1/page/common/post/post_bar.dart';
 import 'package:flutter_application_1/page/common/post/post_content.dart';
 import 'package:flutter_application_1/page/common/post/post_image_view.dart';
 import 'package:flutter_application_1/page/post/detail_post_page_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -33,12 +34,8 @@ class DetailPage extends StatelessWidget {
     return ChangeNotifierProvider<DetailViewModel>(
       create: (_) {
         final DetailViewModel viewModel = DetailViewModel(
-          postRepository: PostRepository(
-            remoteDataSource: MockDataSource(),
-          ),
-          userRepository: UserRepository(
-            remoteDataSource: MockDataSource(),
-          ),
+          postRepository: PostRepository(),
+          userRepository: UserRepository(),
           postId: postId,
         );
         return viewModel;
@@ -93,7 +90,7 @@ class DetailViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DetailViewModel viewModel = context.read<DetailViewModel>();
+    final DetailViewModel viewModel = context.watch<DetailViewModel>();
     bool isLoading = context.watch<DetailViewModel>().status == Status.loading;
 
     double width = MediaQuery.of(context).size.width - 32;
@@ -105,10 +102,6 @@ class DetailViewBody extends StatelessWidget {
     String authorName = author.name;
     bool isFollowing = author.following;
     bool isClose = context.watch<DetailViewModel>().isClose;
-
-    Quest quest = post.quest!;
-    String questTitle = quest.title;
-    String questState = quest.state;
 
     String content = post.content;
     PostImages postImages = post.postImages;
@@ -177,7 +170,7 @@ class DetailViewBody extends StatelessWidget {
                 const SizedBox(
                   height: 8,
                 ),
-                QuestInforView(questTitle: questTitle, questState: questState),
+                QuestInforView(),
                 const SizedBox(
                   height: 8,
                 ),
@@ -304,15 +297,21 @@ class ContentView extends StatelessWidget {
 class QuestInforView extends StatelessWidget {
   const QuestInforView({
     super.key,
-    required this.questTitle,
-    required this.questState,
   });
-
-  final String questTitle;
-  final String questState;
 
   @override
   Widget build(BuildContext context) {
+    bool hasQuest = context.watch<DetailViewModel>().hasQuest;
+
+    if (!hasQuest) {
+      return Container();
+    }
+
+    Post post = context.watch<DetailViewModel>().post;
+    Quest quest = post.quest!;
+    String questTitle = quest.title;
+    String questState = quest.state;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -356,9 +355,14 @@ class AuthorProfileView extends StatelessWidget {
   Function cancelUninterestedPost;
   Function setClose;
 
+  static String? USER_NAME = dotenv.env['USER_NAME'] ?? '';
+
   @override
   Widget build(BuildContext context) {
     MenuController menu = MenuController();
+    bool isCurrentUserAuthor = authorUserName == USER_NAME;
+    debugPrint(
+        'isCurrentUserAuthor: $isCurrentUserAuthor authorName: $authorUserName USER_NAME: $USER_NAME');
 
     return InkWell(
       onTap: () {
@@ -401,17 +405,19 @@ class AuthorProfileView extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
-            width: 78,
-            height: 28,
-            child: CommonBtn(
-              isPurple: !isFollowing,
-              onPressFunc: clickFollowBtn,
-              context: context,
-              btnTitle: isFollowing ? "팔로잉" : "팔로우",
-              fontSize: 16,
-            ),
-          ),
+          isCurrentUserAuthor
+              ? Container()
+              : SizedBox(
+                  width: 78,
+                  height: 28,
+                  child: CommonBtn(
+                    isPurple: !isFollowing,
+                    onPressFunc: clickFollowBtn,
+                    context: context,
+                    btnTitle: isFollowing ? "팔로잉" : "팔로우",
+                    fontSize: 16,
+                  ),
+                ),
           const SizedBox(
             height: 8,
           ),
@@ -506,9 +512,9 @@ class CommentInput extends StatelessWidget {
 
 class QuestStatusView extends StatelessWidget {
   final String questStatus;
-  final String FAIL = '실패';
-  final String SUCCESS = '성공';
-  final String JUDGE = '판정 중';
+  final String FAIL = 'FAIL';
+  final String SUCCESS = 'SUCCESS';
+  final String JUDGE = 'NEED_CHECK';
 
   const QuestStatusView({
     super.key,
@@ -561,7 +567,7 @@ class QuestStatusView extends StatelessWidget {
           width: 8,
         ),
         Text(
-          "성공",
+          "판정 중",
         ),
       ],
     );

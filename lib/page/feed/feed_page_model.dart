@@ -12,12 +12,14 @@ class FeedViewModel with ChangeNotifier {
   final GroupRepositoty _groupRepositoty;
 
   final PagingController<int, Feed> _pagingController =
-      PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: -1);
   final List<Feed> feedList = [];
   bool _hasNextPage = true;
   int _lastId = -1;
   final int _limit = 10;
   bool _isClose = false;
+  int groupCnt = 0;
+  List<GroupPost> groupList = [];
 
   FeedViewModel({
     required PostRepository postRepository,
@@ -49,10 +51,14 @@ class FeedViewModel with ChangeNotifier {
         newFeedList.add(Feed.post(isPost: true, post: post));
       }
 
-      final groupResult = await _postRepository.getRemoteGroupPost();
-      final List<GroupPost> newGroupList = groupResult;
+      if (groupList.isEmpty) {
+        final groupResult = await _postRepository.getRemoteGroupPost();
+        groupList.addAll(groupResult);
+      }
 
-      for (GroupPost groupPost in newGroupList) {
+      if (groupList.isNotEmpty) {
+        GroupPost groupPost = groupList[0];
+        groupList.removeAt(0);
         newFeedList.add(Feed.group(isPost: false, groupPost: groupPost));
       }
 
@@ -64,7 +70,7 @@ class FeedViewModel with ChangeNotifier {
         _pagingController.appendLastPage(newFeedList);
       }
 
-      debugPrint("loadFeedList: 동작중! _lastId: $lastId");
+      debugPrint("loadFeedList: 동작 종료! _lastId: $_lastId");
     } catch (e) {
       debugPrint("loadFeedList error: ${e.toString()}");
     }
@@ -154,6 +160,7 @@ class FeedViewModel with ChangeNotifier {
 
   Future<void> groupJoin(int groupId, int index) async {
     try {
+      debugPrint('groupJoin: ${groupId}');
       await _groupRepositoty.remoteGroupJoin(groupId);
       feedList[index].groupPost?.isJoin = true;
       notifyListeners();

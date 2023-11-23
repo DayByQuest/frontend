@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/interest.dart';
 import 'package:flutter_application_1/model/dataSource/mock_data_source.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
@@ -17,8 +18,8 @@ class MyInterestPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MyInterestViewModel>(
       create: (_) {
-        final MyInterestViewModel viewModel = MyInterestViewModel(
-            userRepository: UserRepository(remoteDataSource: MockDataSource()));
+        final MyInterestViewModel viewModel =
+            MyInterestViewModel(userRepository: UserRepository());
         return viewModel;
       },
       child: MyInterestView(
@@ -104,7 +105,7 @@ class ImageCheckboxGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> interest = context.read<MyInterestViewModel>().interest;
+    List<Interest> interest = context.read<MyInterestViewModel>().interest;
 
     return GridView.count(
       crossAxisCount: 4, // 4열로 고정
@@ -116,7 +117,10 @@ class ImageCheckboxGrid extends StatelessWidget {
       children: List.generate(
         interest.length,
         (index) {
-          return ImageCheckbox(imageUrl: imageUrl, name: '${interest[index]}');
+          return ImageCheckbox(
+            imageUrl: interest[index].imageUrl,
+            name: interest[index].name,
+          );
         },
       ),
     );

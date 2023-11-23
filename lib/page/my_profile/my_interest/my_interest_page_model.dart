@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/interest.dart';
 
 import '../../../model/repository/user_repository.dart';
 import '../../common/Status.dart';
@@ -10,18 +11,24 @@ class MyInterestViewModel with ChangeNotifier {
       : _userRepository = userRepository;
 
   Status _status = Status.loading;
-  List<String> _interest = [];
+  List<Interest> _interest = [];
   final Set<String> _selectedInterest = {};
 
   Status get status => _status;
-  List<String> get interest => _interest;
+  List<Interest> get interest => _interest;
   Set<String> get selectedInterest => _selectedInterest;
 
   void load() async {
     try {
+      if (_interest.isNotEmpty) {
+        return;
+      }
+
+      debugPrint('load start');
       _interest = await _userRepository.getRemoteInterest();
       _status = Status.loaded;
       notifyListeners();
+      debugPrint('load end');
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -33,11 +40,14 @@ class MyInterestViewModel with ChangeNotifier {
         throw Exception('관심사 선택을 안함');
       }
 
+      List<String> interestList = _selectedInterest.toList();
+      debugPrint('changeInterest start ${interestList.toList()}');
       _status = Status.loading;
       notifyListeners();
-      await _userRepository.patchRemoteInterest(_selectedInterest.toList());
+      await _userRepository.patchRemoteInterest(interestList);
       _status = Status.loaded;
       notifyListeners();
+      debugPrint('changeInterest end');
     } catch (e) {
       debugPrint(e.toString());
     }

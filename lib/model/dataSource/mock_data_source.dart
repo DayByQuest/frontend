@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
+import 'package:flutter_application_1/model/class/interest.dart';
+import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../class/post.dart';
@@ -58,7 +60,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
       followerCount: followerCount,
       postCount: postCount,
       blocking: blocking,
-      follwing: follwing,
+      following: follwing,
     );
 
     return Future.delayed(Duration(seconds: 1), () {
@@ -123,21 +125,6 @@ class MockDataSource extends Mock implements RemoteDataSource {
   }
 
   @override
-  Future<List<String>> getInterest() async {
-    List<String> interest = [
-      "사진",
-      "운동",
-      "음식",
-      "생활습관",
-      "반려동식물",
-      "개발",
-      "독서",
-      "공부"
-    ];
-    return interest;
-  }
-
-  @override
   Future<void> patchInterest(List<String> interest) async {
     debugPrint("관심사 잘 넘어왔는지 확인!");
     debugPrint(interest.toString());
@@ -180,7 +167,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
         imageUrl: imageUrl,
         name: name,
         username: username,
-        follwing: following,
+        following: following,
       );
       followingList.add(user);
     }
@@ -205,7 +192,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
         imageUrl: imageUrl,
         name: name,
         username: username,
-        follwing: following,
+        following: following,
       );
       followerList.add(user);
     }
@@ -233,7 +220,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
   }
 
   @override
-  Future<(List<Post> userPosts, bool hasNextPage)> getUserPost(
+  Future<(List<Post> userPosts, bool hasNextPage, int lastId)> getUserPost(
       int limit, int page) async {
     try {
       final mockData = {
@@ -275,7 +262,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
 
       bool hasNextPage = jsonData['hasNextPage'];
       //debugPrint("getUserPost: 값 반환!");
-      return (userPosts, hasNextPage);
+      return (userPosts, hasNextPage, 0);
     } catch (e) {
       rethrow;
     }
@@ -331,65 +318,34 @@ class MockDataSource extends Mock implements RemoteDataSource {
       int limit, int lastId) async {
     try {
       String response = '''
+{
+  "posts": [
     {
-      "posts": [
-        {
-          "author": {
-            "username": "username",
-            "name": "한글이름",
-            "imageIdentifier": "${IMAGE_IDENTIFIER}",
-            "postCount": 0,
-            "following": false,
-            "blocking": false
-          },
-          "id": 1,
-          "content": "글 내용입니다",
-          "updatedAt": "날짜",
-          "liked": true,
-          "images": [
-            {
-              "imageIdentifier":"$IMAGE_IDENTIFIER"
-            },
-            {
-              "imageIdentifier": "${IMAGE_IDENTIFIER}"
-            },
-                        {
-              "imageIdentifier": "${IMAGE_IDENTIFIER}"
-            }
-          ]
-        },
-        {
-          "author": {
-            "username": "username",
-            "name": "한글이름",
-             "imageIdentifier":"${IMAGE_IDENTIFIER}",
-            "postCount": 0,
-            "following": false,
-            "blocking": false
-          },
-          "id": 1,
-          "content": "글 내용입니다",
-          "updatedAt": "날짜",
-          "liked": true,
-          "images": [
-            {
-              "imageIdentifier": "${IMAGE_IDENTIFIER}"
-            },
-            {
-              "imageIdentifier": "${IMAGE_IDENTIFIER}"
-            },
-                        {
-              "imageIdentifier": "${IMAGE_IDENTIFIER}"
-            }
-          ]
-        }
-      ],
-      "lastId": 6
+      "author": {
+        "username": "username",
+        "name": "한글이름",
+        "imageIdentifier": "${IMAGE_IDENTIFIER}",
+        "postCount": 0,
+        "following": false,
+        "blocking": false
+      },
+      "id": 1,
+      "content": "글 내용입니다",
+      "updatedAt": "날짜",
+      "liked": true,
+      "imageIdentifiers": [
+        "${IMAGE_IDENTIFIER}",
+        "${IMAGE_IDENTIFIER}",
+        "${IMAGE_IDENTIFIER}"
+      ]
     }
-  ''';
+  ],
+  "lastId": 6
+}
+''';
       Map<String, dynamic> jsonMap = json.decode(response);
       List<dynamic> postsJson = jsonMap['posts'];
-      debugPrint('postsJson: ${postsJson.toString()}');
+      debugPrint('postsJson: ${postsJson}');
       List<Post> posts =
           postsJson.map((postJson) => Post.fromJson(postJson)).toList();
 
@@ -486,9 +442,10 @@ class MockDataSource extends Mock implements RemoteDataSource {
         "content": "모크 내용입니다",
         "updatedAt": "모크날짜",
         "liked": false,
-        "images": [
-          {"imageIdentifier": "$IMAGE_IDENTIFIER"},
-          {"imageIdentifier": "$IMAGE_IDENTIFIER"}
+        "imageIdentifiers": [
+          "${IMAGE_IDENTIFIER}",
+          "${IMAGE_IDENTIFIER}",
+          "${IMAGE_IDENTIFIER}"
         ],
         "quest": {"id": 1, "title": "모크 퀘스트 이름", "state": "성공"}
       };
@@ -550,6 +507,48 @@ class MockDataSource extends Mock implements RemoteDataSource {
   Future<void> postComment(int postId, String comment) async {
     try {
       debugPrint('postComment: $comment');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<QuestDetail>> getQuest(state) async {
+    try {
+      Map<String, dynamic> jsonData = {
+        "quests": [
+          {
+            "id": 1,
+            "category": "NORMAL",
+            "title": "퀘스트 제목",
+            "content": "퀘스트 내용",
+            "expiredAt": "...",
+            "interest": "FOOD",
+            "imageIdentifier": "$IMAGE_IDENTIFIER",
+            "state": "DOING",
+            "rewardCount": 30, // 보상을 받기 위한 수행 횟수
+            "currentCount": 50, // 내가 수행한 횟수
+            "groupName": "그룹이름" // 그룹 아니면 null
+          },
+          {
+            "id": 2,
+            "category": "NORMAL",
+            "title": "퀘스트 제목2",
+            "content": "퀘스트 내용2",
+            "expiredAt": "...",
+            "interest": "FOOD",
+            "imageIdentifier": "$IMAGE_IDENTIFIER",
+            "state": "DOING",
+            "rewardCount": 30, // 보상을 받기 위한 수행 횟수
+            "currentCount": 50, // 내가 수행한 횟수
+            "groupName": null // 그룹 아니면 null
+          },
+        ]
+      };
+      List<dynamic> questJson = jsonData['quests'];
+      List<QuestDetail> questList =
+          questJson.map((quest) => QuestDetail.fromJson(quest)).toList();
+
+      return questList;
     } catch (e) {
       rethrow;
     }

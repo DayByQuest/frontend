@@ -30,4 +30,13 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+<!-- 새로 추가됨 -->
+<uses-permission android:name="android.permission.INTERNET"/>
+
+<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE>" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<!-- 여기까지 -->
 </manifest>

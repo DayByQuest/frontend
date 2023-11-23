@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/page/create_post/create_post_page.dart';
 import 'package:flutter_application_1/page/feed/feed_page.dart';
+import 'package:flutter_application_1/page/group/create_detail_group_quest_page.dart';
+import 'package:flutter_application_1/page/group/group_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_follower_list/my_follower_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_following_list/my_following_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_interest/my_interest_page.dart';
@@ -10,6 +13,7 @@ import 'package:flutter_application_1/page/profile/profile_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker_plus/image_picker_plus.dart';
 import './model/dataSource/remote_data_source.dart';
 import './page/my_profile/my_profile_page.dart';
 import 'page/my_profile/account_disclosure/account_disclosure_page.dart';
@@ -100,6 +104,24 @@ final GoRouter _router = GoRouter(
             );
           },
         ),
+        // GoRoute(
+        //   path: 'create',
+        //   builder: (context, state) {
+        //     return createPostPage();
+        //   },
+        // ),
+        GoRoute(
+          path: 'group',
+          builder: (context, state) {
+            return GroupPage();
+          },
+        ),
+        GoRoute(
+          path: 'main',
+          builder: (context, state) {
+            return MyHomePage();
+          },
+        ),
       ],
     ),
   ],
@@ -129,10 +151,41 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  Future<void> addPost(context) async {
+    ImagePickerPlus picker = ImagePickerPlus(context);
+    SelectedImagesDetails? images;
+
+    images = await picker.pickImage(
+      source: ImageSource.gallery,
+      galleryDisplaySettings: GalleryDisplaySettings(
+        cropImage: true,
+        maximumSelection: 5,
+      ),
+      multiImages: true,
+    );
+
+    if (images != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return createPostPage(
+              selectedBytes: images!.selectedFiles,
+              details: images,
+            );
+          },
+        ),
+      );
+    }
+  }
+
+  void _onItemTapped(int index, BuildContext context) async {
+    if (index != 2) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    } else {
+      addPost(context);
+    }
   }
 
   @override
@@ -147,10 +200,10 @@ class _MyHomePageState extends State<MyHomePage> {
         bodyWidget = Center(child: Text("Search"));
         break;
       case 2:
-        bodyWidget = Center(child: Text("Add"));
+        bodyWidget = Container(); //CreatePost();
         break;
       case 3:
-        bodyWidget = Center(child: Text("Group"));
+        bodyWidget = GroupPage(); //CreateDetailGroupQuestPage(questId: -1);
         break;
       case 4:
         bodyWidget = const SafeArea(
@@ -215,7 +268,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.amber[800],
-          onTap: _onItemTapped,
+          onTap: (index) {
+            _onItemTapped(index, context);
+          },
         ),
       ),
     );

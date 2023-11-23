@@ -1,6 +1,7 @@
 import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
+import 'package:image_picker_plus/image_picker_plus.dart';
 
 import '../class/post.dart';
 import '../dataSource/remote_data_source.dart';
@@ -11,10 +12,10 @@ class PostRepository {
   PostRepository({RemoteDataSource? remoteDataSource})
       : _RemoteDataSource = remoteDataSource ?? getIt.get<RemoteDataSource>();
 
-  Future<(List<Post> userPosts, bool hasNextPage)> getRemoteUserPost(
-      int limit, int page) async {
+  Future<(List<Post> userPosts, bool hasNextPage, int lastId)>
+      getRemoteUserPost(int limit, int lastId) async {
     try {
-      return _RemoteDataSource.getUserPost(limit, page);
+      return _RemoteDataSource.getUserPost(limit, lastId);
     } catch (e) {
       rethrow;
     }
@@ -113,6 +114,19 @@ class PostRepository {
   Future<void> postRemoteComment(int postId, String comment) async {
     try {
       _RemoteDataSource.postComment(postId, comment);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postCreatePost(List<SelectedByte> selectedByte, String content,
+      {int? questId}) async {
+    try {
+      _RemoteDataSource.postCreatePost(
+        selectedByte,
+        content,
+        questId: questId,
+      );
     } catch (e) {
       rethrow;
     }

@@ -11,7 +11,7 @@ class MyPostViewModel with ChangeNotifier {
       PagingController(firstPageKey: 0);
   final List<Post> postList = [];
   bool _hasNextPage = true;
-  int _page = 0;
+  int _lastId = -1;
   final int _limit = 5;
   final username;
 
@@ -19,33 +19,34 @@ class MyPostViewModel with ChangeNotifier {
     required PostRepository postRepository,
     required this.username,
   }) : _postRepository = postRepository {
-    _pagingController.addPageRequestListener((lastId) {
-      loadPostList(_page);
+    _pagingController.addPageRequestListener((int lastId) {
+      debugPrint('lastId: $_lastId');
+      loadPostList(_lastId);
     });
   }
 
   PagingController<int, Post> get pagingController => _pagingController;
 
-  Future<void> loadPostList(int page) async {
+  Future<void> loadPostList(int lastId) async {
     if (!_hasNextPage) {
       return;
     }
 
     try {
-      final result = await _postRepository.getRemoteUserPost(_limit, page);
+      final result = await _postRepository.getRemoteUserPost(_limit, lastId);
       final List<Post> newPostList = result.$1;
       _hasNextPage = result.$2;
-      _page += 1;
+      _lastId = result.$3;
 
       if (_hasNextPage) {
-        _pagingController.appendPage(newPostList, _page);
+        _pagingController.appendPage(newPostList, _lastId);
       } else {
         _pagingController.appendLastPage(newPostList);
       }
 
       postList.addAll(newPostList);
 
-      debugPrint("loadFollowerList: 동작중! _lastId: $page");
+      debugPrint("loadFollowerList: 동작중! _lastId: $_lastId");
       debugPrint(
           "newPostList[0]: ${newPostList[0].id}, ${newPostList[0].author}");
     } catch (e) {

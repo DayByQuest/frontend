@@ -5,8 +5,9 @@ class PostImage {
   bool isSwipe;
   static String? IMAGE_BASE_URL = dotenv.env['IMAGE_BASE_URL'] ?? '';
 
-  PostImage({required this.imageUrl, bool? isSwipe})
-      : isSwipe = isSwipe ?? false;
+  PostImage({required String imageUrl, bool? isSwipe})
+      : imageUrl = '${IMAGE_BASE_URL}${imageUrl}',
+        isSwipe = isSwipe ?? false;
 
   factory PostImage.fromJson(Map<String, dynamic> json) {
     return PostImage(

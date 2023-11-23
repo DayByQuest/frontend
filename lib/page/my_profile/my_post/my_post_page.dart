@@ -24,9 +24,7 @@ class MyPostPage extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (_) {
           return MyPostViewModel(
-              postRepository:
-                  PostRepository(remoteDataSource: MockDataSource()),
-              username: username);
+              postRepository: PostRepository(), username: username);
         },
         child: MyPostView());
   }
@@ -98,6 +96,7 @@ class MyPost extends StatelessWidget {
     }
 
     void moveDetailPage() {
+      debugPrint('moveDetailPage postId: $postId');
       context.push('/detail?postId=$postId');
     }
 

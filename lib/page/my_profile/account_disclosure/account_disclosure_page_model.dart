@@ -17,11 +17,13 @@ class AccountDisclosureViewModel with ChangeNotifier {
 
   void load() async {
     try {
+      debugPrint('load start');
       _isPrivate = await _userRepository.getRemoteVisibility();
       _status = Status.loaded;
       notifyListeners();
+      debugPrint('load end');
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('load error: ${e.toString()}');
     }
   }
 

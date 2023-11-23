@@ -24,7 +24,6 @@ class ExpandedBtn extends StatelessWidget {
             onPressed: isShow
                 ? () async {
                     await onPressFunc();
-                    debugPrint("adadadad");
                     context.pop(true);
                   }
                 : null,

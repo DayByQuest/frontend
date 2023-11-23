@@ -45,6 +45,8 @@ dependencies:
   flutter_dotenv: ^5.1.0
   card_swiper: ^3.0.1
   dots_indicator: ^3.0.0
+  image_picker_plus: ^0.5.9
+  flutter_client_sse: ^2.0.1
 
 dev_dependencies:
   flutter_test:

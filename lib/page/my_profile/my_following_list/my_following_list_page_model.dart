@@ -7,7 +7,7 @@ import '../../../model/repository/user_repository.dart';
 class MyFollowingListViewModel with ChangeNotifier {
   final UserRepository _userRepository;
   final PagingController<int, User> _pagingController =
-      PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: -1);
   final List<User> _followingList = [];
   bool _hasNextPage = true;
   int _lastId = -1;
@@ -61,6 +61,7 @@ class MyFollowingListViewModel with ChangeNotifier {
 
   Future<void> deleteFollow(String username, int index) async {
     try {
+      debugPrint('deleteFollow username $username');
       await _userRepository.deleteRemoteUserFollow(username);
       _followingList[index].following = !_followingList[index].following;
       notifyListeners();
