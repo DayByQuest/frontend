@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
+import 'package:flutter_application_1/model/class/failed_post.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
 import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
@@ -1079,6 +1080,58 @@ class RemoteDataSource {
       int lastId = jsonData['lastId'];
       debugPrint('getGroupMemberList end');
       return (users, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<FailedPost>, bool hasNextPage)> getFailedGroupQuestList(
+      int questId) async {
+    Response response;
+    String url = '/group/$questId/quest/failed';
+
+    try {
+      debugPrint('getFailedGroupQuestList start: $url');
+
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getFailedGroupQuestList jsonData: ${jsonData.toString()}');
+      List<dynamic> postsJson = jsonData['posts'];
+      List<FailedPost> posts =
+          postsJson.map((postJson) => FailedPost.fromJson(postJson)).toList();
+      bool hasNextPage = 10 <= posts.length;
+      debugPrint('getFailedGroupQuestList end');
+      return (posts, hasNextPage);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postPostJudgment(int postId, bool approval) async {
+    Response response;
+    String url = '/group/$postId/post';
+
+    Map<String, dynamic> jsonData = {
+      "approval": approval,
+    };
+
+    String encodeJsonData = jsonEncode(jsonData);
+
+    try {
+      response = await dio.patch(
+        url,
+        options: options,
+        data: encodeJsonData,
+      );
+
+      debugPrint('postPostJudgment 성공: ${response}');
+      return;
     } on DioException catch (e) {
       throwError(e);
       rethrow;

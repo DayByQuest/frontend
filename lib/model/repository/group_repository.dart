@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/model/class/failed_post.dart';
 import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/post.dart';
 import 'package:flutter_application_1/model/class/user.dart';
@@ -92,6 +93,23 @@ class GroupRepositoty {
       int limit, int lastId, int groupId) async {
     try {
       return _RemoteDataSource.getGroupMemberList(limit, lastId, groupId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<FailedPost>, bool hasNextPage)> getFailedGroupQuestList(
+      int questId) async {
+    try {
+      return _RemoteDataSource.getFailedGroupQuestList(questId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postRemotePostJudgment(int postId, bool approval) async {
+    try {
+      return _RemoteDataSource.postPostJudgment(postId, approval);
     } catch (e) {
       rethrow;
     }

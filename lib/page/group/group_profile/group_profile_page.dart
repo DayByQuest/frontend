@@ -12,6 +12,8 @@ import 'package:flutter_application_1/page/group/group_profile/group_profile_pag
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/forward_bar.dart';
+
 class GroupProfilePage extends StatelessWidget {
   final int groupId;
 
@@ -81,6 +83,10 @@ class GroupProfileView extends StatelessWidget {
 
     void moveGroupMemberList() {
       context.push('/group-member-list?groupId=${groupId}');
+    }
+
+    void moveGroupQuestJudgement() {
+      context.push('/group-quest-judgement?groupId=${groupId}');
     }
 
     return Scaffold(
@@ -168,7 +174,9 @@ class GroupProfileView extends StatelessWidget {
               isGroupManager
                   ? ForwardBar(
                       description: '게시물 판정하기',
-                      moveTarget: () {},
+                      moveTarget: () {
+                        moveGroupQuestJudgement();
+                      },
                     )
                   : Container(),
               const Gap16(),
@@ -199,51 +207,29 @@ class GroupProfileView extends StatelessWidget {
                       : Container(),
                 ],
               ),
-              Gap16(),
-              ListView.separated(
-                separatorBuilder: (context, index) {
-                  return Gap16();
-                },
-                shrinkWrap: true,
-                primary: false,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return QuestItem(index: index);
-                },
-              )
+              questList.isNotEmpty
+                  ? Column(
+                      children: [
+                        Gap16(),
+                        ListView.separated(
+                          separatorBuilder: (context, index) {
+                            return Gap16();
+                          },
+                          shrinkWrap: true,
+                          primary: false,
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            return QuestItem(index: index);
+                          },
+                        )
+                      ],
+                    )
+                  : Center(
+                      child: Text('퀘스트가 없습니다.'),
+                    ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ForwardBar extends StatelessWidget {
-  final String description;
-  final Function moveTarget;
-
-  const ForwardBar({
-    super.key,
-    required this.description,
-    required this.moveTarget,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        moveTarget();
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            description,
-            style: const TextStyle(fontSize: 16),
-          ),
-          const Icon(Icons.arrow_forward_ios)
-        ],
       ),
     );
   }
