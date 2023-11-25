@@ -24,8 +24,10 @@ class InterestedPost extends StatelessWidget {
   final Function changeLikePost;
   final Function clickAuthorTap;
   final Function setClose;
+  final bool isFollowing;
+  Function clickFollowBtn;
 
-  const InterestedPost({
+  InterestedPost({
     super.key,
     required this.userImageUrl,
     required this.username,
@@ -43,6 +45,8 @@ class InterestedPost extends StatelessWidget {
     required this.clickAuthorTap,
     required this.isClose,
     required this.setClose,
+    required this.isFollowing,
+    required this.clickFollowBtn,
   });
 
   @override
@@ -58,6 +62,8 @@ class InterestedPost extends StatelessWidget {
           clickAuthorTap: clickAuthorTap,
           isClose: isClose,
           setClose: setClose,
+          isFollowing: isFollowing,
+          clickFollowBtn: clickFollowBtn,
         ),
         const SizedBox(
           height: 8,
