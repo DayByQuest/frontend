@@ -70,9 +70,9 @@ class PostRepository {
     }
   }
 
-  Future<List<GroupPost>> getRemoteGroupPost() async {
+  Future<List<GroupPost>> getRemoteGroupFeed() async {
     try {
-      return _RemoteDataSource.getGroupPost();
+      return _RemoteDataSource.getGroupFeed();
     } catch (e) {
       rethrow;
     }

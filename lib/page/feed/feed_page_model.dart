@@ -5,11 +5,13 @@ import 'package:flutter_application_1/model/class/post.dart';
 import 'package:flutter_application_1/model/class/post_image.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
+import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class FeedViewModel with ChangeNotifier {
   final PostRepository _postRepository;
   final GroupRepositoty _groupRepositoty;
+  final UserRepository _userRepository;
 
   final PagingController<int, Feed> _pagingController =
       PagingController(firstPageKey: -1);
@@ -24,8 +26,10 @@ class FeedViewModel with ChangeNotifier {
   FeedViewModel({
     required PostRepository postRepository,
     required GroupRepositoty groupRepositoty,
+    required UserRepository userRepository,
   })  : _postRepository = postRepository,
-        _groupRepositoty = groupRepositoty {
+        _groupRepositoty = groupRepositoty,
+        _userRepository = userRepository {
     _pagingController.addPageRequestListener((lastId) {
       loadFeedList(lastId);
     });
@@ -52,7 +56,7 @@ class FeedViewModel with ChangeNotifier {
       }
 
       if (groupList.isEmpty) {
-        final groupResult = await _postRepository.getRemoteGroupPost();
+        final groupResult = await _postRepository.getRemoteGroupFeed();
         groupList.addAll(groupResult);
       }
 
@@ -182,5 +186,35 @@ class FeedViewModel with ChangeNotifier {
   void setIsClose(bool isClose) {
     _isClose = isClose;
     notifyListeners();
+  }
+
+  Future<void> postFollow(String username, int index) async {
+    try {
+      if (!feedList[index].isPost) {
+        return;
+      }
+
+      debugPrint("username:  $username");
+      await _userRepository.postRemoteUserFollow(username);
+      feedList[index].post!.author.following = true;
+      debugPrint("postFollow:  교체!");
+      notifyListeners();
+    } catch (e) {
+      debugPrint('postFollow error: ${e.toString()}');
+    }
+  }
+
+  Future<void> deleteFollow(String username, index) async {
+    try {
+      if (!feedList[index].isPost) {
+        return;
+      }
+
+      await _userRepository.deleteRemoteUserFollow(username);
+      feedList[index].post!.author.following = false;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('deleteFollow error: ${e.toString()}');
+    }
   }
 }

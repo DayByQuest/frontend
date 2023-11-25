@@ -75,6 +75,11 @@ class GroupProfileView extends StatelessWidget {
       return;
     }
 
+    void moveGroupPost() {
+      debugPrint("시작!");
+      context.push('/group-post?groupId=${groupId}');
+    }
+
     return Scaffold(
       appBar: BackSpaceAppBar(
         appBar: AppBar(),
@@ -145,7 +150,9 @@ class GroupProfileView extends StatelessWidget {
               const Gap16(),
               ForwardBar(
                 description: '게시물 조회',
-                moveTarget: () {},
+                moveTarget: () {
+                  moveGroupPost();
+                },
               ),
               const Gap16(),
               ForwardBar(

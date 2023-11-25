@@ -574,7 +574,7 @@ class RemoteDataSource {
     }
   }
 
-  Future<List<GroupPost>> getGroupPost() async {
+  Future<List<GroupPost>> getGroupFeed() async {
     Response response;
     String url = '/group/recommendation';
 
@@ -582,7 +582,7 @@ class RemoteDataSource {
       response = await dio.get(url, options: options);
       Map<String, dynamic> jsonData = response.data;
       List<dynamic> groupsJson = jsonData['groups'];
-      debugPrint('getGroupPost groupsJson: ${groupsJson.toString()}');
+      debugPrint('getGroupFeed groupsJson: ${groupsJson.toString()}');
       List<GroupPost> groupPosts =
           groupsJson.map((groupJson) => GroupPost.fromJson(groupJson)).toList();
 
@@ -1017,6 +1017,37 @@ class RemoteDataSource {
       );
       debugPrint('quitGroup 성공: ${response}');
       return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Post>, bool hasNextPage, int lastId)> getGroupPost(
+      int limit, int lastId, int groupId) async {
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    Response response;
+    String url = '/group/$groupId/post?limit=$limit$lastIdUrl';
+
+    try {
+      debugPrint('getGroupPost start: $url');
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getGroupPost jsonData: ${jsonData.toString()}');
+      List<dynamic> postsJson = jsonData['posts'];
+      List<Post> posts =
+          postsJson.map((postJson) => Post.fromJson(postJson)).toList();
+      bool hasNextPage = limit <= posts.length;
+      int lastId = jsonData['lastId'];
+      debugPrint('getGroupPost end');
+      return (posts, hasNextPage, lastId);
     } on DioException catch (e) {
       throwError(e);
       rethrow;
