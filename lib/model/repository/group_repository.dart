@@ -1,6 +1,7 @@
 import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/post.dart';
+import 'package:flutter_application_1/model/class/user.dart';
 import 'package:flutter_application_1/model/dataSource/remote_data_source.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
 
@@ -82,6 +83,15 @@ class GroupRepositoty {
       int limit, int lastId, int groupId) async {
     try {
       return _RemoteDataSource.getGroupPost(limit, lastId, groupId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<User>, bool hasNextPage, int lastId)> getRemoteGroupMemberList(
+      int limit, int lastId, int groupId) async {
+    try {
+      return _RemoteDataSource.getGroupMemberList(limit, lastId, groupId);
     } catch (e) {
       rethrow;
     }

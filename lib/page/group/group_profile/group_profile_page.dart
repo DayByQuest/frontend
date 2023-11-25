@@ -76,8 +76,11 @@ class GroupProfileView extends StatelessWidget {
     }
 
     void moveGroupPost() {
-      debugPrint("시작!");
       context.push('/group-post?groupId=${groupId}');
+    }
+
+    void moveGroupMemberList() {
+      context.push('/group-member-list?groupId=${groupId}');
     }
 
     return Scaffold(
@@ -157,7 +160,9 @@ class GroupProfileView extends StatelessWidget {
               const Gap16(),
               ForwardBar(
                 description: '멤버: ${userCount.toString()}명',
-                moveTarget: () {},
+                moveTarget: () {
+                  moveGroupMemberList();
+                },
               ),
               const Gap16(),
               isGroupManager

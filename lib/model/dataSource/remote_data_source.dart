@@ -1055,4 +1055,35 @@ class RemoteDataSource {
       rethrow;
     }
   }
+
+  Future<(List<User>, bool hasNextPage, int lastId)> getGroupMemberList(
+      int limit, int lastId, int groupId) async {
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    Response response;
+    String url = '/group/$groupId/user?limit=5$lastIdUrl';
+
+    try {
+      debugPrint('getGroupMemberList start: $url');
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getGroupMemberList jsonData: ${jsonData.toString()}');
+      List<dynamic> usersJson = jsonData['users'];
+      List<User> users =
+          usersJson.map((userJson) => User.fromJson(userJson)).toList();
+      bool hasNextPage = limit <= users.length;
+      int lastId = jsonData['lastId'];
+      debugPrint('getGroupMemberList end');
+      return (users, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
