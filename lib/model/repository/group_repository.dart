@@ -60,4 +60,20 @@ class GroupRepositoty {
       rethrow;
     }
   }
+
+  Future<void> remoteJoinGroup(int groupId) async {
+    try {
+      return _RemoteDataSource.joinGroup(groupId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> remoteQuitGroup(int groupId) async {
+    try {
+      return _RemoteDataSource.quitGroup(groupId);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

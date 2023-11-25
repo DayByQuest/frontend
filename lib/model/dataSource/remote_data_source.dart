@@ -39,13 +39,13 @@ class RemoteDataSource {
     dio.options.baseUrl = API_BASE_URL!;
   }
 
-  void throwError(DioException e) {
+  String throwError(DioException e) {
     if (e.response != null) {
       debugPrint('DioException: ${e.response?.data.toString()}');
     } else {
       debugPrint(e.message);
     }
-    return;
+    return e.response?.data.message;
   }
 
   Future<User> getMyProfile() async {
@@ -978,6 +978,44 @@ class RemoteDataSource {
         options: options,
       );
       debugPrint('deleteQuestAccept 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> joinGroup(int groupId) async {
+    Response response;
+    String url = '/group/$groupId/user';
+
+    try {
+      response = await dio.post(
+        url,
+        options: options,
+      );
+      debugPrint('joinGroup 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> quitGroup(int groupId) async {
+    Response response;
+    String url = '/group/$groupId/user';
+
+    try {
+      response = await dio.delete(
+        url,
+        options: options,
+      );
+      debugPrint('quitGroup 성공: ${response}');
       return;
     } on DioException catch (e) {
       throwError(e);

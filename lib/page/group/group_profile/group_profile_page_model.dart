@@ -31,6 +31,26 @@ class GroupProfileViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> joinGroup(int groupId) async {
+    try {
+      await _groupRepositoty.remoteGroupJoin(groupId);
+      group.isGroupMember = true;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('joinGroup error: ${e.toString()}');
+    }
+  }
+
+  Future<void> quitGroup(int groupId) async {
+    try {
+      await _groupRepositoty.remoteQuitGroup(groupId);
+      group.isGroupMember = false;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('quitGroup error: ${e.toString()}');
+    }
+  }
+
   Future<void> questAccept(int questId, int index) async {
     try {
       await _questRepository.postRemoteQuestAccept(questId);

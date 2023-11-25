@@ -58,9 +58,21 @@ class GroupProfileView extends StatelessWidget {
     bool isGroupManager = group.isGroupManager;
     List<QuestDetail> questList = viewModel.groupQuestList;
     bool canCreateQuset = isGroupManager && questList.length < 10;
+    bool isGroupMember = group.isGroupMember;
+    int userCount = group.userCount;
 
     void createQuest() {
       context.push('/create-group-quest?groupId=${groupId}');
+    }
+
+    void joinGroup() {
+      if (isGroupMember) {
+        viewModel.quitGroup(groupId);
+        return;
+      }
+
+      viewModel.joinGroup(groupId);
+      return;
     }
 
     return Scaffold(
@@ -106,10 +118,12 @@ class GroupProfileView extends StatelessWidget {
                     width: 78,
                     height: 28,
                     child: CommonBtn(
-                      isPurple: false,
-                      onPressFunc: () {},
+                      isPurple: !isGroupMember,
+                      onPressFunc: () {
+                        joinGroup();
+                      },
                       context: context,
-                      btnTitle: true ? "탈퇴" : "가입",
+                      btnTitle: isGroupMember ? "탈퇴" : "가입",
                       fontSize: 16,
                     ),
                   ),
@@ -135,14 +149,16 @@ class GroupProfileView extends StatelessWidget {
               ),
               const Gap16(),
               ForwardBar(
-                description: '멤버: 몇명',
+                description: '멤버: ${userCount.toString()}명',
                 moveTarget: () {},
               ),
               const Gap16(),
-              ForwardBar(
-                description: '게시물 판정하기',
-                moveTarget: () {},
-              ),
+              isGroupManager
+                  ? ForwardBar(
+                      description: '게시물 판정하기',
+                      moveTarget: () {},
+                    )
+                  : Container(),
               const Gap16(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
