@@ -89,6 +89,7 @@ class MemberItem extends StatelessWidget {
     String memberImageUrl = member.imageUrl;
     String memberUserName = member.username;
     String memberName = member.name;
+    String memberRole = member.role!;
 
     return Row(
       children: [
@@ -116,7 +117,7 @@ class MemberItem extends StatelessWidget {
                 ),
               ),
               Text(
-                memberName,
+                memberRole,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
