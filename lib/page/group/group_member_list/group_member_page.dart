@@ -48,7 +48,7 @@ class GroupMemberListView extends StatelessWidget {
     return Scaffold(
       appBar: BackSpaceAppBar(
         appBar: AppBar(),
-        title: "그룹 게시물 목록 조회",
+        title: "그룹원 목록 조회",
         isContextPopTrue: true,
       ),
       body: Padding(
