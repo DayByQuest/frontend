@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page.dart';
 import 'package:flutter_application_1/page/feed/feed_page.dart';
-import 'package:flutter_application_1/page/group/create_detail_group_quest_page.dart';
-import 'package:flutter_application_1/page/group/group_page.dart';
+import 'package:flutter_application_1/page/group/create_group/create_group_page.dart';
+import 'package:flutter_application_1/page/group/create_group_quest/create_group_quest_page.dart';
+import 'package:flutter_application_1/page/group/groupPage.dart';
+import 'package:flutter_application_1/page/group/group_member_list/group_member_page.dart';
+import 'package:flutter_application_1/page/group/group_post/group_post_page.dart';
+import 'package:flutter_application_1/page/group/group_profile/group_profile_page.dart';
+import 'package:flutter_application_1/page/group/group_quest_judgment/group_quest_judgment_page.dart';
+
 import 'package:flutter_application_1/page/my_profile/my_follower_list/my_follower_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_following_list/my_following_list_page.dart';
 import 'package:flutter_application_1/page/my_profile/my_interest/my_interest_page.dart';
@@ -10,6 +16,7 @@ import 'package:flutter_application_1/page/my_profile/my_post/my_post_page.dart'
 import 'package:flutter_application_1/page/my_profile/profile_image_edit/profile_image_edit_page.dart';
 import 'package:flutter_application_1/page/post/detail_post_page.dart';
 import 'package:flutter_application_1/page/profile/profile_page.dart';
+import 'package:flutter_application_1/page/quest/example_quest/example_quest_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -104,12 +111,15 @@ final GoRouter _router = GoRouter(
             );
           },
         ),
-        // GoRoute(
-        //   path: 'create',
-        //   builder: (context, state) {
-        //     return createPostPage();
-        //   },
-        // ),
+        GoRoute(
+          path: 'create-group-quest',
+          builder: (context, state) {
+            int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
+            return CreateGroupQuestPage(
+              groupId: groupId,
+            );
+          },
+        ),
         GoRoute(
           path: 'group',
           builder: (context, state) {
@@ -120,6 +130,47 @@ final GoRouter _router = GoRouter(
           path: 'main',
           builder: (context, state) {
             return MyHomePage();
+          },
+        ),
+        GoRoute(
+          path: 'group-profile',
+          builder: (context, state) {
+            int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
+            return GroupProfilePage(groupId: groupId);
+          },
+        ),
+        GoRoute(
+          path: 'group-post',
+          builder: (context, state) {
+            int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
+            return GroupPostPage(groupId: groupId);
+          },
+        ),
+        GoRoute(
+          path: 'group-member-list',
+          builder: (context, state) {
+            int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
+            return GroupMemberListPage(groupId: groupId);
+          },
+        ),
+        GoRoute(
+          path: 'group-quest-judgement',
+          builder: (context, state) {
+            int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
+            return GroupQuestJudgmentPage(groupId: groupId);
+          },
+        ),
+        GoRoute(
+          path: 'create-group',
+          builder: (context, state) {
+            return CreateGroupPage();
+          },
+        ),
+        GoRoute(
+          path: 'example-quest',
+          builder: (context, state) {
+            int questId = int.parse(state.uri.queryParameters['questId']!) ?? 0;
+            return ExampleQuestPage(questId: questId);
           },
         ),
       ],
@@ -203,7 +254,8 @@ class _MyHomePageState extends State<MyHomePage> {
         bodyWidget = Container(); //CreatePost();
         break;
       case 3:
-        bodyWidget = GroupPage(); //CreateDetailGroupQuestPage(questId: -1);
+        bodyWidget = GroupPage();
+
         break;
       case 4:
         bodyWidget = const SafeArea(

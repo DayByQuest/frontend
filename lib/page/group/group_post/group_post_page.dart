@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
+import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -13,56 +14,64 @@ import '../../../model/repository/post_repository.dart';
 import '../../common/Appbar.dart';
 import '../../common/post/Interested_post.dart';
 import '../../common/post/uninterested_post.dart';
-import 'my_post_page_model.dart';
+import 'group_post_page_model.dart';
 
-class MyPostPage extends StatelessWidget {
-  final String username;
+class GroupPostPage extends StatelessWidget {
+  final int groupId;
 
-  const MyPostPage({super.key, required this.username});
+  const GroupPostPage({super.key, required this.groupId});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (_) {
-          return MyPostViewModel(
+          return GroupPostViewModel(
+            groupRepository: GroupRepositoty(),
             postRepository: PostRepository(),
             userRepository: UserRepository(),
-            username: username,
+            groupId: groupId,
           );
         },
-        child: MyPostView());
+        child: GroupPostView());
   }
 }
 
-class MyPostView extends StatelessWidget {
-  const MyPostView({
+class GroupPostView extends StatelessWidget {
+  const GroupPostView({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    MyPostViewModel viewModel = context.read<MyPostViewModel>();
+    GroupPostViewModel viewModel = context.read<GroupPostViewModel>();
 
     return Scaffold(
       appBar: BackSpaceAppBar(
         appBar: AppBar(),
-        title: "게시물",
+        title: "그룹 게시물 목록 조회",
         isContextPopTrue: true,
       ),
-      body: PagedListView<int, Post>(
-        pagingController: viewModel.pagingController,
-        builderDelegate: PagedChildBuilderDelegate<Post>(
-          itemBuilder: (context, post, index) => MyPost(postIndex: index),
-        ),
+      body: ListView(
+        children: [
+          PagedListView<int, Post>(
+            shrinkWrap: true,
+            primary: false,
+            pagingController: viewModel.pagingController,
+            builderDelegate: PagedChildBuilderDelegate<Post>(
+              itemBuilder: (context, post, index) =>
+                  GroupPost(postIndex: index),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class MyPost extends StatelessWidget {
+class GroupPost extends StatelessWidget {
   final int postIndex;
 
-  const MyPost({
+  const GroupPost({
     super.key,
     required this.postIndex,
   });
@@ -71,8 +80,8 @@ class MyPost extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width - 32;
 
-    MyPostViewModel viewModel = context.read<MyPostViewModel>();
-    Post post = context.watch<MyPostViewModel>().postList[postIndex];
+    GroupPostViewModel viewModel = context.read<GroupPostViewModel>();
+    Post post = context.watch<GroupPostViewModel>().postList[postIndex];
     User author = post.author;
     String username = author.username;
     String userImageUrl = author.imageUrl;

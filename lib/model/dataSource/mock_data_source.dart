@@ -361,7 +361,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
   }
 
   @override
-  Future<List<GroupPost>> getGroupPost() async {
+  Future<List<GroupPost>> getGroupFeed() async {
     String jsonData = '''
     {
       "groups": [

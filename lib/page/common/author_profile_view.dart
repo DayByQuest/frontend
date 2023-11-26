@@ -1,66 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
-import 'package:flutter_application_1/page/my_profile/my_post/my_post_page_model.dart';
+import 'package:flutter_application_1/page/post/detail_post_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
 
-class AuthorProfile extends StatelessWidget {
-  final String userImageUrl;
-  final String username;
-  final viewModel;
-  final int postId;
-  final int postIndex;
-  final bool isClose;
-  final Function clickAuthorTap;
-  final Function setClose;
-  final bool isFollowing;
-  Function clickFollowBtn;
-  static String? USER_NAME = dotenv.env['USER_NAME'] ?? '';
-
-  AuthorProfile({
+class AuthorProfileView extends StatelessWidget {
+  AuthorProfileView({
     super.key,
-    required this.userImageUrl,
-    required this.username,
-    required this.viewModel,
-    required this.postId,
-    required this.postIndex,
-    required this.clickAuthorTap,
-    required this.isClose,
-    required this.setClose,
+    required this.authorProfileImage,
+    required this.authorUserName,
+    required this.authorName,
     required this.isFollowing,
+    required this.postId,
+    required this.isClose,
     required this.clickFollowBtn,
+    required this.uninterestedPost,
+    required this.cancelUninterestedPost,
+    required this.setClose,
   });
+
+  final String authorProfileImage;
+  final String authorUserName;
+  final String authorName;
+  final bool isFollowing;
+  final int postId;
+  final bool isClose;
+  Function clickFollowBtn;
+  Function uninterestedPost;
+  Function cancelUninterestedPost;
+  Function setClose;
+
+  static String? USER_NAME = dotenv.env['USER_NAME'] ?? '';
 
   @override
   Widget build(BuildContext context) {
     MenuController menu = MenuController();
-    bool isCurrentUserAuthor = username == USER_NAME;
+    bool isCurrentUserAuthor = authorUserName == USER_NAME;
+    debugPrint(
+        'isCurrentUserAuthor: $isCurrentUserAuthor authorName: $authorUserName USER_NAME: $USER_NAME');
 
-    return SizedBox(
-      height: 48,
+    return InkWell(
+      onTap: () {
+        context.push('/user-profile?username=$authorUserName');
+        setClose(true);
+      },
       child: Row(
         children: [
-          InkWell(
-            onTap: () {
-              clickAuthorTap();
-            },
-            child: Row(
+          SizedBox(
+            width: 48,
+            height: 48,
+            child: Image.network(
+              authorProfileImage,
+              fit: BoxFit.fill,
+            ),
+          ),
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(userImageUrl),
-                  radius: 24,
+                Text(
+                  authorUserName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                  ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(username,
-                      style: const TextStyle(
-                        fontSize: 16,
-                      )),
+                Text(
+                  authorName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),
-          ),
-          Expanded(
-            child: Container(),
           ),
           isCurrentUserAuthor
               ? Container()
@@ -103,7 +121,8 @@ class AuthorProfile extends StatelessWidget {
             menuChildren: [
               MenuItemButton(
                 onPressed: () async {
-                  await viewModel.uninterestedPost(postId, postIndex);
+                  await uninterestedPost();
+                  showSnackBarFun(context, postId, cancelUninterestedPost);
                 },
                 child: Container(
                   width: 252,

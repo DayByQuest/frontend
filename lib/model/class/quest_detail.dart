@@ -1,14 +1,35 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+enum QuestState {
+  DOING,
+  FINISHED,
+  CONTINUE,
+  NOT,
+  SUCCESS,
+  NOT_SEEK,
+  FAIL,
+}
+
+Map<QuestState, String> QuestMap = {
+  QuestState.DOING: "DOING",
+  QuestState.FINISHED: "FINISHED",
+  QuestState.CONTINUE: "CONTINUE",
+  QuestState.NOT: "NOT",
+  QuestState.SUCCESS: "SUCCESS",
+  QuestState.NOT_SEEK: "NOT_SEEK",
+  QuestState.FAIL: 'FAIL',
+};
 
 class QuestDetail {
   final int id;
   final String category;
   final String title;
   final String content;
-  final String expiredAt;
+  final String? expiredAt;
   final String interest;
   final String imageUrl;
-  final String state;
+  String state;
   int? rewardCount;
   final int currentCount;
   final String? groupName;
@@ -31,17 +52,17 @@ class QuestDetail {
 
   factory QuestDetail.fromJson(Map<String, dynamic> json) {
     return QuestDetail(
-      id: json['id'] as int,
-      category: json['category'] as String,
-      title: json['title'] as String,
-      content: json['content'] as String,
-      expiredAt: json['expiredAt'] as String,
-      interest: json['interest'] as String,
+      id: json['id'],
+      category: json['category'],
+      title: json['title'],
+      content: json['content'],
+      expiredAt: json['expiredAt'],
+      interest: json['interest'],
       imageUrl: '${IMAGE_BASE_URL}${json['imageIdentifier']}',
-      state: json['state'] as String,
+      state: json['state'],
       rewardCount: json['rewardCount'] ?? null,
-      currentCount: json['currentCount'] as int,
-      groupName: json['groupName'] as String?,
+      currentCount: json['currentCount'],
+      groupName: json['groupName'],
     );
   }
 }

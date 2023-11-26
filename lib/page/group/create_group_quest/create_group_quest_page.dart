@@ -5,19 +5,25 @@ import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
-import 'package:flutter_application_1/page/group/group_page_model.dart';
-import 'package:flutter_application_1/page/group/create_detail_group_quest_page.dart';
+import 'package:flutter_application_1/page/group/create_group_quest/create_detail_group_quest_page.dart';
+import 'package:flutter_application_1/page/group/create_group_quest/create_group_quest_page_model.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:provider/provider.dart';
 
-class GroupPage extends StatefulWidget {
-  const GroupPage({Key? key}) : super(key: key);
+class CreateGroupQuestPage extends StatefulWidget {
+  final int groupId;
+
+  const CreateGroupQuestPage({
+    Key? key,
+    required this.groupId,
+  }) : super(key: key);
   @override
-  State<GroupPage> createState() => _GroupPage();
+  State<CreateGroupQuestPage> createState() => _CreateGroupQuestPage();
 }
 
-class _GroupPage extends State<GroupPage> {
+class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
   @override
   Widget build(BuildContext context) {
     Future<void> selectImageFile() async {
@@ -37,6 +43,18 @@ class _GroupPage extends State<GroupPage> {
         return;
       }
 
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return DescribeImagesPage(
+              selectedBytes: images!.selectedFiles,
+              details: images,
+              groupId: widget.groupId,
+            );
+          },
+        ),
+      );
+
       if (images != null && images.selectedFiles.length == 3) {
         // Navigator.of(context).push(
         //   MaterialPageRoute(
@@ -48,18 +66,6 @@ class _GroupPage extends State<GroupPage> {
         //     },
         //   ),
         // );
-
-        Navigator.push<void>(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return DescribeImagesPage(
-                selectedBytes: images!.selectedFiles,
-                details: images,
-              );
-            },
-          ),
-        );
       }
     }
 
@@ -76,7 +82,7 @@ class _GroupPage extends State<GroupPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                '퀘스트를 수행했음을 검증할 수 있는 성공 이미지를 최대 3장 넣어주세요!',
+                '퀘스트를 수행했음을 검증할 수 있는 성공 이미지를 3장 넣어주세요!',
                 style: TextStyle(fontSize: 16),
               ),
               Gap16(),
@@ -102,11 +108,13 @@ class _GroupPage extends State<GroupPage> {
 class DescribeImagesPage extends StatelessWidget {
   final List<SelectedByte> selectedBytes;
   final SelectedImagesDetails details;
+  final int groupId;
 
   const DescribeImagesPage({
     super.key,
     required this.details,
     required this.selectedBytes,
+    required this.groupId,
   });
 
   @override
@@ -114,9 +122,11 @@ class DescribeImagesPage extends StatelessWidget {
     return ChangeNotifierProvider<DescribeImagesViewModel>(
       create: (_) {
         final DescribeImagesViewModel viewModel = DescribeImagesViewModel(
-            groupRepositoty: GroupRepositoty(),
-            details: details,
-            selectedBytes: selectedBytes);
+          groupRepositoty: GroupRepositoty(),
+          details: details,
+          selectedBytes: selectedBytes,
+          groupId: groupId,
+        );
         return viewModel;
       },
       child: DescribeImages(

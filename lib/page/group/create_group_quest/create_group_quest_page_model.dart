@@ -7,7 +7,7 @@ class DescribeImagesViewModel with ChangeNotifier {
   final GroupRepositoty _groupRepositoty;
 
   int questId = 0;
-  int groupId = 56;
+  final int groupId;
   String description = "";
   final List<SelectedByte> selectedBytes;
   final SelectedImagesDetails details;
@@ -17,6 +17,7 @@ class DescribeImagesViewModel with ChangeNotifier {
     required GroupRepositoty groupRepositoty,
     required this.selectedBytes,
     required this.details,
+    required this.groupId,
   }) : _groupRepositoty = groupRepositoty;
 
   Future<int> createGroupQuest() async {

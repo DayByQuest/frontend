@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -6,27 +7,29 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../model/class/post.dart';
 import '../../../model/class/post_image.dart';
 
-class MyPostViewModel with ChangeNotifier {
+class GroupPostViewModel with ChangeNotifier {
   final PostRepository _postRepository;
+  final GroupRepositoty _groupRepository;
   final UserRepository _userRepository;
-
   final PagingController<int, Post> _pagingController =
-      PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: -1);
   final List<Post> postList = [];
+  final int groupId;
   bool _hasNextPage = true;
   int _lastId = -1;
   final int _limit = 5;
-  final username;
 
-  MyPostViewModel({
+  GroupPostViewModel({
+    required GroupRepositoty groupRepository,
     required PostRepository postRepository,
     required UserRepository userRepository,
-    required this.username,
-  })  : _postRepository = postRepository,
+    required this.groupId,
+  })  : _groupRepository = groupRepository,
+        _postRepository = postRepository,
         _userRepository = userRepository {
     _pagingController.addPageRequestListener((int lastId) {
-      debugPrint('lastId: $_lastId');
-      loadPostList(_lastId);
+      debugPrint('lastId: $lastId');
+      loadPostList(lastId);
     });
   }
 
@@ -38,7 +41,8 @@ class MyPostViewModel with ChangeNotifier {
     }
 
     try {
-      final result = await _postRepository.getRemoteUserPost(_limit, lastId);
+      final result =
+          await _groupRepository.getRemoteGroupPost(_limit, lastId, groupId);
       final List<Post> newPostList = result.$1;
       _hasNextPage = result.$2;
       _lastId = result.$3;

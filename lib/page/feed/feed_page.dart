@@ -8,6 +8,7 @@ import 'package:flutter_application_1/model/class/user.dart';
 import 'package:flutter_application_1/model/dataSource/mock_data_source.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
+import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/post/Interested_post.dart';
 import 'package:flutter_application_1/page/common/post/uninterested_post.dart';
@@ -28,6 +29,7 @@ class FeedPage extends StatelessWidget {
         final FeedViewModel viewModel = FeedViewModel(
           postRepository: PostRepository(),
           groupRepositoty: GroupRepositoty(),
+          userRepository: UserRepository(),
         );
         return viewModel;
       },
@@ -123,6 +125,7 @@ class PostItem extends StatelessWidget {
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
     bool isClose = context.watch<FeedViewModel>().isClose;
+    bool isFollowing = author.following;
 
     void changeCurIdx(nextImageIndex) {
       viewModel.changeCurImageIndex(nextImageIndex, feedIndex, postId);
@@ -148,6 +151,23 @@ class PostItem extends StatelessWidget {
 
     void setClose(bool setClose) {
       viewModel.setIsClose(setClose);
+    }
+
+    void follow() async {
+      await viewModel.postFollow(username, feedIndex);
+    }
+
+    void unFollow() async {
+      await viewModel.deleteFollow(username, feedIndex);
+    }
+
+    void clickFollowBtn() {
+      if (isFollowing) {
+        unFollow();
+        return;
+      }
+
+      follow();
     }
 
     return Padding(
@@ -176,6 +196,8 @@ class PostItem extends StatelessWidget {
             clickAuthorTap: moveAuthorProfile,
             isClose: isClose,
             setClose: setClose,
+            isFollowing: isFollowing,
+            clickFollowBtn: clickFollowBtn,
           ),
         ),
         secondChild: UninterestedPost(

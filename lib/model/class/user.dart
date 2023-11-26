@@ -10,6 +10,7 @@ class User {
   final bool _blocking;
   bool following;
   bool isDelete;
+  final String? _role;
 
   static String? IMAGE_BASE_URL = dotenv.env['IMAGE_BASE_URL'] ?? '';
 
@@ -23,6 +24,7 @@ class User {
     bool? blocking,
     bool? following,
     bool? isDelete,
+    String? role,
   })  : _username = username,
         _name = name,
         _imageUrl = imageUrl,
@@ -31,7 +33,8 @@ class User {
         _postCount = postCount ?? 0,
         _blocking = blocking ?? false,
         following = following ?? false,
-        isDelete = isDelete ?? false;
+        isDelete = isDelete ?? false,
+        _role = role;
 
   String get username => _username;
   String get name => _name;
@@ -40,6 +43,7 @@ class User {
   int get followerCount => _followerCount;
   int get postCount => _postCount;
   bool get blocking => _blocking;
+  String? get role => _role;
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -51,6 +55,7 @@ class User {
       postCount: json['postCount'] ?? 0,
       blocking: json['blocking'] ?? false,
       following: json['following'] ?? false,
+      role: json['role'] ?? null,
     );
   }
 }

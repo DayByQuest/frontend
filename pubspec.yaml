@@ -47,6 +47,7 @@ dependencies:
   dots_indicator: ^3.0.0
   image_picker_plus: ^0.5.9
   flutter_client_sse: ^2.0.1
+  flutter_card_swiper: ^6.0.0
 
 dev_dependencies:
   flutter_test:

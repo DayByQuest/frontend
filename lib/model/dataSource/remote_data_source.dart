@@ -5,9 +5,14 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
+import 'package:flutter_application_1/model/class/failed_post.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
+import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:flutter_application_1/model/class/interest.dart';
+import 'package:flutter_application_1/model/class/post_image.dart';
+import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,13 +43,13 @@ class RemoteDataSource {
     dio.options.baseUrl = API_BASE_URL!;
   }
 
-  void throwError(DioException e) {
+  String throwError(DioException e) {
     if (e.response != null) {
       debugPrint('DioException: ${e.response?.data.toString()}');
     } else {
       debugPrint(e.message);
     }
-    return;
+    return e.response?.data.message;
   }
 
   Future<User> getMyProfile() async {
@@ -573,7 +578,7 @@ class RemoteDataSource {
     }
   }
 
-  Future<List<GroupPost>> getGroupPost() async {
+  Future<List<GroupPost>> getGroupFeed() async {
     Response response;
     String url = '/group/recommendation';
 
@@ -581,7 +586,7 @@ class RemoteDataSource {
       response = await dio.get(url, options: options);
       Map<String, dynamic> jsonData = response.data;
       List<dynamic> groupsJson = jsonData['groups'];
-      debugPrint('getGroupPost groupsJson: ${groupsJson.toString()}');
+      debugPrint('getGroupFeed groupsJson: ${groupsJson.toString()}');
       List<GroupPost> groupPosts =
           groupsJson.map((groupJson) => GroupPost.fromJson(groupJson)).toList();
 
@@ -869,6 +874,394 @@ class RemoteDataSource {
 
       debugPrint('createGroupQuestDetail 성공: ${response}');
       return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Group>> getMyGroupList() async {
+    Response response;
+    String url = '/group';
+
+    try {
+      debugPrint('getMyGroupList start');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> groupsJson = jsonData['groups'];
+      List<Group> groupList =
+          groupsJson.map((groupJson) => Group.fromJson(groupJson)).toList();
+      debugPrint('getMyGroupList end');
+      return groupList;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Group> getGroupProfile(int groupId) async {
+    Response response;
+    String url = '/group/$groupId';
+
+    try {
+      debugPrint('getGroupProfile start');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      Map<String, dynamic> jsonData = response.data;
+      Group targetGroup = Group.fromJson(jsonData);
+      debugPrint('getGroupProfile end');
+      return targetGroup;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<QuestDetail>> getGroupQuestList(int groupId) async {
+    Response response;
+    String url = '/group/$groupId/quest';
+
+    try {
+      debugPrint('getGroupQuestList start $url');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> questsJson = jsonData['quests'];
+      debugPrint('getGroupQuestList quests $questsJson');
+      List<QuestDetail> questList = questsJson
+          .map((questJson) => QuestDetail.fromJson(questJson))
+          .toList();
+      debugPrint('getGroupQuestList end');
+      return questList;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postQuestAccept(int questId) async {
+    Response response;
+    String url = '/quest/$questId/accept';
+
+    try {
+      response = await dio.post(
+        url,
+        options: options,
+      );
+      debugPrint('postQuestAccept 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteQuestAccept(int questId) async {
+    Response response;
+    String url = '/quest/$questId/accept';
+
+    try {
+      response = await dio.delete(
+        url,
+        options: options,
+      );
+      debugPrint('deleteQuestAccept 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> joinGroup(int groupId) async {
+    Response response;
+    String url = '/group/$groupId/user';
+
+    try {
+      response = await dio.post(
+        url,
+        options: options,
+      );
+      debugPrint('joinGroup 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> quitGroup(int groupId) async {
+    Response response;
+    String url = '/group/$groupId/user';
+
+    try {
+      response = await dio.delete(
+        url,
+        options: options,
+      );
+      debugPrint('quitGroup 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throw ErrorException(
+        code: e.response!.data['code'],
+        message: e.response!.data['message'],
+        fields: List<String>.from(e.response!.data['fields']),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Post>, bool hasNextPage, int lastId)> getGroupPost(
+      int limit, int lastId, int groupId) async {
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    Response response;
+    String url = '/group/$groupId/post?limit=$limit$lastIdUrl';
+
+    try {
+      debugPrint('getGroupPost start: $url');
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getGroupPost jsonData: ${jsonData.toString()}');
+      List<dynamic> postsJson = jsonData['posts'];
+      List<Post> posts =
+          postsJson.map((postJson) => Post.fromJson(postJson)).toList();
+      bool hasNextPage = limit <= posts.length;
+      int lastId = jsonData['lastId'];
+      debugPrint('getGroupPost end');
+      return (posts, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<User>, bool hasNextPage, int lastId)> getGroupMemberList(
+      int limit, int lastId, int groupId) async {
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    Response response;
+    String url = '/group/$groupId/user?limit=5$lastIdUrl';
+
+    try {
+      debugPrint('getGroupMemberList start: $url');
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getGroupMemberList jsonData: ${jsonData.toString()}');
+      List<dynamic> usersJson = jsonData['users'];
+      List<User> users =
+          usersJson.map((userJson) => User.fromJson(userJson)).toList();
+      bool hasNextPage = limit <= users.length;
+      int lastId = jsonData['lastId'];
+      debugPrint('getGroupMemberList end');
+      return (users, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<FailedPost>, bool hasNextPage)> getFailedGroupQuestList(
+      int questId) async {
+    Response response;
+    String url = '/group/$questId/quest/failed';
+
+    try {
+      debugPrint('getFailedGroupQuestList start: $url');
+
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getFailedGroupQuestList jsonData: ${jsonData.toString()}');
+      List<dynamic> postsJson = jsonData['posts'];
+      List<FailedPost> posts =
+          postsJson.map((postJson) => FailedPost.fromJson(postJson)).toList();
+      bool hasNextPage = 10 <= posts.length;
+      debugPrint('getFailedGroupQuestList end');
+      return (posts, hasNextPage);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> postPostJudgment(int postId, bool approval) async {
+    Response response;
+    String url = '/group/$postId/post';
+
+    Map<String, dynamic> jsonData = {
+      "approval": approval,
+    };
+
+    String encodeJsonData = jsonEncode(jsonData);
+
+    try {
+      response = await dio.patch(
+        url,
+        options: options,
+        data: encodeJsonData,
+      );
+
+      debugPrint('postPostJudgment 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> getGroupNameDuplication(String groupName) async {
+    Response response;
+    String url = '/group/$groupName/check';
+
+    try {
+      debugPrint('getGroupNameDuplication start: $url');
+      response = await dio.get(url, options: options);
+      debugPrint('getGroupNameDuplication end: $url');
+      return;
+    } on DioException catch (e) {
+      throw ErrorException(
+        code: e.response!.data['code'],
+        message: e.response!.data['message'],
+        fields: List<String>.from(e.response!.data['fields']),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> createGroup(
+      String interest, String name, String description, XFile image) async {
+    Response response;
+    String url = '/group';
+
+    FormData formData = FormData();
+
+    // JSON 데이터 추가
+    Map<String, dynamic> jsonData = {
+      "interest": "$interest",
+      "name": "$name",
+      "description": "$description",
+    };
+    final jsonBody = jsonEncode(jsonData);
+    final encodeJsonData = MultipartFile.fromString(
+      jsonBody,
+      contentType: MediaType.parse('application/json'),
+    );
+    formData.files.add(MapEntry(
+      'request',
+      encodeJsonData,
+    ));
+
+    formData.files.add(MapEntry(
+      "image",
+      await MultipartFile.fromFile(
+        image.path,
+      ),
+    ));
+
+    try {
+      response = await dio.post(
+        url,
+        data: formData,
+        options: options,
+      );
+      debugPrint('createGroup 성공: ');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(PostImages, String)> getExampleQuest(int questId) async {
+    Response response;
+    String url = '/quest/$questId/image';
+
+    try {
+      debugPrint('getExampleQuest start: $url');
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      PostImages exampleImages = PostImages(
+        (jsonData['imageIdentifiers'] as List<dynamic>)
+            .map((imageJson) => PostImage(
+                  imageUrl: imageJson,
+                ))
+            .toList(),
+      );
+      String description = jsonData['description'];
+      debugPrint('getExampleQuest end: $url');
+      return (exampleImages, description);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Group>, bool hasNextPage, int lastId)> getInterestedGroupList(
+      int limit, int lastId, String interest) async {
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    Response response;
+    String url = '/groups?interest=$interest&limit=$limit$lastIdUrl';
+
+    try {
+      debugPrint('getInterestedGroupList start: $url');
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getInterestedGroupList jsonData: ${jsonData.toString()}');
+      List<dynamic> groupsJson = jsonData['groups'];
+      List<Group> groupList =
+          groupsJson.map((groupJson) => Group.fromJson(groupJson)).toList();
+      bool hasNextPage = limit <= groupList.length;
+      int lastId = jsonData['lastId'];
+      debugPrint('getInterestedGroupList end');
+      return (groupList, hasNextPage, lastId);
     } on DioException catch (e) {
       throwError(e);
       rethrow;
