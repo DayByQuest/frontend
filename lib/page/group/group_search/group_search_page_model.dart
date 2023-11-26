@@ -92,6 +92,7 @@ class GroupSearchViewModel with ChangeNotifier {
     try {
       await _groupRepositoty.remoteGroupJoin(groupId);
       interestedGroupList[index].isGroupMember = true;
+      interestedGroupList[index].userCount += 1;
       notifyListeners();
     } catch (e) {
       debugPrint('joinGroup error: ${e.toString()}');
@@ -102,6 +103,7 @@ class GroupSearchViewModel with ChangeNotifier {
     try {
       await _groupRepositoty.remoteQuitGroup(groupId);
       interestedGroupList[index].isGroupMember = false;
+      interestedGroupList[index].userCount -= 1;
       notifyListeners();
     } catch (e) {
       debugPrint('quitGroup error: ${e.toString()}');

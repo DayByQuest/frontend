@@ -6,7 +6,7 @@ class Group {
   final String description;
   final String interest;
   final String imageUrl;
-  final int userCount;
+  int userCount;
   final bool isGroupManager;
   bool isGroupMember;
 
