@@ -26,7 +26,7 @@ class QuestDetail {
   final String category;
   final String title;
   final String content;
-  final String expiredAt;
+  final String? expiredAt;
   final String interest;
   final String imageUrl;
   String state;

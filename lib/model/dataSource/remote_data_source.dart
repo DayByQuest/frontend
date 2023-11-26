@@ -933,13 +933,14 @@ class RemoteDataSource {
     String url = '/group/$groupId/quest';
 
     try {
-      debugPrint('getGroupQuestList start');
+      debugPrint('getGroupQuestList start $url');
       response = await dio.get(
         url,
         options: options,
       );
       Map<String, dynamic> jsonData = response.data;
       List<dynamic> questsJson = jsonData['quests'];
+      debugPrint('getGroupQuestList quests $questsJson');
       List<QuestDetail> questList = questsJson
           .map((questJson) => QuestDetail.fromJson(questJson))
           .toList();
@@ -1227,6 +1228,37 @@ class RemoteDataSource {
       String description = jsonData['description'];
       debugPrint('getExampleQuest end: $url');
       return (exampleImages, description);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Group>, bool hasNextPage, int lastId)> getInterestedGroupList(
+      int limit, int lastId, String interest) async {
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    Response response;
+    String url = '/groups?interest=$interest&limit=$limit$lastIdUrl';
+
+    try {
+      debugPrint('getInterestedGroupList start: $url');
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getInterestedGroupList jsonData: ${jsonData.toString()}');
+      List<dynamic> groupsJson = jsonData['groups'];
+      List<Group> groupList =
+          groupsJson.map((groupJson) => Group.fromJson(groupJson)).toList();
+      bool hasNextPage = limit <= groupList.length;
+      int lastId = jsonData['lastId'];
+      debugPrint('getInterestedGroupList end');
+      return (groupList, hasNextPage, lastId);
     } on DioException catch (e) {
       throwError(e);
       rethrow;

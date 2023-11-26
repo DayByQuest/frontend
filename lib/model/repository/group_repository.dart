@@ -137,4 +137,14 @@ class GroupRepositoty {
       rethrow;
     }
   }
+
+  Future<(List<Group>, bool hasNextPage, int lastId)>
+      getRemoteInterestedGroupList(
+          int limit, int lastId, String interest) async {
+    try {
+      return _RemoteDataSource.getInterestedGroupList(limit, lastId, interest);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

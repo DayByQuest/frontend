@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/page/group/group_search/group_search_page.dart';
 
 import 'my_group_list/my_group_list_page.dart';
 
@@ -50,9 +51,7 @@ class GroupPage extends StatelessWidget {
         body: const TabBarView(
           children: <Widget>[
             MyGroupListPage(),
-            Center(
-              child: Text("탐색이다"),
-            ),
+            GroupSearchPage(),
           ],
         ),
       ),
