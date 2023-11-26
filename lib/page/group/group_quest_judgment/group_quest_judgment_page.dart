@@ -12,6 +12,7 @@ import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/common/forward_bar.dart';
 import 'package:flutter_application_1/page/group/group_quest_judgment/group_quest_judgment_page_model.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class GroupQuestJudgmentPage extends StatelessWidget {
@@ -73,6 +74,12 @@ class GroupQuestJudgmentView extends StatelessWidget {
     QuestDetail? selectQuest =
         context.watch<GroupQuestJudgmentViewModel>().selectQuest;
     String description = selectQuest!.content;
+    int questId = selectQuest.id;
+
+    void moveExampleQuest() {
+      debugPrint('/example-quest?questId=$questId');
+      context.push('/example-quest?questId=$questId');
+    }
 
     return Scaffold(
       appBar: BackSpaceAppBar(
@@ -90,7 +97,11 @@ class GroupQuestJudgmentView extends StatelessWidget {
               description,
             ),
             Gap16(),
-            ForwardBar(description: '예시 이미지 확인', moveTarget: () {}),
+            ForwardBar(
+                description: '예시 이미지 확인',
+                moveTarget: () {
+                  moveExampleQuest();
+                }),
             Gap16(),
             FailedQuestList(),
           ],

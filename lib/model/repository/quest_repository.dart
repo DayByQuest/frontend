@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/model/dataSource/remote_data_source.dart';
 
@@ -56,6 +57,14 @@ class QuestRepository {
   Future<void> deleteRemoteQuestAccept(int questId) async {
     try {
       return _RemoteDataSource.deleteQuestAccept(questId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(PostImages, String)> getRemoteExampleQuest(int questId) async {
+    try {
+      return _RemoteDataSource.getExampleQuest(questId);
     } catch (e) {
       rethrow;
     }

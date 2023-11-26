@@ -16,6 +16,7 @@ import 'package:flutter_application_1/page/my_profile/my_post/my_post_page.dart'
 import 'package:flutter_application_1/page/my_profile/profile_image_edit/profile_image_edit_page.dart';
 import 'package:flutter_application_1/page/post/detail_post_page.dart';
 import 'package:flutter_application_1/page/profile/profile_page.dart';
+import 'package:flutter_application_1/page/quest/example_quest/example_quest_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -163,6 +164,13 @@ final GoRouter _router = GoRouter(
           path: 'create-group',
           builder: (context, state) {
             return CreateGroupPage();
+          },
+        ),
+        GoRoute(
+          path: 'example-quest',
+          builder: (context, state) {
+            int questId = int.parse(state.uri.queryParameters['questId']!) ?? 0;
+            return ExampleQuestPage(questId: questId);
           },
         ),
       ],

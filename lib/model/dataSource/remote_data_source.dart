@@ -11,6 +11,8 @@ import 'package:flutter_application_1/model/class/feed.dart';
 import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:flutter_application_1/model/class/interest.dart';
+import 'package:flutter_application_1/model/class/post_image.dart';
+import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
@@ -1199,6 +1201,32 @@ class RemoteDataSource {
       );
       debugPrint('createGroup 성공: ');
       return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(PostImages, String)> getExampleQuest(int questId) async {
+    Response response;
+    String url = '/quest/$questId/image';
+
+    try {
+      debugPrint('getExampleQuest start: $url');
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      PostImages exampleImages = PostImages(
+        (jsonData['imageIdentifiers'] as List<dynamic>)
+            .map((imageJson) => PostImage(
+                  imageUrl: imageJson,
+                ))
+            .toList(),
+      );
+      String description = jsonData['description'];
+      debugPrint('getExampleQuest end: $url');
+      return (exampleImages, description);
     } on DioException catch (e) {
       throwError(e);
       rethrow;
