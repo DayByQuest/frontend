@@ -1023,8 +1023,11 @@ class RemoteDataSource {
       debugPrint('quitGroup 성공: ${response}');
       return;
     } on DioException catch (e) {
-      throwError(e);
-      rethrow;
+      throw ErrorException(
+        code: e.response!.data['code'],
+        message: e.response!.data['message'],
+        fields: List<String>.from(e.response!.data['fields']),
+      );
     } catch (e) {
       rethrow;
     }

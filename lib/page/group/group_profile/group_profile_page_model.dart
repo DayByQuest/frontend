@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
@@ -12,6 +13,8 @@ class GroupProfileViewModel extends ChangeNotifier {
   Status status = Status.loading;
   late Group group;
   List<QuestDetail> groupQuestList = [];
+  bool errorStatus = false;
+  String errorMessage = '';
 
   GroupProfileViewModel({
     required GroupRepositoty groupRepositoty,
@@ -46,6 +49,9 @@ class GroupProfileViewModel extends ChangeNotifier {
       await _groupRepositoty.remoteQuitGroup(groupId);
       group.isGroupMember = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      debugPrint(e.message);
+      setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('quitGroup error: ${e.toString()}');
     }
@@ -69,5 +75,11 @@ class GroupProfileViewModel extends ChangeNotifier {
     } catch (e) {
       debugPrint('questDelete error: ${e.toString()}');
     }
+  }
+
+  void setErrorStatus(bool status, String message) {
+    errorStatus = status;
+    errorMessage = message;
+    notifyListeners();
   }
 }

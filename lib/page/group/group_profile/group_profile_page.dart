@@ -62,6 +62,15 @@ class GroupProfileView extends StatelessWidget {
     bool canCreateQuset = isGroupManager && questList.length < 10;
     bool isGroupMember = group.isGroupMember;
     int userCount = group.userCount;
+    bool errorStatus = context.read<GroupProfileViewModel>().errorStatus;
+    String errorMessage = context.read<GroupProfileViewModel>().errorMessage;
+
+    if (errorStatus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showErrorSnackBarFun(context, errorMessage);
+        context.read<GroupProfileViewModel>().setErrorStatus(false, '');
+      });
+    }
 
     void createQuest() {
       context.push('/create-group-quest?groupId=${groupId}');
@@ -331,4 +340,35 @@ class QuestItem extends StatelessWidget {
       ],
     );
   }
+}
+
+void showErrorSnackBarFun(BuildContext context, String message) {
+  SnackBar snackBar = SnackBar(
+    duration: Duration(milliseconds: 400),
+    action: SnackBarAction(
+      label: '취소',
+      onPressed: () {},
+      textColor: Colors.black,
+    ),
+    content: Text(
+      message,
+      style: const TextStyle(
+        fontSize: 16,
+        color: Colors.black,
+      ),
+    ),
+    shape: Border.all(
+      color: Colors.black,
+    ),
+    backgroundColor: Colors.white,
+    dismissDirection: DismissDirection.up,
+    behavior: SnackBarBehavior.floating,
+    margin: EdgeInsets.only(
+      bottom: MediaQuery.of(context).size.height - 150,
+      left: 10,
+      right: 10,
+    ),
+  );
+
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
