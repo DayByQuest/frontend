@@ -23,4 +23,9 @@ class MyGroupListViewModel extends ChangeNotifier {
       debugPrint('load error: ${e.toString()}');
     }
   }
+
+  void setStatusLoding() {
+    status = Status.loading;
+    notifyListeners();
+  }
 }

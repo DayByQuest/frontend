@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page.dart';
 import 'package:flutter_application_1/page/feed/feed_page.dart';
+import 'package:flutter_application_1/page/group/create_group/create_group_page.dart';
 import 'package:flutter_application_1/page/group/create_group_quest/create_group_quest_page.dart';
 import 'package:flutter_application_1/page/group/groupPage.dart';
 import 'package:flutter_application_1/page/group/group_member_list/group_member_page.dart';
@@ -156,6 +157,12 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
             return GroupQuestJudgmentPage(groupId: groupId);
+          },
+        ),
+        GoRoute(
+          path: 'create-group',
+          builder: (context, state) {
+            return CreateGroupPage();
           },
         ),
       ],

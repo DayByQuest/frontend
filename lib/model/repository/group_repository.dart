@@ -4,6 +4,7 @@ import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/post.dart';
 import 'package:flutter_application_1/model/class/user.dart';
 import 'package:flutter_application_1/model/dataSource/remote_data_source.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
 
 class GroupRepositoty {
@@ -110,6 +111,28 @@ class GroupRepositoty {
   Future<void> postRemotePostJudgment(int postId, bool approval) async {
     try {
       return _RemoteDataSource.postPostJudgment(postId, approval);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> getRemoteGroupNameDuplication(String groupName) async {
+    try {
+      return _RemoteDataSource.getGroupNameDuplication(groupName);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> createGroup(
+      String interest, String name, String description, XFile image) async {
+    try {
+      return _RemoteDataSource.createGroup(
+        interest,
+        name,
+        description,
+        image,
+      );
     } catch (e) {
       rethrow;
     }

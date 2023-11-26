@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/failed_post.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
 import 'package:flutter_application_1/model/class/group.dart';
@@ -1131,6 +1132,72 @@ class RemoteDataSource {
       );
 
       debugPrint('postPostJudgment 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> getGroupNameDuplication(String groupName) async {
+    Response response;
+    String url = '/group/$groupName/check';
+
+    try {
+      debugPrint('getGroupNameDuplication start: $url');
+      response = await dio.get(url, options: options);
+      debugPrint('getGroupNameDuplication end: $url');
+      return;
+    } on DioException catch (e) {
+      throw ErrorException(
+        code: e.response!.data['code'],
+        message: e.response!.data['message'],
+        fields: List<String>.from(e.response!.data['fields']),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> createGroup(
+      String interest, String name, String description, XFile image) async {
+    Response response;
+    String url = '/group';
+
+    FormData formData = FormData();
+
+    // JSON 데이터 추가
+    Map<String, dynamic> jsonData = {
+      "interest": "$interest",
+      "name": "$name",
+      "description": "$description",
+    };
+    final jsonBody = jsonEncode(jsonData);
+    final encodeJsonData = MultipartFile.fromString(
+      jsonBody,
+      contentType: MediaType.parse('application/json'),
+    );
+    formData.files.add(MapEntry(
+      'request',
+      encodeJsonData,
+    ));
+
+    formData.files.add(MapEntry(
+      "image",
+      await MultipartFile.fromFile(
+        image.path,
+      ),
+    ));
+
+    try {
+      response = await dio.post(
+        url,
+        data: formData,
+        options: options,
+      );
+      debugPrint('createGroup 성공: ');
       return;
     } on DioException catch (e) {
       throwError(e);

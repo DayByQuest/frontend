@@ -53,6 +53,15 @@ class MyGroupListView extends StatelessWidget {
       );
     }
 
+    void moveCreateGroup() async {
+      bool? isLoad = await context.push<bool>('/create-group');
+
+      if (isLoad ?? false) {
+        debugPrint("뒤로가기 감지 동작! ${isLoad}");
+        viewModel.setStatusLoding();
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Stack(
@@ -73,7 +82,9 @@ class MyGroupListView extends StatelessWidget {
                     width: width,
                     child: CommonBtn(
                       isPurple: true,
-                      onPressFunc: () {},
+                      onPressFunc: () {
+                        moveCreateGroup();
+                      },
                       context: context,
                       btnTitle: '생성',
                     ),
