@@ -38,6 +38,22 @@ class QuestRepository {
     }
   }
 
+  Future<List<QuestDetail>> getRemoteNewQuest() async {
+    try {
+      return _RemoteDataSource.getQuest(NOT);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<QuestDetail>> getRemoteRecommendQuest() async {
+    try {
+      return _RemoteDataSource.getRecommendQuest();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<List<QuestDetail>> getRemoteGroupQuestList(int groupId) async {
     try {
       return _RemoteDataSource.getGroupQuestList(groupId);
@@ -65,6 +81,30 @@ class QuestRepository {
   Future<(PostImages, String)> getRemoteExampleQuest(int questId) async {
     try {
       return _RemoteDataSource.getExampleQuest(questId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> patchFinishQuest(int questId) async {
+    try {
+      return _RemoteDataSource.patchFinishQuest(questId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> patchRewardQuest(int questId) async {
+    try {
+      return _RemoteDataSource.patchRewardQuest(questId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> patchRestartQuest(int questId) async {
+    try {
+      return _RemoteDataSource.patchContinueQuest(questId);
     } catch (e) {
       rethrow;
     }

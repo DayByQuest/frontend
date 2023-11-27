@@ -47,6 +47,10 @@ class FeedView extends StatelessWidget {
   Widget build(BuildContext context) {
     FeedViewModel viewModel = context.read<FeedViewModel>();
 
+    void moveQuestPage() {
+      context.push('/quest');
+    }
+
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -58,7 +62,9 @@ class FeedView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    moveQuestPage();
+                  },
                   icon: Icon(
                     Icons.check_box_outlined,
                   ),

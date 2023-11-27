@@ -33,6 +33,7 @@ class QuestDetail {
   int? rewardCount;
   final int currentCount;
   final String? groupName;
+  bool canShowAnimation;
 
   static String? IMAGE_BASE_URL = dotenv.env['IMAGE_BASE_URL'] ?? '';
 
@@ -48,6 +49,7 @@ class QuestDetail {
     required this.rewardCount,
     required this.currentCount,
     this.groupName,
+    required this.canShowAnimation,
   });
 
   factory QuestDetail.fromJson(Map<String, dynamic> json) {
@@ -63,6 +65,7 @@ class QuestDetail {
       rewardCount: json['rewardCount'] ?? null,
       currentCount: json['currentCount'],
       groupName: json['groupName'],
+      canShowAnimation: false,
     );
   }
 }

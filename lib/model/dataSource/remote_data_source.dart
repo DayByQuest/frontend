@@ -752,6 +752,32 @@ class RemoteDataSource {
     }
   }
 
+  Future<List<QuestDetail>> getRecommendQuest() async {
+    Response response;
+    String url = '/quest/recommendation';
+
+    try {
+      debugPrint('getRecommendQuest start');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> questJson = jsonData['quests'];
+      debugPrint('questJson $questJson');
+      List<QuestDetail> questList =
+          questJson.map((quest) => QuestDetail.fromJson(quest)).toList();
+
+      debugPrint('getRecommendQuest end');
+      return questList;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> postCreatePost(List<SelectedByte> selectedByte, String content,
       {int? questId}) async {
     Response response;
@@ -1262,6 +1288,66 @@ class RemoteDataSource {
       int lastId = jsonData['lastId'];
       debugPrint('getInterestedGroupList end');
       return (groupList, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> patchFinishQuest(int questId) async {
+    Response response;
+    String url = '/quest/$questId/finish';
+
+    try {
+      response = await dio.patch(
+        url,
+        options: options,
+      );
+
+      debugPrint('patchFinishQuest 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> patchRewardQuest(int questId) async {
+    Response response;
+    String url = '/quest/$questId/reward';
+
+    try {
+      response = await dio.patch(
+        url,
+        options: options,
+      );
+
+      debugPrint('patchRewardQuest 성공: ${response}');
+      return;
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> patchContinueQuest(int questId) async {
+    Response response;
+    String url = '/quest/$questId/continue';
+
+    try {
+      response = await dio.patch(
+        url,
+        options: options,
+      );
+
+      debugPrint('patchContinueQuest 성공: ${response}');
+      return;
     } on DioException catch (e) {
       throwError(e);
       rethrow;

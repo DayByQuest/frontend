@@ -58,3 +58,69 @@ class CommonBtn extends StatelessWidget {
     );
   }
 }
+
+class CommonIconBtn extends StatelessWidget {
+  const CommonIconBtn({
+    super.key,
+    required this.isPurple,
+    required this.onPressFunc,
+    required this.context,
+    required this.icon,
+    this.iconSize = 22,
+  });
+
+  final bool isPurple;
+  final Function onPressFunc;
+  final BuildContext context;
+  final double iconSize;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext _) {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+            style: ButtonStyle(
+              fixedSize: MaterialStateProperty.all(
+                const Size.fromHeight(48),
+              ),
+              shape: MaterialStateProperty.all(
+                const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+              ),
+              side: MaterialStateProperty.all(
+                BorderSide(
+                  color: isPurple ? Color(0xFF82589F) : Colors.black,
+                ),
+              ),
+              backgroundColor: MaterialStateProperty.all(
+                isPurple ? Color(0xFFD6A2E8) : null,
+              ),
+            ),
+            onPressed: () async {
+              onPressFunc();
+            },
+            child: Icon(
+              icon,
+              size: iconSize,
+              color: isPurple ? Colors.white : Colors.black,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
+// Text(
+//               btnTitle,
+//               style: TextStyle(
+//                 fontSize: fontSize,
+//                 color: isPurple ? Colors.white : Colors.black,
+//               ),
+//             ),
