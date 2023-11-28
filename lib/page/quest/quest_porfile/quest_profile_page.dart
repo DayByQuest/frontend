@@ -15,6 +15,7 @@ import 'package:flutter_application_1/page/common/post/post_image_view.dart';
 import 'package:flutter_application_1/page/common/showDialog.dart';
 import 'package:flutter_application_1/page/quest/example_quest/example_quest_page_model.dart';
 import 'package:flutter_application_1/page/quest/quest_porfile/quest_profile_page_model.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class QuestProfilePage extends StatelessWidget {
@@ -52,6 +53,8 @@ class QuestProfileView extends StatelessWidget {
     double width = MediaQuery.of(context).size.width - 32;
     QuestProfileViewModel viewModel = context.read<QuestProfileViewModel>();
     Status status = context.watch<QuestProfileViewModel>().status;
+    QuestDetail quest = viewModel.quest;
+    int questId = quest.id;
 
     if (status == Status.loading) {
       viewModel.load();
@@ -67,6 +70,10 @@ class QuestProfileView extends StatelessWidget {
 
     void changeCurIdx(nextImageIndex) {
       viewModel.changeCurImageIndex(nextImageIndex);
+    }
+
+    void moveQuestPost() {
+      context.push('/quest-post?questId=$questId');
     }
 
     return GestureDetector(
@@ -85,7 +92,11 @@ class QuestProfileView extends StatelessWidget {
             children: [
               QuestItem(),
               Gap16(),
-              ForwardBar(description: '게시물 조회', moveTarget: () {}),
+              ForwardBar(
+                  description: '게시물 조회',
+                  moveTarget: () {
+                    moveQuestPost();
+                  }),
               Gap16(),
               PostImageView(
                 width: width,
@@ -124,8 +135,6 @@ class QuestItem extends StatelessWidget {
     QuestProfileViewModel viewModel = context.read<QuestProfileViewModel>();
     QuestDetail quest = context.watch<QuestProfileViewModel>().quest;
     String questState = quest.state;
-
-    //NOT,DOING,FINISHED
 
     if (questState == QuestMap[QuestState.DOING]) {
       return DoingQuestItem();

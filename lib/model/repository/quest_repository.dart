@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/model/class/post.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/model/dataSource/remote_data_source.dart';
@@ -105,6 +106,15 @@ class QuestRepository {
   Future<void> patchRestartQuest(int questId) async {
     try {
       return _RemoteDataSource.patchContinueQuest(questId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Post>, bool hasNextPage, int lastId)> getQuestPostList(
+      int limit, int lastId, int questId) async {
+    try {
+      return _RemoteDataSource.getQuestPostList(limit, lastId, questId);
     } catch (e) {
       rethrow;
     }

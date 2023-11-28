@@ -1355,4 +1355,35 @@ class RemoteDataSource {
       rethrow;
     }
   }
+
+  Future<(List<Post>, bool hasNextPage, int lastId)> getQuestPostList(
+      int limit, int lastId, int questId) async {
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    Response response;
+    String url = '/quest/$questId/post?limit=$limit$lastIdUrl';
+
+    try {
+      debugPrint('getQuestPostList start: $url');
+      response = await dio.get(url, options: options);
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getQuestPostList jsonData: ${jsonData.toString()}');
+      List<dynamic> postsJson = jsonData['posts'];
+      List<Post> posts =
+          postsJson.map((postJson) => Post.fromJson(postJson)).toList();
+      bool hasNextPage = limit <= posts.length;
+      int lastId = jsonData['lastId'];
+      debugPrint('getQuestPostList end');
+      return (posts, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
