@@ -7,6 +7,7 @@ import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/page/common/showDialog.dart';
 import 'package:flutter_application_1/page/common/showSnackBarFunction.dart';
 import 'package:flutter_application_1/page/quest/quest_page_model.dart';
 import 'package:provider/provider.dart';
@@ -167,7 +168,7 @@ class DoingQuestItem extends StatelessWidget {
     int currentCount = quest.currentCount;
     bool canGetReward =
         !isGroupQuest && (rewardCount != null && rewardCount <= currentCount);
-    bool canShowButtton = isGroupQuest || canGetReward;
+    bool canShowButtton = (isGroupQuest && 0 < currentCount) || canGetReward;
     String count =
         isGroupQuest ? '$currentCount' : '$currentCount/$rewardCount';
     bool canShowAnimation = quest.canShowAnimation;
@@ -180,6 +181,11 @@ class DoingQuestItem extends StatelessWidget {
       try {
         await viewModel.cancelAcceptQuest(questId, index);
       } catch (e) {}
+    }
+
+    void handleCloseBtn() {
+      showMyDialog(context, '', '$questTitle 퀘스트 수행을 취소하시겠습니까?', '취소', '확인',
+          cancelAccept);
     }
 
     return AnimatedCrossFade(
@@ -241,7 +247,7 @@ class DoingQuestItem extends StatelessWidget {
                   Gap8(),
                   IconButton(
                     onPressed: () {
-                      cancelAccept();
+                      handleCloseBtn();
                     },
                     icon: Icon(
                       Icons.close,
