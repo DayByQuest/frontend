@@ -9,6 +9,7 @@ enum QuestState {
   SUCCESS,
   NOT_SEEK,
   FAIL,
+  NEW,
 }
 
 Map<QuestState, String> QuestMap = {

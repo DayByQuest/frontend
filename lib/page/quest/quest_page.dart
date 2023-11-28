@@ -10,6 +10,7 @@ import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/common/showDialog.dart';
 import 'package:flutter_application_1/page/common/showSnackBarFunction.dart';
 import 'package:flutter_application_1/page/quest/quest_page_model.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class QuestPage extends StatelessWidget {
@@ -188,107 +189,121 @@ class DoingQuestItem extends StatelessWidget {
           cancelAccept);
     }
 
+    void moveQuestProfile() async {
+      bool? isLoad = await context.push<bool>('/quest-profile?questId=$questId',
+          extra: quest);
+
+      if (isLoad == true) {
+        viewModel.load();
+      }
+    }
+
     return AnimatedCrossFade(
       duration: Duration(milliseconds: 300),
-      firstChild: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
+      firstChild: InkWell(
+        onTap: () {
+          moveQuestProfile();
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                  Gap8(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        questTitle,
-                        style: const TextStyle(
-                          fontSize: 16,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        questCategory,
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  canShowButtton
-                      ? Container(
-                          width: 77,
-                          height: 28,
-                          child: CommonBtn(
-                            isPurple: canGetReward,
-                            onPressFunc: () {
-                              completeQuest();
-                            },
-                            context: context,
-                            btnTitle: '완료',
+                    Gap8(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          questTitle,
+                          style: const TextStyle(
                             fontSize: 16,
                           ),
-                        )
-                      : Container(),
-                  Gap8(),
-                  IconButton(
-                    onPressed: () {
-                      handleCloseBtn();
-                    },
-                    icon: Icon(
-                      Icons.close,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          questCategory,
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Gap8(),
-          Text(
-            description,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Gap8(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    height: 20,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 1.0),
-                      borderRadius: BorderRadius.circular(30.0),
+                  ],
+                ),
+                Row(
+                  children: [
+                    canShowButtton
+                        ? Container(
+                            width: 77,
+                            height: 28,
+                            child: CommonBtn(
+                              isPurple: canGetReward,
+                              onPressFunc: () {
+                                completeQuest();
+                              },
+                              context: context,
+                              btnTitle: '완료',
+                              fontSize: 16,
+                            ),
+                          )
+                        : Container(),
+                    Gap8(),
+                    IconButton(
+                      onPressed: () {
+                        handleCloseBtn();
+                      },
+                      icon: Icon(
+                        Icons.close,
+                      ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '$count',
-                      style: const TextStyle(fontSize: 18),
+                  ],
+                ),
+              ],
+            ),
+            Gap8(),
+            Text(
+              description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Gap8(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 20,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black, width: 1.0),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Gap16(),
-        ],
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        '$count',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Gap16(),
+          ],
+        ),
       ),
       secondChild: SizedBox(),
       crossFadeState: !canShowAnimation
@@ -369,107 +384,121 @@ class NewQuestItem extends StatelessWidget {
       } catch (e) {}
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
+    void moveQuestProfile() async {
+      bool? isLoad = await context.push<bool>('/quest-profile?questId=$questId',
+          extra: quest);
+
+      if (isLoad == true) {
+        viewModel.load();
+      }
+    }
+
+    return InkWell(
+      onTap: () {
+        moveQuestProfile();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Gap8(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        questTitle,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        questCategory,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              AnimatedCrossFade(
+                duration: const Duration(milliseconds: 300),
+                crossFadeState: !canShowAnimation
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+                firstChild: Container(
+                  width: 77,
+                  height: 28,
+                  child: CommonBtn(
+                    isPurple: true,
+                    onPressFunc: () {
+                      acceptQuest();
+                    },
+                    context: context,
+                    btnTitle: '수행',
+                    fontSize: 16,
                   ),
                 ),
-                Gap8(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      questTitle,
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      questCategory,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            AnimatedCrossFade(
-              duration: const Duration(milliseconds: 300),
-              crossFadeState: !canShowAnimation
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond,
-              firstChild: Container(
-                width: 77,
-                height: 28,
-                child: CommonBtn(
-                  isPurple: true,
-                  onPressFunc: () {
-                    acceptQuest();
-                  },
-                  context: context,
-                  btnTitle: '수행',
-                  fontSize: 16,
+                secondChild: Container(
+                  width: 77,
+                  height: 28,
+                  child: CommonIconBtn(
+                    isPurple: true,
+                    onPressFunc: () {},
+                    context: context,
+                    icon: Icons.check,
+                  ),
                 ),
               ),
-              secondChild: Container(
-                width: 77,
-                height: 28,
-                child: CommonIconBtn(
-                  isPurple: true,
-                  onPressFunc: () {},
-                  context: context,
-                  icon: Icons.check,
-                ),
+            ],
+          ),
+          Gap8(),
+          Text(
+            description,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Gap8(),
+          Text(expiredAt),
+          Gap8(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(
+                children: [
+                  Container(
+                    height: 20,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 1.0),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '$count',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-        Gap8(),
-        Text(
-          description,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        Gap8(),
-        Text(expiredAt),
-        Gap8(),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Stack(
-              children: [
-                Container(
-                  height: 20,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 1.0),
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    '$count',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        )
-      ],
+            ],
+          )
+        ],
+      ),
     );
   }
 }
@@ -524,7 +553,7 @@ class FinishQuestItem extends StatelessWidget {
     String imageUrl = quest.imageUrl;
     String questTitle = quest.title;
     bool isGroupQuest = quest.groupName != null;
-    String questCategory = isGroupQuest ? '그룹 이름' : '뱃지 증정';
+    String questCategory = isGroupQuest ? quest.groupName! : '뱃지 증정';
     String description = quest.content;
     int? rewardCount = quest.rewardCount;
     int currentCount = quest.currentCount;
@@ -535,110 +564,131 @@ class FinishQuestItem extends StatelessWidget {
     String expiredAt = hasExpiredAt ? '기한: $questExpiredAt' : '기한: 무기한';
     bool canShowAnimation = quest.canShowAnimation;
 
+    void restartQuest() {
+      viewModel.restartQuest(questId, index);
+    }
+
+    void moveQuestProfile() async {
+      bool? isLoad = await context.push<bool>('/quest-profile?questId=$questId',
+          extra: quest);
+
+      if (isLoad == true) {
+        viewModel.load();
+      }
+    }
+
     return AnimatedCrossFade(
       duration: Duration(milliseconds: 300),
       crossFadeState: !canShowAnimation
           ? CrossFadeState.showFirst
           : CrossFadeState.showSecond,
-      firstChild: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
+      firstChild: InkWell(
+        onTap: () {
+          moveQuestProfile();
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Gap8(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          questTitle,
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          questCategory,
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                AnimatedCrossFade(
+                  duration: const Duration(seconds: 1),
+                  crossFadeState: !canShowAnimation
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  firstChild: Container(
+                    width: 77,
+                    height: 28,
+                    child: CommonBtn(
+                      isPurple: true,
+                      onPressFunc: () {
+                        restartQuest();
+                      },
+                      context: context,
+                      btnTitle: '재개',
+                      fontSize: 16,
                     ),
                   ),
-                  Gap8(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        questTitle,
-                        style: const TextStyle(
-                          fontSize: 16,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        questCategory,
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              AnimatedCrossFade(
-                duration: const Duration(seconds: 1),
-                crossFadeState:
-                    true ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                firstChild: Container(
-                  width: 77,
-                  height: 28,
-                  child: CommonBtn(
-                    isPurple: true,
-                    onPressFunc: () {},
-                    context: context,
-                    btnTitle: '재개',
-                    fontSize: 16,
+                  secondChild: Container(
+                    width: 77,
+                    height: 28,
+                    child: CommonIconBtn(
+                      isPurple: true,
+                      onPressFunc: () {},
+                      context: context,
+                      icon: Icons.check,
+                    ),
                   ),
                 ),
-                secondChild: Container(
-                  width: 77,
-                  height: 28,
-                  child: CommonIconBtn(
-                    isPurple: true,
-                    onPressFunc: () {},
-                    context: context,
-                    icon: Icons.check,
-                  ),
+              ],
+            ),
+            Gap8(),
+            Text(
+              description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Gap8(),
+            Text(expiredAt),
+            Gap8(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 20,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black, width: 1.0),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        '$count',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          Gap8(),
-          Text(
-            description,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Gap8(),
-          Text(expiredAt),
-          Gap8(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    height: 20,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 1.0),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '$count',
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Gap16(),
-        ],
+              ],
+            ),
+            Gap16(),
+          ],
+        ),
       ),
       secondChild: Container(),
     );
