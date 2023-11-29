@@ -262,7 +262,8 @@ class QuestItem extends StatelessWidget {
     String questDescriotion = quest.content;
     String state = quest.state;
     int currentCount = quest.currentCount;
-    bool isDoing = state == QuestMap[QuestState.DOING];
+    bool isDoing = (state == QuestMap[QuestState.DOING]) ||
+        (state == QuestMap[QuestState.CONTINUE]);
 
     void onClick() {
       if (isDoing) {
