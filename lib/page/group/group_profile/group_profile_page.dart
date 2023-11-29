@@ -101,7 +101,7 @@ class GroupProfileView extends StatelessWidget {
     return Scaffold(
       appBar: BackSpaceAppBar(
         appBar: AppBar(),
-        title: '그룹이름',
+        title: '그룹 프로필',
         isContextPopTrue: false,
       ),
       body: SingleChildScrollView(
@@ -226,7 +226,7 @@ class GroupProfileView extends StatelessWidget {
                           },
                           shrinkWrap: true,
                           primary: false,
-                          itemCount: 10,
+                          itemCount: questList.length,
                           itemBuilder: (context, index) {
                             return QuestItem(index: index);
                           },
