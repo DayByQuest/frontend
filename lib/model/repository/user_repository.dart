@@ -145,4 +145,16 @@ class UserRepository {
       rethrow;
     }
   }
+
+  Future<(List<User>, bool hasNextPage, int lastId)> getSearchUserList(
+    int lastId,
+    int limit,
+    String keyword,
+  ) async {
+    try {
+      return _RemoteDataSource.getSearchUserList(lastId, limit, keyword);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
