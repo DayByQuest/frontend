@@ -155,6 +155,7 @@ class DoingQuestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width - 32;
     QuestViewModel viewModel = context.read<QuestViewModel>();
     List<QuestDetail> doingQuestList =
         context.watch<QuestViewModel>().doingQuestList;
@@ -207,69 +208,15 @@ class DoingQuestItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 48,
-                      height: 48,
-                      child: Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Gap8(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          questTitle,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          questCategory,
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    canShowButtton
-                        ? Container(
-                            width: 77,
-                            height: 28,
-                            child: CommonBtn(
-                              isPurple: canGetReward,
-                              onPressFunc: () {
-                                completeQuest();
-                              },
-                              context: context,
-                              btnTitle: '완료',
-                              fontSize: 16,
-                            ),
-                          )
-                        : Container(),
-                    Gap8(),
-                    IconButton(
-                      onPressed: () {
-                        handleCloseBtn();
-                      },
-                      icon: Icon(
-                        Icons.close,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            DoingQuestInforBar(
+              imageUrl: imageUrl,
+              width: width,
+              questTitle: questTitle,
+              questCategory: questCategory,
+              canShowButtton: canShowButtton,
+              canGetReward: canGetReward,
+              handleCommonBtn: completeQuest,
+              handleCloseBtn: handleCloseBtn,
             ),
             Gap8(),
             Text(
@@ -309,6 +256,109 @@ class DoingQuestItem extends StatelessWidget {
       crossFadeState: !canShowAnimation
           ? CrossFadeState.showFirst
           : CrossFadeState.showSecond,
+    );
+  }
+}
+
+class DoingQuestInforBar extends StatelessWidget {
+  DoingQuestInforBar({
+    super.key,
+    required this.imageUrl,
+    required this.width,
+    required this.questTitle,
+    required this.questCategory,
+    required this.canShowButtton,
+    required this.canGetReward,
+    required this.handleCommonBtn,
+    required this.handleCloseBtn,
+  });
+
+  final String imageUrl;
+  final double width;
+  final String questTitle;
+  final String questCategory;
+  final bool canShowButtton;
+  final bool canGetReward;
+  Function handleCommonBtn;
+  Function handleCloseBtn;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: 48,
+              height: 48,
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Gap8(),
+            SizedBox(
+              width: width - 166,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    questTitle,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    questCategory,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          child: Row(
+            children: [
+              canShowButtton
+                  ? Container(
+                      width: 77,
+                      height: 28,
+                      child: CommonBtn(
+                        isPurple: canGetReward,
+                        onPressFunc: () {
+                          handleCommonBtn();
+                        },
+                        context: context,
+                        btnTitle: '완료',
+                        fontSize: 16,
+                      ),
+                    )
+                  : Container(),
+              Gap8(),
+              SizedBox(
+                width: 25,
+                child: IconButton(
+                  padding: EdgeInsets.zero, // 패딩 설정
+                  constraints: BoxConstraints(), // constraints
+                  onPressed: () {
+                    handleCloseBtn();
+                  },
+                  icon: Icon(
+                    Icons.close,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -359,6 +409,7 @@ class NewQuestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width - 32;
     QuestViewModel viewModel = context.read<QuestViewModel>();
     List<QuestDetail> newQuestList =
         context.watch<QuestViewModel>().newQuestList;
@@ -414,23 +465,28 @@ class NewQuestItem extends StatelessWidget {
                     ),
                   ),
                   Gap8(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        questTitle,
-                        style: const TextStyle(
-                          fontSize: 16,
+                  SizedBox(
+                    width: width - 166,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          questTitle,
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        questCategory,
-                        style: const TextStyle(
-                          color: Colors.grey,
+                        Text(
+                          questCategory,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -526,7 +582,7 @@ class FinishQuestList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView.builder(
-        itemCount: 15,
+        itemCount: questLength,
         itemBuilder: (context, index) {
           return FinishQuestItem(index: index);
         },
@@ -545,6 +601,7 @@ class FinishQuestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width - 32;
     QuestViewModel viewModel = context.read<QuestViewModel>();
     List<QuestDetail> finishedQuestList =
         context.watch<QuestViewModel>().finishedQuestList;
@@ -603,23 +660,26 @@ class FinishQuestItem extends StatelessWidget {
                       ),
                     ),
                     Gap8(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          questTitle,
-                          style: const TextStyle(
-                            fontSize: 16,
+                    SizedBox(
+                      width: width - 166,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            questTitle,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          questCategory,
-                          style: TextStyle(
-                            color: Colors.grey,
+                          Text(
+                            questCategory,
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
