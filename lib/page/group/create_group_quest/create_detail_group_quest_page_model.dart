@@ -18,6 +18,9 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
   Status status = Status.loading;
 
   String questTitle = '';
+
+  // 제목이 15자를 넘으면 안된다.
+  bool isOverLength = false;
   String questContent = '';
   String expiredAt = '';
   String selectInterest = '';
@@ -108,8 +111,20 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void validateTitleOverLength() {
+    isOverLength = false;
+
+    if (15 < questTitle.length) {
+      isOverLength = true;
+    }
+
+    notifyListeners();
+    return;
+  }
+
   void setQuestTitle(String input) {
     questTitle = input;
+    validateTitleOverLength();
     notifyListeners();
   }
 
