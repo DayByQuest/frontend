@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page.dart';
 import 'package:flutter_application_1/page/feed/feed_page.dart';
 import 'package:flutter_application_1/page/group/create_group/create_group_page.dart';
@@ -17,6 +18,9 @@ import 'package:flutter_application_1/page/my_profile/profile_image_edit/profile
 import 'package:flutter_application_1/page/post/detail_post_page.dart';
 import 'package:flutter_application_1/page/profile/profile_page.dart';
 import 'package:flutter_application_1/page/quest/example_quest/example_quest_page.dart';
+import 'package:flutter_application_1/page/quest/quest_page.dart';
+import 'package:flutter_application_1/page/quest/quest_porfile/quest_profile_page.dart';
+import 'package:flutter_application_1/page/quest/quest_post/quest_post_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -171,6 +175,30 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             int questId = int.parse(state.uri.queryParameters['questId']!) ?? 0;
             return ExampleQuestPage(questId: questId);
+          },
+        ),
+        GoRoute(
+          path: 'quest',
+          builder: (context, state) {
+            return QuestPage();
+          },
+        ),
+        GoRoute(
+          path: 'quest-profile',
+          builder: (context, state) {
+            int questId = int.parse(state.uri.queryParameters['questId']!) ?? 0;
+            QuestDetail quest = GoRouterState.of(context).extra as QuestDetail;
+            return QuestProfilePage(
+              questId: questId,
+              quest: quest,
+            );
+          },
+        ),
+        GoRoute(
+          path: 'quest-post',
+          builder: (context, state) {
+            int questId = int.parse(state.uri.queryParameters['questId']!) ?? 0;
+            return QuestPostPage(questId: questId);
           },
         ),
       ],
