@@ -225,33 +225,18 @@ class DoingQuestItem extends StatelessWidget {
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  canShowButtton
-                      ? Container(
-                          width: 77,
-                          height: 28,
-                          child: CommonBtn(
-                            isPurple: canGetReward,
-                            onPressFunc: () {
-                              completeQuest();
-                            },
-                            context: context,
-                            btnTitle: '완료',
-                            fontSize: 16,
-                          ),
-                        )
-                      : Container(),
-                  Gap8(),
-                  IconButton(
-                    onPressed: () {
-                      handleCloseBtn();
-                    },
-                    icon: Icon(
-                      Icons.close,
-                    ),
-                  ),
-                ],
+              Container(
+                width: 77,
+                height: 28,
+                child: CommonBtn(
+                  isPurple: canGetReward,
+                  onPressFunc: () {
+                    handleCloseBtn();
+                  },
+                  context: context,
+                  btnTitle: '삭제',
+                  fontSize: 16,
+                ),
               ),
             ],
           ),

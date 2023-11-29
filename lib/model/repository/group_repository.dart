@@ -147,4 +147,13 @@ class GroupRepositoty {
       rethrow;
     }
   }
+
+  Future<(List<Group>, bool hasNextPage, int lastId)> getSearchGroupList(
+      int lastId, int limit, String keyword) async {
+    try {
+      return _RemoteDataSource.getSearchGroupList(lastId, limit, keyword);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

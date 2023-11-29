@@ -49,7 +49,10 @@ class GroupQuestJudgmentViewModel extends ChangeNotifier {
           await _groupRepositoty.getFailedGroupQuestList(questId);
       final List<FailedPost> newFailedPostList = postResult.$1;
       _hasNextPage = postResult.$2;
+
       failedPostList.addAll(newFailedPostList);
+      debugPrint(
+          "getFailedGroupQuestListModel ${failedPostList.isNotEmpty ? failedPostList[0].id : '빈값'}");
       imageStatus = Status.loaded;
       notifyListeners();
       debugPrint("getFailedGroupQuestListModel end");
@@ -91,11 +94,12 @@ class GroupQuestJudgmentViewModel extends ChangeNotifier {
   }
 
   void changeImageLoadCount() async {
+    debugPrint("changeImageLoadCount work!: $imageLoadCount");
     if (imageLoadCount == 0) {
       //새로운 값 불러오기.
       imageStatus = Status.loading;
       imageLoadCount = 5;
-      getFailedGroupQuestList();
+      await getFailedGroupQuestList();
       return;
     }
 

@@ -34,9 +34,11 @@ class QuestViewModel extends ChangeNotifier {
         _questRepository.getRemoteNewQuest(),
         _questRepository.getRemoteFinishedQuest(),
         _questRepository.getRemoteRecommendQuest(),
+        _questRepository.getRemoteContinueQuest(),
       ]);
       doingQuestList.clear();
       doingQuestList = results[0];
+      doingQuestList.addAll(results[4]);
       newQuestList.clear();
       newQuestList = results[1];
       newQuestList.addAll(results[3]);

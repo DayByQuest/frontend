@@ -119,4 +119,13 @@ class QuestRepository {
       rethrow;
     }
   }
+
+  Future<(List<QuestDetail>, bool hasNextPage, int lastId)> getSearchQuestList(
+      int lastId, int limit, String keyword) async {
+    try {
+      return _RemoteDataSource.getSearchQuestList(lastId, limit, keyword);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

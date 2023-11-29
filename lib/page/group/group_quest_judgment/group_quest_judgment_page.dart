@@ -65,7 +65,7 @@ class GroupQuestJudgmentView extends StatelessWidget {
           title: '게시물 판정',
           isContextPopTrue: false,
         ),
-        body: Center(
+        body: const Center(
           child: Text('그룹의 퀘스트가 없습니다.'),
         ),
       );
@@ -170,11 +170,15 @@ class _FailedQuestListState extends State<FailedQuestList> {
             isLoop: false,
             controller: controller,
             isDisabled: true,
+            cardsCount: failedPostLength,
+            numberOfCardsDisplayed: 1,
             onEnd: () {
               setIsDoneQuestJudge();
             },
             onSwipe: (previousIndex, currentIndex, direction) {
               int postId = failedPostList[previousIndex].id;
+
+              viewModel.changeImageLoadCount();
 
               if (CardSwiperDirection.left == direction) {
                 viewModel.postJudgmentFail(postId);
@@ -184,9 +188,10 @@ class _FailedQuestListState extends State<FailedQuestList> {
               viewModel.postJudgmentSuccess(postId);
               return true;
             },
-            cardsCount: failedPostLength,
             cardBuilder: (context, index, horizontalOffsetPercentage,
                 verticalOffsetPercentage) {
+              debugPrint('index: $index');
+
               return FailedQuestItem(
                 index: index,
               );

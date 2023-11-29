@@ -21,6 +21,8 @@ import 'package:flutter_application_1/page/quest/example_quest/example_quest_pag
 import 'package:flutter_application_1/page/quest/quest_page.dart';
 import 'package:flutter_application_1/page/quest/quest_porfile/quest_profile_page.dart';
 import 'package:flutter_application_1/page/quest/quest_post/quest_post_page.dart';
+import 'package:flutter_application_1/page/search/search_page.dart';
+import 'package:flutter_application_1/page/search/search_result/search_result_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -201,6 +203,15 @@ final GoRouter _router = GoRouter(
             return QuestPostPage(questId: questId);
           },
         ),
+        GoRoute(
+          path: 'search',
+          builder: (context, state) {
+            String keyword = state.uri.queryParameters['keyword'] ?? '0';
+            return SearchResultPage(
+              keyword: keyword,
+            );
+          },
+        ),
       ],
     ),
   ],
@@ -276,7 +287,7 @@ class _MyHomePageState extends State<MyHomePage> {
         bodyWidget = FeedPage();
         break;
       case 1:
-        bodyWidget = Center(child: Text("Search"));
+        bodyWidget = SafeArea(child: SearchPage());
         break;
       case 2:
         bodyWidget = Container(); //CreatePost();

@@ -1386,4 +1386,109 @@ class RemoteDataSource {
       rethrow;
     }
   }
+
+  Future<(List<User>, bool hasNextPage, int lastId)> getSearchUserList(
+      int lastId, int limit, String keyword) async {
+    Response response;
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    String url = '/search/user?keyword=$keyword&limit=$limit${lastIdUrl}';
+
+    try {
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      debugPrint('getSearchUserList start');
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getSearchUserList ${jsonData.toString()}');
+      List<dynamic> usersJson = jsonData['users'];
+      List<User> followingList =
+          usersJson.map((userJson) => User.fromJson(userJson)).toList();
+      bool hasNextPage = limit <= (usersJson.length);
+      int nextLastId = jsonData['lastId'];
+      debugPrint('getSearchUserList end');
+      return (followingList, hasNextPage, nextLastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<Group>, bool hasNextPage, int lastId)> getSearchGroupList(
+      int lastId, int limit, String keyword) async {
+    Response response;
+    String lastIdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastIdUrl = '';
+    }
+
+    String url = '/search/group?keyword=$keyword&limit=$limit$lastIdUrl';
+
+    try {
+      debugPrint('getSearchGroupList start $url');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+
+      Map<String, dynamic> jsonData = response.data;
+      debugPrint('getSearchGroupList ${jsonData.toString()}');
+      List<dynamic> groupsJson = jsonData['groups'];
+      List<Group> groupList =
+          groupsJson.map((groupJson) => Group.fromJson(groupJson)).toList();
+      bool hasNextPage = limit <= groupList.length;
+      int lastId = jsonData['lastId'];
+      debugPrint('getSearchGroupList end');
+      return (groupList, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<(List<QuestDetail>, bool hasNextPage, int lastId)> getSearchQuestList(
+      int lastId, int limit, String keyword) async {
+    Response response;
+    String lastdUrl = '&lastId=$lastId';
+
+    if (lastId == -1) {
+      lastdUrl = '';
+    }
+
+    String url = '/search/quest?keyword=$keyword&limit=$limit$lastdUrl';
+
+    try {
+      debugPrint('getSearchQuestList start $url');
+      response = await dio.get(
+        url,
+        options: options,
+      );
+      Map<String, dynamic> jsonData = response.data;
+
+      // jsonData['quests'];로 추후 수정해야함.
+      List<dynamic> questJson = jsonData['quests'];
+      debugPrint('questJson $questJson');
+      List<QuestDetail> questList =
+          questJson.map((quest) => QuestDetail.fromJson(quest)).toList();
+      bool hasNextPage = limit <= questList.length;
+      int lastId = jsonData['lastId'];
+      debugPrint('getSearchQuestList end');
+      return (questList, hasNextPage, lastId);
+    } on DioException catch (e) {
+      throwError(e);
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

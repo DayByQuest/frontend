@@ -248,12 +248,14 @@ class _TitleInputState extends State<TitleInput> {
         context.read<CreateDetailGroupQuestViewModel>();
     String questTitle =
         context.watch<CreateDetailGroupQuestViewModel>().questTitle;
+    bool isOverLength =
+        context.watch<CreateDetailGroupQuestViewModel>().isOverLength;
 
     if (_textEditingController.text == "") {
       _textEditingController.text = questTitle;
     }
 
-    bool hasTitle = 0 < questTitle.length;
+    bool hasTitle = 0 < questTitle.length && !isOverLength;
 
     void changeTitle(String input) {
       viewModel.setQuestTitle(input);
@@ -302,6 +304,14 @@ class _TitleInputState extends State<TitleInput> {
           ),
           onChanged: changeTitle,
         ),
+        isOverLength
+            ? Text(
+                '퀘스트 제목은 15자를 넘길 수 없습니다.',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              )
+            : Container(),
         Gap16(),
         SizedBox(
           height: 48,
