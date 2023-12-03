@@ -11,7 +11,7 @@ class DescribeImagesViewModel with ChangeNotifier {
   String description = "";
   final List<SelectedByte> selectedBytes;
   final SelectedImagesDetails details;
-  Status status = Status.loading;
+  Status status = Status.loaded;
 
   DescribeImagesViewModel({
     required GroupRepositoty groupRepositoty,
@@ -23,9 +23,13 @@ class DescribeImagesViewModel with ChangeNotifier {
   Future<int> createGroupQuest() async {
     try {
       debugPrint('createGroupQuest: 시작! description: $description');
+      status = Status.loading;
+      notifyListeners();
       questId = await _groupRepositoty.postRemoteCreateGroupQuest(
           selectedBytes, description, groupId);
       debugPrint('createGroupQuest: 종료! questId: $questId');
+      status = Status.loaded;
+      notifyListeners();
 
       return questId;
     } on Exception catch (e) {
