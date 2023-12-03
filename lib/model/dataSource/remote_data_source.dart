@@ -167,38 +167,35 @@ class RemoteDataSource {
     }
   }
 
-  Future<(List<BadgeClass.Badge>, bool hasNextPage, int lastId)> getMyBadge(
-      int lastId) async {
+  Future<(List<BadgeClass.Badge>, bool hasNextPage, String lastTime)>
+      getMyBadge(String lastTime) async {
     Response response;
 
-    String lastIdUrl = '&lastId=$lastId';
+    String lastIdUrl = '&lastTime=$lastTime';
 
-    if (lastId == -1) {
+    if (lastTime == '') {
       lastIdUrl = '';
     }
 
     String url = '/badge?limit=10$lastIdUrl';
 
     try {
-      response = await dio.get(url, options: options);
-      debugPrint(response.data);
-      List<Map<String, dynamic>> jsonDate = response.data.bages;
-      bool hasNextPage = 10 <= response.data.length;
-      int lastId = response.data.lastId;
-      List<BadgeClass.Badge> badges = [];
+      debugPrint('getMyBadge START $url');
+      response = await dio.get(
+        url,
+        options: options,
+      );
 
-      for (int i = 0; i < jsonDate.length; i++) {
-        Map<String, dynamic> badge = jsonDate[i];
-        String name = badge['name'];
-        String imageUrl = badge['imageUrl'];
-        int id = badge['id'];
-        String acquiredAt = badge['acquiredAt'];
-        BadgeClass.Badge newBadge = BadgeClass.Badge(
-            name: name, imageUrl: imageUrl, id: id, acquiredAt: acquiredAt);
-        badges.add(newBadge);
-      }
+      Map<String, dynamic> jsonData = response.data;
+      List<dynamic> badgesJson = jsonData['badges'];
+      List<BadgeClass.Badge> badges = badgesJson
+          .map((badgeJson) => BadgeClass.Badge.fromJson(badgeJson))
+          .toList();
 
-      return (badges, hasNextPage, lastId);
+      bool hasNextPage = 10 <= badges.length;
+      String lastTime = jsonData['lastTime'];
+
+      return (badges, hasNextPage, lastTime);
     } on DioException catch (e) {
       throwError(e);
       rethrow;
@@ -233,9 +230,14 @@ class RemoteDataSource {
     String url = '/badge';
 
     try {
+      Map<String, dynamic> data = {
+        "badges": badgeIdList,
+      };
+      final jsonData = jsonEncode(data);
+
       response = await dio.patch(
         url,
-        data: badgeIdList,
+        data: jsonData,
         options: options,
       );
       debugPrint(response.toString());

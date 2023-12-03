@@ -1,8 +1,12 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class Badge {
   final String _name;
   final String _imageUrl;
   final int _id;
   final String _acquiredAt;
+
+  static String? IMAGE_BASE_URL = dotenv.env['IMAGE_BASE_URL'] ?? '';
 
   Badge(
       {required String name,
@@ -22,7 +26,7 @@ class Badge {
   factory Badge.fromJson(Map<String, dynamic> json) {
     return Badge(
       name: json['name'],
-      imageUrl: json['imageUrl'],
+      imageUrl: '${IMAGE_BASE_URL}${json['imageIdentifier']}',
       id: json['id'],
       acquiredAt: json['acquiredAt'],
     );

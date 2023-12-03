@@ -19,9 +19,8 @@ class MyBadgeEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MyBadgeEditViewModel>(
         create: (_) {
-          final MyBadgeEditViewModel viewModel = MyBadgeEditViewModel(
-              userRepository:
-                  UserRepository(remoteDataSource: MockDataSource()));
+          final MyBadgeEditViewModel viewModel =
+              MyBadgeEditViewModel(userRepository: UserRepository());
           return viewModel;
         },
         child: MyBadgeEditView());
@@ -243,7 +242,7 @@ class AllBadgeList extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: PagedGridView<int, BadgeClass.Badge>(
+          child: PagedGridView<String, BadgeClass.Badge>(
             shrinkWrap: true,
             showNewPageProgressIndicatorAsGridChild: true,
             showNewPageErrorIndicatorAsGridChild: true,
