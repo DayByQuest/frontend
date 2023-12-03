@@ -3,6 +3,7 @@ import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page.dart';
 import 'package:flutter_application_1/page/feed/feed_page.dart';
 import 'package:flutter_application_1/page/group/create_group/create_group_page.dart';
+import 'package:flutter_application_1/page/group/create_group_quest/create_detail_group_quest_page.dart';
 import 'package:flutter_application_1/page/group/create_group_quest/create_group_quest_page.dart';
 import 'package:flutter_application_1/page/group/groupPage.dart';
 import 'package:flutter_application_1/page/group/group_member_list/group_member_page.dart';
@@ -118,15 +119,6 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
-          path: 'create-group-quest',
-          builder: (context, state) {
-            int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
-            return CreateGroupQuestPage(
-              groupId: groupId,
-            );
-          },
-        ),
-        GoRoute(
           path: 'group',
           builder: (context, state) {
             return GroupPage();
@@ -164,6 +156,24 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
             return GroupQuestJudgmentPage(groupId: groupId);
+          },
+        ),
+        GoRoute(
+          path: 'create-group-quest',
+          builder: (context, state) {
+            int groupId = int.parse(state.uri.queryParameters['groupId']!) ?? 0;
+            return CreateGroupQuestPage(
+              groupId: groupId,
+            );
+          },
+        ),
+        GoRoute(
+          path: 'create-detail-group-quest',
+          builder: (context, state) {
+            int questId = int.parse(state.uri.queryParameters['questId']!) ?? 0;
+            return CreateDetailGroupQuestPage(
+              questId: questId,
+            );
           },
         ),
         GoRoute(

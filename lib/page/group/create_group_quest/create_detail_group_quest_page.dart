@@ -8,7 +8,6 @@ import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/group/create_group_quest/create_detail_group_quest_page_model.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -45,14 +44,15 @@ class CreateDetailGroupQuestPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     CreateDetailGroupQuestViewModel viewModel =
         context.read<CreateDetailGroupQuestViewModel>();
-    Status status = context.watch<CreateDetailGroupQuestViewModel>().status;
+    bool isLoad = context.watch<CreateDetailGroupQuestViewModel>().isLoad;
     int questId = viewModel.questId;
     PageController controller =
         context.watch<CreateDetailGroupQuestViewModel>().controller;
 
-    if (status == Status.loading) {
-      viewModel.testFunc();
+    if (!isLoad) {
+      viewModel.getLabelList();
       viewModel.getInterests();
+      return Loading(context: context);
     }
 
     return GestureDetector(
@@ -62,6 +62,9 @@ class CreateDetailGroupQuestPageView extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
+          iconTheme: IconThemeData(
+            color: Colors.black,
+          ),
           toolbarHeight: 48,
           centerTitle: true,
           title: const Text(
@@ -74,13 +77,15 @@ class CreateDetailGroupQuestPageView extends StatelessWidget {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              debugPrint("work!");
-              if (controller.page != 0) {
-                controller.previousPage(
-                  duration: Duration(milliseconds: 500),
-                  curve: Curves.ease,
-                );
+              if (controller.page == 0) {
+                context.pop(true);
+                return;
               }
+
+              controller.previousPage(
+                duration: Duration(milliseconds: 500),
+                curve: Curves.ease,
+              );
             },
           ),
         ),
@@ -510,9 +515,9 @@ class _LabelInputState extends State<LabelInput> {
     CreateDetailGroupQuestViewModel viewModel =
         context.read<CreateDetailGroupQuestViewModel>();
     Status status = context.watch<CreateDetailGroupQuestViewModel>().status;
-    bool isLoding = status == Status.loading;
     List<String> labelList =
         context.watch<CreateDetailGroupQuestViewModel>().labelList;
+    bool isLoding = labelList.isEmpty;
     int selectLabelIndex =
         context.watch<CreateDetailGroupQuestViewModel>().selectLabelIndex;
     bool hasSelectLabel = viewModel.hasLabel();

@@ -27,6 +27,7 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
   int selectLabelIndex = -1;
   String selectLabel = '';
   List<Interest> interest = [];
+  bool isLoad = false;
   List<String> labelList = [];
   final PageController controller = PageController();
 
@@ -37,44 +38,61 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
   })  : _groupRepositoty = groupRepositoty,
         _userRepository = userRepository;
 
-  void testFunc() {
+  void getLabelList() async {
     if (questId == -1) {
       return;
     }
 
     String url = '${API_BASE_URL}/group/$questId/quest/labels';
-    debugPrint('testFunc start:');
-    status = Status.loaded;
-    notifyListeners();
-    SSEClient.subscribeToSSE(method: SSERequestType.GET, url: url, header: {
-      'Authorization': 'UserId 1',
-    }).listen(
-      (event) {
-        if (event.data != null) {
-          if (event.data != 'success') {
-            debugPrint('event.data:${event.data}');
-            Map<String, dynamic> jsonData = json.decode(event.data!);
-            labelList = List<String>.from(jsonData['labels'] ?? []);
-            debugPrint('labelList: ${labelList}');
-            status = Status.loaded;
-            notifyListeners();
-          }
-        }
+    debugPrint('getLabelList start:');
 
-        debugPrint('eventevent: ' + event.toString());
-        debugPrint('DataData: ${event?.data}');
-      },
-    );
-    debugPrint('testFunc end');
+    try {
+      var sseClient = SSEClient.subscribeToSSE(
+        method: SSERequestType.GET,
+        url: url,
+        header: {'Authorization': 'UserId 1'},
+      );
+
+      await for (var event in sseClient) {
+        handleSSEEvent(event);
+      }
+    } catch (e) {
+      debugPrint('SSE error: $e');
+    }
+
+    debugPrint('getLabelList end');
+  }
+
+  void handleSSEEvent(SSEModel event) {
+    if (event.data != null) {
+      debugPrint('event.id: ${event.id}');
+      debugPrint('event.event: ${event.event}');
+      debugPrint('event.data: ${event.data}');
+
+      if (event.event == 'labels' && event.data!.startsWith('{')) {
+        debugPrint('event.data 뚫었는지 확인: ${event.data}');
+        try {
+          Map<String, dynamic> jsonData = json.decode(event.data!);
+          labelList = List<String>.from(jsonData['labels'] ?? []);
+          debugPrint('labelList: ${labelList}');
+          notifyListeners();
+        } catch (e) {
+          // Handle JSON decoding error
+          debugPrint('JSON decoding error: $e');
+        }
+      }
+    }
   }
 
   void getInterests() async {
-    if (interest.isNotEmpty) {
+    if (interest.isNotEmpty || isLoad) {
+      debugPrint('getInterests 차단!');
       return;
     }
 
     try {
       debugPrint('getInterests start');
+      isLoad = true;
       interest = await _userRepository.getRemoteInterest();
       debugPrint('getInterests end');
       notifyListeners();

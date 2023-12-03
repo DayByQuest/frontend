@@ -23,6 +23,7 @@ class CommonBtn extends StatelessWidget {
         Expanded(
           child: OutlinedButton(
             style: ButtonStyle(
+              padding: MaterialStateProperty.all(EdgeInsets.zero),
               fixedSize: MaterialStateProperty.all(
                 const Size.fromHeight(48),
               ),
@@ -45,11 +46,15 @@ class CommonBtn extends StatelessWidget {
             onPressed: () async {
               onPressFunc();
             },
-            child: Text(
-              btnTitle,
-              style: TextStyle(
-                fontSize: fontSize,
-                color: isPurple ? Colors.white : Colors.black,
+            child: SizedBox(
+              child: Text(
+                btnTitle,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  color: isPurple ? Colors.white : Colors.black,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
               ),
             ),
           ),

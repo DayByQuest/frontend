@@ -80,8 +80,8 @@ class MockDataSource extends Mock implements RemoteDataSource {
   }
 
   @override
-  Future<(List<BadgeClass.Badge>, bool hasNextPage, int lastId)> getMyBadge(
-      int lastId) async {
+  Future<(List<BadgeClass.Badge>, bool hasNextPage, String lastTime)>
+      getMyBadge(String lastTime) async {
     String name = "김김승승태태";
     String imageUrl = IMAGE_URL;
     String id = "aaaa";
@@ -93,7 +93,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
           name: name, imageUrl: imageUrl, id: i, acquiredAt: acquiredAt);
       badges.add(newBadge);
     }
-    return (badges, true, lastId + 1);
+    return (badges, true, lastTime);
   }
 
   @override

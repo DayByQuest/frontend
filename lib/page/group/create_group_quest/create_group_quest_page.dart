@@ -5,6 +5,8 @@ import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
+import 'package:flutter_application_1/page/common/Loding.dart';
+import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/group/create_group_quest/create_detail_group_quest_page.dart';
 import 'package:flutter_application_1/page/group/create_group_quest/create_group_quest_page_model.dart';
 
@@ -39,6 +41,7 @@ class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
         multiImages: true,
       );
 
+      // alert 추가
       if (images == null || images.selectedFiles.length != 3) {
         return;
       }
@@ -54,26 +57,13 @@ class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
           },
         ),
       );
-
-      if (images != null && images.selectedFiles.length == 3) {
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (BuildContext context) {
-        //       return DescribeImagesPage(
-        //         selectedBytes: images!.selectedFiles,
-        //         details: images,
-        //       );
-        //     },
-        //   ),
-        // );
-      }
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(
-          child: Text('이미지 선택'),
-        ),
+      appBar: BackSpaceAppBar(
+        appBar: AppBar(),
+        title: '이미지 선택',
+        isContextPopTrue: true,
       ),
       body: SafeArea(
         child: Padding(
@@ -159,9 +149,11 @@ class _DescribeImagesState extends State<DescribeImages> {
     int imageLength = widget.selectedBytes.length;
     double width = MediaQuery.of(context).size.width - 32;
     DescribeImagesViewModel viewModel = context.read<DescribeImagesViewModel>();
+    bool isLoading =
+        context.watch<DescribeImagesViewModel>().status == Status.loading;
 
     bool canCreate =
-        0 < context.watch<DescribeImagesViewModel>().description.length;
+        context.watch<DescribeImagesViewModel>().description.isNotEmpty;
 
     void setDescription(String input) {
       viewModel.setDescription(input);
@@ -171,23 +163,19 @@ class _DescribeImagesState extends State<DescribeImages> {
       int questId = await viewModel.createGroupQuest();
 
       if (questId != -1) {
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (BuildContext context) {
-        //       return CreateDetailGroupQuestPage(questId: questId);
-        //     },
-        //   ),
-        // );
-
-        Navigator.push<void>(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return CreateDetailGroupQuestPage(questId: questId);
-            },
-          ),
-        );
+        context.push('/create-detail-group-quest?questId=$questId');
       }
+    }
+
+    if (isLoading) {
+      return Scaffold(
+        appBar: BackSpaceAppBar(
+          appBar: AppBar(),
+          title: '이미지 설명 추가',
+          isContextPopTrue: true,
+        ),
+        body: Loading(context: context),
+      );
     }
 
     return GestureDetector(
@@ -195,8 +183,10 @@ class _DescribeImagesState extends State<DescribeImages> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("이미지 설명 추가"),
+        appBar: BackSpaceAppBar(
+          appBar: AppBar(),
+          title: '이미지 설명 추가',
+          isContextPopTrue: true,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
@@ -205,10 +195,11 @@ class _DescribeImagesState extends State<DescribeImages> {
             children: [
               TextField(
                 controller: _textEditingController,
-                maxLines: null,
+                maxLines: 3,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
-                  hintText: '성공 이미지에 대한 설명을 작성해주세요!',
+                  hintText:
+                      '성공 이미지에 대한 설명을 작성해주세요!\n 단 명사형으로 작성해주세요! ex) 생성을 훔치는 고양이',
                 ),
                 onSubmitted: (value) {},
                 onChanged: (value) {

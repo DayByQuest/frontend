@@ -1,4 +1,6 @@
+import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/class/badge.dart' as BadgeClass;
@@ -35,24 +37,24 @@ class MyProfileView extends StatelessWidget {
 
     if (isLoading) {
       viewModel.load();
-      return const Center(child: Text("loading"));
-    } else {
-      return ListView(
-        physics: const ScrollPhysics(),
-        children: [
-          MyMenuBar(),
-          ProfileInfomation(),
-          SizedBox(
-            height: 16,
-          ),
-          TrackerView(),
-          SizedBox(
-            height: 16,
-          ),
-          BadgeView(),
-        ],
-      );
+      return Loading(context: context);
     }
+
+    return ListView(
+      physics: const ScrollPhysics(),
+      children: [
+        MyMenuBar(),
+        ProfileInfomation(),
+        SizedBox(
+          height: 16,
+        ),
+        TrackerView(),
+        SizedBox(
+          height: 16,
+        ),
+        BadgeView(),
+      ],
+    );
   }
 }
 
