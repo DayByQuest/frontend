@@ -47,7 +47,6 @@ class CommonBtn extends StatelessWidget {
               onPressFunc();
             },
             child: SizedBox(
-              width: 77,
               child: Text(
                 btnTitle,
                 style: TextStyle(
