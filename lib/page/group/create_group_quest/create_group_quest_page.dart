@@ -39,6 +39,7 @@ class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
         multiImages: true,
       );
 
+      // alert 추가
       if (images == null || images.selectedFiles.length != 3) {
         return;
       }
@@ -70,10 +71,10 @@ class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(
-          child: Text('이미지 선택'),
-        ),
+      appBar: BackSpaceAppBar(
+        appBar: AppBar(),
+        title: '이미지 선택',
+        isContextPopTrue: true,
       ),
       body: SafeArea(
         child: Padding(
@@ -161,7 +162,7 @@ class _DescribeImagesState extends State<DescribeImages> {
     DescribeImagesViewModel viewModel = context.read<DescribeImagesViewModel>();
 
     bool canCreate =
-        0 < context.watch<DescribeImagesViewModel>().description.length;
+        context.watch<DescribeImagesViewModel>().description.isNotEmpty;
 
     void setDescription(String input) {
       viewModel.setDescription(input);
@@ -171,22 +172,7 @@ class _DescribeImagesState extends State<DescribeImages> {
       int questId = await viewModel.createGroupQuest();
 
       if (questId != -1) {
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (BuildContext context) {
-        //       return CreateDetailGroupQuestPage(questId: questId);
-        //     },
-        //   ),
-        // );
-
-        Navigator.push<void>(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return CreateDetailGroupQuestPage(questId: questId);
-            },
-          ),
-        );
+        context.push('/create-detail-group-quest?questId=$questId');
       }
     }
 
@@ -195,8 +181,10 @@ class _DescribeImagesState extends State<DescribeImages> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("이미지 설명 추가"),
+        appBar: BackSpaceAppBar(
+          appBar: AppBar(),
+          title: '이미지 설명 추가',
+          isContextPopTrue: true,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
