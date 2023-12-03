@@ -8,9 +8,7 @@ import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/group/create_group_quest/create_detail_group_quest_page_model.dart';
-
 import 'package:go_router/go_router.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class CreateDetailGroupQuestPage extends StatelessWidget {
@@ -46,13 +44,13 @@ class CreateDetailGroupQuestPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     CreateDetailGroupQuestViewModel viewModel =
         context.read<CreateDetailGroupQuestViewModel>();
-    Status status = context.watch<CreateDetailGroupQuestViewModel>().status;
+    bool isLoad = context.watch<CreateDetailGroupQuestViewModel>().isLoad;
     int questId = viewModel.questId;
     PageController controller =
         context.watch<CreateDetailGroupQuestViewModel>().controller;
 
-    if (status == Status.loading) {
-      viewModel.testFunc();
+    if (!isLoad) {
+      viewModel.getLabelList();
       viewModel.getInterests();
       return Loading(context: context);
     }
@@ -519,7 +517,7 @@ class _LabelInputState extends State<LabelInput> {
     Status status = context.watch<CreateDetailGroupQuestViewModel>().status;
     List<String> labelList =
         context.watch<CreateDetailGroupQuestViewModel>().labelList;
-    bool isLoding = status == Status.loading || labelList.isEmpty;
+    bool isLoding = labelList.isEmpty;
     int selectLabelIndex =
         context.watch<CreateDetailGroupQuestViewModel>().selectLabelIndex;
     bool hasSelectLabel = viewModel.hasLabel();

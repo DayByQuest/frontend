@@ -38,15 +38,13 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
   })  : _groupRepositoty = groupRepositoty,
         _userRepository = userRepository;
 
-  void testFunc() async {
+  void getLabelList() async {
     if (questId == -1) {
       return;
     }
 
     String url = '${API_BASE_URL}/group/$questId/quest/labels';
-    debugPrint('testFunc start:');
-    status = Status.loaded;
-    notifyListeners();
+    debugPrint('getLabelList start:');
 
     try {
       var sseClient = SSEClient.subscribeToSSE(
@@ -62,7 +60,7 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
       debugPrint('SSE error: $e');
     }
 
-    debugPrint('testFunc end');
+    debugPrint('getLabelList end');
   }
 
   void handleSSEEvent(SSEModel event) {
@@ -77,9 +75,6 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
           Map<String, dynamic> jsonData = json.decode(event.data!);
           labelList = List<String>.from(jsonData['labels'] ?? []);
           debugPrint('labelList: ${labelList}');
-
-          // Move notifyListeners() inside the inner try-catch block
-          status = Status.loaded;
           notifyListeners();
         } catch (e) {
           // Handle JSON decoding error
