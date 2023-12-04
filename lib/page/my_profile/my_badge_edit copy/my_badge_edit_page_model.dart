@@ -99,7 +99,10 @@ class MyBadgeEditViewModel with ChangeNotifier {
   }
 
   void addNewBadge(BadgeClass.Badge badge) {
-    if (!myCurrentBadList.contains(badge) && myCurrentBadList.length < 10) {
+    int findSameBadge =
+        myCurrentBadList.indexWhere((curBadge) => curBadge.id == badge.id);
+
+    if (findSameBadge == -1 && myCurrentBadList.length < 10) {
       myCurrentBadList.add(badge);
       debugPrint("추가!");
       notifyListeners();

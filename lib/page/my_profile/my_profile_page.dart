@@ -74,8 +74,9 @@ class BadgeView extends StatelessWidget {
 
     return InkWell(
       onTap: () async {
-        context.go('/badge-edit');
+        await context.push<bool>('/badge-edit');
         setClose(true);
+        viewModel.setStatusLoding();
       },
       child: Container(
         decoration: BoxDecoration(

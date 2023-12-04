@@ -295,14 +295,12 @@ class BadgeItem extends StatelessWidget {
         ),
       ),
       childWhenDragging: Container(
-        color: Colors.pinkAccent,
         child: Image.network(
           badge.imageUrl,
           fit: BoxFit.fill,
         ),
       ),
       child: Container(
-        color: Colors.cyan,
         child: Image.network(
           badge.imageUrl,
           fit: BoxFit.fill,
