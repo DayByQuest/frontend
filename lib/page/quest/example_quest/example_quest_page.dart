@@ -10,6 +10,7 @@ import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/common/post/post_bar.dart';
 import 'package:flutter_application_1/page/common/post/post_image_view.dart';
 import 'package:flutter_application_1/page/quest/example_quest/example_quest_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:provider/provider.dart';
 
 class ExampleQuestPage extends StatelessWidget {
@@ -25,6 +26,7 @@ class ExampleQuestPage extends StatelessWidget {
     return ChangeNotifierProvider<ExampleQuestViewModel>(
       create: (_) {
         final ExampleQuestViewModel viewModel = ExampleQuestViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           questRepository: QuestRepository(),
           questId: questId,
         );

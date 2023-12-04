@@ -7,6 +7,7 @@ import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page_model.dart';
 import 'package:flutter_application_1/page/create_post/quest_list/quest_list_page.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,6 +31,7 @@ class createPostPage extends StatelessWidget {
     return ChangeNotifierProvider<CreatePostViewModel>(
       create: (_) {
         CreatePostViewModel viewModel = CreatePostViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           postRepository: PostRepository(),
           details: details,
           selectedBytes: selectedBytes,
@@ -76,10 +78,6 @@ class _CreatePostViewState extends State<CreatePostView> {
       await viewModel.createPost();
       context.pop();
     }
-
-    // await RemoteDataSource()
-    //     .postCreatePost(widget.selectedBytes);
-    // context.pop();
 
     return GestureDetector(
       onTap: () {

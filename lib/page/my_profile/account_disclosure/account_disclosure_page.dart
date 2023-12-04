@@ -4,6 +4,7 @@ import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/my_profile/account_disclosure/account_disclosure_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -17,8 +18,10 @@ class AccountDisclosurePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<AccountDisclosureViewModel>(
       create: (_) {
-        final AccountDisclosureViewModel viewModel =
-            AccountDisclosureViewModel(userRepository: UserRepository());
+        final AccountDisclosureViewModel viewModel = AccountDisclosureViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
+          userRepository: UserRepository(),
+        );
         return viewModel;
       },
       child: AccountDisclosureView(),

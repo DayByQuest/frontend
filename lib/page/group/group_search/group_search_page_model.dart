@@ -5,10 +5,12 @@ import 'package:flutter_application_1/model/class/interest.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class GroupSearchViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final GroupRepositoty _groupRepositoty;
   final UserRepository _userRepository;
 
@@ -27,8 +29,10 @@ class GroupSearchViewModel with ChangeNotifier {
   GroupSearchViewModel({
     required GroupRepositoty groupRepositoty,
     required UserRepository userRepository,
+    required errorStatusProvider,
   })  : _groupRepositoty = groupRepositoty,
-        _userRepository = userRepository {
+        _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider {
     pagingController.addPageRequestListener((lastId) {
       loadInterestedGroupList(lastId);
     });
@@ -44,6 +48,8 @@ class GroupSearchViewModel with ChangeNotifier {
       interest = await _userRepository.getRemoteInterest();
       debugPrint('getInterests end');
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } on Exception catch (e) {
       debugPrint('getInterests error: ${e.toString()}');
     }
@@ -83,6 +89,8 @@ class GroupSearchViewModel with ChangeNotifier {
       }
 
       debugPrint("loadInterestedGroupList: 동작 종료! _lastId: $_lastId");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint("loadInterestedGroupList error: ${e.toString()}");
     }
@@ -94,6 +102,8 @@ class GroupSearchViewModel with ChangeNotifier {
       interestedGroupList[index].isGroupMember = true;
       interestedGroupList[index].userCount += 1;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('joinGroup error: ${e.toString()}');
     }
@@ -105,6 +115,8 @@ class GroupSearchViewModel with ChangeNotifier {
       interestedGroupList[index].isGroupMember = false;
       interestedGroupList[index].userCount -= 1;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('quitGroup error: ${e.toString()}');
     }

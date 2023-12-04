@@ -9,6 +9,7 @@ import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/group/create_group_quest/create_detail_group_quest_page.dart';
 import 'package:flutter_application_1/page/group/create_group_quest/create_group_quest_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
@@ -112,6 +113,7 @@ class DescribeImagesPage extends StatelessWidget {
     return ChangeNotifierProvider<DescribeImagesViewModel>(
       create: (_) {
         final DescribeImagesViewModel viewModel = DescribeImagesViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           groupRepositoty: GroupRepositoty(),
           details: details,
           selectedBytes: selectedBytes,

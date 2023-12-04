@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/model/class/user.dart';
@@ -6,9 +7,11 @@ import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class SearchResultViewModel extends ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final QuestRepository _questRepository;
   final UserRepository _userRepository;
   final GroupRepositoty _groupRepositoty;
@@ -43,9 +46,11 @@ class SearchResultViewModel extends ChangeNotifier {
     required UserRepository userRepository,
     required GroupRepositoty groupRepositoty,
     required this.keyword,
+    required errorStatusProvider,
   })  : _questRepository = questRepository,
         _userRepository = userRepository,
-        _groupRepositoty = groupRepositoty {
+        _groupRepositoty = groupRepositoty,
+        _errorStatusProvider = errorStatusProvider {
     textEditingController = TextEditingController(text: keyword);
     userPagingController.addPageRequestListener((lastId) {
       loadSearchUserList(lastId);
@@ -79,6 +84,8 @@ class SearchResultViewModel extends ChangeNotifier {
         userPagingController.appendLastPage(newSearchList);
       }
       debugPrint("loadSearchUserList: 동작중! _lastId: $lastId");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('loadSearchUserList error: ${e.toString()}');
     }
@@ -90,6 +97,8 @@ class SearchResultViewModel extends ChangeNotifier {
       searchUserList[index].following = !searchUserList[index].following;
       debugPrint("postFollow: $index 교체!");
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('postFollow error: ${e.toString()}');
     }
@@ -101,6 +110,8 @@ class SearchResultViewModel extends ChangeNotifier {
       await _userRepository.deleteRemoteUserFollow(username);
       searchUserList[index].following = !searchUserList[index].following;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('deleteFollow error: ${e.toString()}');
     }
@@ -128,6 +139,8 @@ class SearchResultViewModel extends ChangeNotifier {
       }
 
       debugPrint("loadSearchGroupList: 동작 종료! _lastId: $_searchGrouplastId");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint("loadSearchGroupList error: ${e.toString()}");
     }
@@ -139,6 +152,8 @@ class SearchResultViewModel extends ChangeNotifier {
       searchGroupList[index].isGroupMember = true;
       searchGroupList[index].userCount += 1;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('joinGroup error: ${e.toString()}');
     }
@@ -150,6 +165,8 @@ class SearchResultViewModel extends ChangeNotifier {
       searchGroupList[index].isGroupMember = false;
       searchGroupList[index].userCount -= 1;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('quitGroup error: ${e.toString()}');
     }
@@ -177,6 +194,8 @@ class SearchResultViewModel extends ChangeNotifier {
       }
 
       debugPrint("loadSearchQuestList: 동작 종료! _lastId: $_searchQuestlastId");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint("loadSearchQuestList error: ${e.toString()}");
     }
@@ -188,6 +207,8 @@ class SearchResultViewModel extends ChangeNotifier {
       searchQuestList[index].canShowAnimation = true;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('acceptQuest error: ${e.toString()}');
     }
@@ -200,6 +221,8 @@ class SearchResultViewModel extends ChangeNotifier {
       searchQuestList[index].canShowAnimation = true;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('completeQuest error: ${e.toString()}');
     }

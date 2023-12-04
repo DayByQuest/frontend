@@ -9,9 +9,11 @@ import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/quest/quest_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 class QuestProfileViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final QuestRepository _questRepository;
   final int questId;
   final QuestDetail quest;
@@ -27,7 +29,9 @@ class QuestProfileViewModel with ChangeNotifier {
     required QuestRepository questRepository,
     required this.questId,
     required this.quest,
-  }) : _questRepository = questRepository;
+    required errorStatusProvider,
+  })  : _questRepository = questRepository,
+        _errorStatusProvider = errorStatusProvider;
 
   void load() async {
     try {
@@ -38,6 +42,8 @@ class QuestProfileViewModel with ChangeNotifier {
       notifyListeners();
       debugPrint('load end: ');
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('load error: ${e.toString()}');
     }
@@ -48,6 +54,8 @@ class QuestProfileViewModel with ChangeNotifier {
       exampleImages.index = nextImageIndex;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -62,6 +70,8 @@ class QuestProfileViewModel with ChangeNotifier {
       quest.canShowAnimation = true;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('completeQuest error: ${e.toString()}');
     }
@@ -85,6 +95,8 @@ class QuestProfileViewModel with ChangeNotifier {
       }
 
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('rewardQuest error: ${e.toString()}');
     }
@@ -98,6 +110,8 @@ class QuestProfileViewModel with ChangeNotifier {
       quest.canShowAnimation = true;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('completeQuest error: ${e.toString()}');
     }
@@ -111,6 +125,8 @@ class QuestProfileViewModel with ChangeNotifier {
       quest.canShowAnimation = true;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('acceptQuest error: ${e.toString()}');
     }
@@ -124,6 +140,8 @@ class QuestProfileViewModel with ChangeNotifier {
       quest.canShowAnimation = true;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('completeQuest error: ${e.toString()}');
     }

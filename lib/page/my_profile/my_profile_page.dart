@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/page/common/Loding.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -18,8 +19,10 @@ class MyProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MyProfileViewModel>(
         create: (_) {
-          final MyProfileViewModel viewModel =
-              MyProfileViewModel(userRepository: UserRepository());
+          final MyProfileViewModel viewModel = MyProfileViewModel(
+            errorStatusProvider: context.read<ErrorStatusProvider>(),
+            userRepository: UserRepository(),
+          );
           return viewModel;
         },
         child: MyProfileView());

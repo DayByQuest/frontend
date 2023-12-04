@@ -1,5 +1,6 @@
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,7 @@ class ProfilePage extends StatelessWidget {
     return ChangeNotifierProvider<ProfileViewModel>(
         create: (_) {
           final ProfileViewModel viewModel = ProfileViewModel(
+            errorStatusProvider: context.read<ErrorStatusProvider>(),
             userRepository: UserRepository(),
             username: username,
           );

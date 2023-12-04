@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/interest.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 
 import '../../../model/repository/user_repository.dart';
 import '../../common/Status.dart';
 
 class MyInterestViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final UserRepository _userRepository;
 
-  MyInterestViewModel({required UserRepository userRepository})
-      : _userRepository = userRepository;
+  MyInterestViewModel(
+      {required UserRepository userRepository, required errorStatusProvider})
+      : _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider;
 
   Status _status = Status.loading;
   List<Interest> _interest = [];
@@ -29,6 +34,8 @@ class MyInterestViewModel with ChangeNotifier {
       _status = Status.loaded;
       notifyListeners();
       debugPrint('load end');
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -48,6 +55,8 @@ class MyInterestViewModel with ChangeNotifier {
       _status = Status.loaded;
       notifyListeners();
       debugPrint('changeInterest end');
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }

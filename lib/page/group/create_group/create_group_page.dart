@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/model/class/interest.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/group/create_group/create_group_page_model.dart';
 import 'package:flutter_application_1/page/group/create_group_quest/create_detail_group_quest_page.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,6 +30,7 @@ class CreateGroupPage extends StatelessWidget {
     return ChangeNotifierProvider<CreateGroupViewModel>(
       create: (_) {
         final CreateGroupViewModel viewModel = CreateGroupViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           groupRepositoty: GroupRepositoty(),
           userRepository: UserRepository(),
         );

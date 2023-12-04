@@ -10,6 +10,7 @@ import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/common/showDialog.dart';
 import 'package:flutter_application_1/page/common/showSnackBarFunction.dart';
 import 'package:flutter_application_1/page/quest/quest_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +20,7 @@ class QuestPage extends StatelessWidget {
     return ChangeNotifierProvider<QuestViewModel>(
       create: (_) {
         final QuestViewModel viewModel = QuestViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           questRepository: QuestRepository(),
         );
         return viewModel;

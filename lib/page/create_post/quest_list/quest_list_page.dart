@@ -8,6 +8,7 @@ import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/create_post/quest_list/quest_list_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:provider/provider.dart';
 
 class QuestListPage extends StatelessWidget {
@@ -18,6 +19,7 @@ class QuestListPage extends StatelessWidget {
     return ChangeNotifierProvider<QuestListViewModel>(
       create: (_) {
         final QuestListViewModel viewModel = QuestListViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           questRepository: QuestRepository(),
         );
         return viewModel;

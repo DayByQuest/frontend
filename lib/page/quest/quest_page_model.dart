@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 
 enum ChangeStatus {
   doingQuest,
@@ -11,6 +13,7 @@ enum ChangeStatus {
 }
 
 class QuestViewModel extends ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final QuestRepository _questRepository;
   Status status = Status.loading;
   List<QuestDetail> doingQuestList = [];
@@ -23,7 +26,9 @@ class QuestViewModel extends ChangeNotifier {
 
   QuestViewModel({
     required QuestRepository questRepository,
-  }) : _questRepository = questRepository;
+    required errorStatusProvider,
+  })  : _questRepository = questRepository,
+        _errorStatusProvider = errorStatusProvider;
 
   Future<void> load() async {
     try {
@@ -48,6 +53,8 @@ class QuestViewModel extends ChangeNotifier {
       notifyListeners();
       debugPrint('load end: ');
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('load error: ${e.toString()}');
     }
@@ -68,6 +75,8 @@ class QuestViewModel extends ChangeNotifier {
       doingQuestList[index].canShowAnimation = true;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('completeQuest error: ${e.toString()}');
     }
@@ -93,6 +102,8 @@ class QuestViewModel extends ChangeNotifier {
       }
 
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('rewardQuest error: ${e.toString()}');
     }
@@ -106,6 +117,8 @@ class QuestViewModel extends ChangeNotifier {
       finishedQuestList[index].canShowAnimation = true;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('completeQuest error: ${e.toString()}');
     }
@@ -119,6 +132,8 @@ class QuestViewModel extends ChangeNotifier {
       newQuestList[index].canShowAnimation = true;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('completeQuest error: ${e.toString()}');
     }
@@ -132,6 +147,8 @@ class QuestViewModel extends ChangeNotifier {
       doingQuestList[index].canShowAnimation = true;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('completeQuest error: ${e.toString()}');
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,7 @@ class GroupPostPage extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (_) {
           return GroupPostViewModel(
+            errorStatusProvider: context.read<ErrorStatusProvider>(),
             groupRepository: GroupRepositoty(),
             postRepository: PostRepository(),
             userRepository: UserRepository(),

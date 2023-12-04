@@ -16,6 +16,7 @@ import 'package:flutter_application_1/page/common/post/post_bar.dart';
 import 'package:flutter_application_1/page/common/post/post_content.dart';
 import 'package:flutter_application_1/page/common/post/post_image_view.dart';
 import 'package:flutter_application_1/page/post/detail_post_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -36,6 +37,7 @@ class DetailPage extends StatelessWidget {
     return ChangeNotifierProvider<DetailViewModel>(
       create: (_) {
         final DetailViewModel viewModel = DetailViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           postRepository: PostRepository(),
           userRepository: UserRepository(),
           postId: postId,
@@ -419,37 +421,4 @@ class QuestStatusView extends StatelessWidget {
       ],
     );
   }
-}
-
-void showSnackBarFun(
-    BuildContext context, int postId, Function cancelUninterestedPost) {
-  SnackBar snackBar = SnackBar(
-    action: SnackBarAction(
-      label: '취소',
-      onPressed: () {
-        cancelUninterestedPost();
-      },
-      textColor: Colors.black,
-    ),
-    content: const Text(
-      '감사합니다. 보내주신 피드백은 피드를 개선하는데 사용됩니다.',
-      style: TextStyle(
-        fontSize: 16,
-        color: Colors.black,
-      ),
-    ),
-    shape: Border.all(
-      color: Colors.black,
-    ),
-    backgroundColor: Colors.white,
-    dismissDirection: DismissDirection.up,
-    behavior: SnackBarBehavior.floating,
-    margin: EdgeInsets.only(
-      bottom: MediaQuery.of(context).size.height - 150,
-      left: 10,
-      right: 10,
-    ),
-  );
-
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

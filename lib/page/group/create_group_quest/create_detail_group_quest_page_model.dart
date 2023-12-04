@@ -1,15 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/interest.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_client_sse/constants/sse_request_type_enum.dart';
 import 'package:flutter_client_sse/flutter_client_sse.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class CreateDetailGroupQuestViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final GroupRepositoty _groupRepositoty;
   final UserRepository _userRepository;
 
@@ -35,8 +38,10 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
     required GroupRepositoty groupRepositoty,
     required UserRepository userRepository,
     required this.questId,
+    required ErrorStatusProvider errorStatusProvider,
   })  : _groupRepositoty = groupRepositoty,
-        _userRepository = userRepository;
+        _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider;
 
   void getLabelList() async {
     if (questId == -1) {
@@ -96,8 +101,8 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
       interest = await _userRepository.getRemoteInterest();
       debugPrint('getInterests end');
       notifyListeners();
-    } on Exception catch (e) {
-      debugPrint('getInterests error: ${e.toString()}');
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     }
   }
 
@@ -119,6 +124,8 @@ class CreateDetailGroupQuestViewModel with ChangeNotifier {
           "createGroupQuestDetail start: ${questTitle}, ${questContent},${expiredAt}, ${selectInterest}, ${selectLabel}, ${questId}}");
       await _groupRepositoty.createGroupQuestDetail(questTitle, questContent,
           expiredAt, selectInterest, selectLabel, questId);
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint("createGroupQuestDetail error: ${e.toString()}");
     }

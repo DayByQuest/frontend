@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -19,8 +20,10 @@ class MyBadgeEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MyBadgeEditViewModel>(
         create: (_) {
-          final MyBadgeEditViewModel viewModel =
-              MyBadgeEditViewModel(userRepository: UserRepository());
+          final MyBadgeEditViewModel viewModel = MyBadgeEditViewModel(
+            userRepository: UserRepository(),
+            errorStatusProvider: context.read<ErrorStatusProvider>(),
+          );
           return viewModel;
         },
         child: MyBadgeEditView());

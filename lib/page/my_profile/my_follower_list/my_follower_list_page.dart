@@ -4,6 +4,7 @@ import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/my_profile/my_follower_list/my_follower_list_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,10 @@ class MyFollowerListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) {
-        return MyFollowerListViewModel(userRepository: UserRepository());
+        return MyFollowerListViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
+          userRepository: UserRepository(),
+        );
       },
       child: MyFollowerListView(),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 
 import '../../model/class/user.dart';
 import '../common/Status.dart';
@@ -10,8 +12,11 @@ class ProfileViewModel with ChangeNotifier {
   ProfileViewModel({
     required UserRepository userRepository,
     required this.username,
-  }) : _userRepository = userRepository;
+    required errorStatusProvider,
+  })  : _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider;
 
+  final ErrorStatusProvider _errorStatusProvider;
   final UserRepository _userRepository;
   final String username;
   late User _user;
@@ -31,6 +36,8 @@ class ProfileViewModel with ChangeNotifier {
       status = Status.loaded;
       notifyListeners();
       debugPrint("loding됨!");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       // 추후 경고창으로 전환.
       debugPrint(e.toString());
@@ -43,6 +50,8 @@ class ProfileViewModel with ChangeNotifier {
       _user.following = true;
       debugPrint("postFollow:  교체!");
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('postFollow error: ${e.toString()}');
     }
@@ -53,6 +62,8 @@ class ProfileViewModel with ChangeNotifier {
       await _userRepository.deleteRemoteUserFollow(username);
       _user.following = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('deleteFollow error: ${e.toString()}');
     }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../model/class/user.dart';
@@ -8,9 +10,13 @@ import './../../model/class/badge.dart' as BadgeClass;
 import './../../model/class/tracker.dart';
 
 class MyProfileViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final UserRepository _userRepository;
-  MyProfileViewModel({required UserRepository userRepository})
-      : _userRepository = userRepository;
+
+  MyProfileViewModel(
+      {required UserRepository userRepository, required errorStatusProvider})
+      : _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider;
 
   late User _user;
   late Tracker _tracker;
@@ -33,6 +39,8 @@ class MyProfileViewModel with ChangeNotifier {
       status = Status.loaded;
       notifyListeners();
       debugPrint("loding됨!");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       // 추후 경고창으로 전환.
       debugPrint(e.toString());

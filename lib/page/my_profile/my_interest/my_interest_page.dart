@@ -4,6 +4,7 @@ import 'package:flutter_application_1/model/dataSource/mock_data_source.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/my_profile/my_interest/my_interest_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -18,8 +19,10 @@ class MyInterestPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MyInterestViewModel>(
       create: (_) {
-        final MyInterestViewModel viewModel =
-            MyInterestViewModel(userRepository: UserRepository());
+        final MyInterestViewModel viewModel = MyInterestViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
+          userRepository: UserRepository(),
+        );
         return viewModel;
       },
       child: MyInterestView(

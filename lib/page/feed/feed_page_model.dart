@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:flutter_application_1/model/class/post.dart';
@@ -6,9 +7,11 @@ import 'package:flutter_application_1/model/class/post_image.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class FeedViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final PostRepository _postRepository;
   final GroupRepositoty _groupRepositoty;
   final UserRepository _userRepository;
@@ -27,9 +30,11 @@ class FeedViewModel with ChangeNotifier {
     required PostRepository postRepository,
     required GroupRepositoty groupRepositoty,
     required UserRepository userRepository,
+    required errorStatusProvider,
   })  : _postRepository = postRepository,
         _groupRepositoty = groupRepositoty,
-        _userRepository = userRepository {
+        _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider {
     _pagingController.addPageRequestListener((lastId) {
       loadFeedList(lastId);
     });
@@ -75,6 +80,8 @@ class FeedViewModel with ChangeNotifier {
       }
 
       debugPrint("loadFeedList: 동작 종료! _lastId: $_lastId");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint("loadFeedList error: ${e.toString()}");
     }
@@ -85,6 +92,8 @@ class FeedViewModel with ChangeNotifier {
       await _postRepository.postRemoteDislike(postId);
       feedList[index].post?.unInterested = true;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -95,6 +104,8 @@ class FeedViewModel with ChangeNotifier {
       await _postRepository.deleteRemoteDislike(postId);
       feedList[index].post?.unInterested = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -115,6 +126,8 @@ class FeedViewModel with ChangeNotifier {
       }
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -125,6 +138,8 @@ class FeedViewModel with ChangeNotifier {
       await _postRepository.postRemoteLike(postId);
       feedList[index].post?.liked = true;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
       feedList[index].post?.liked = false;
@@ -136,6 +151,8 @@ class FeedViewModel with ChangeNotifier {
       await _postRepository.deleteRemoteLike(postId);
       feedList[index].post?.liked = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
       feedList[index].post?.liked = true;
@@ -147,6 +164,8 @@ class FeedViewModel with ChangeNotifier {
       await _postRepository.postRemoteGroupDislike(groupId);
       feedList[index].groupPost?.unInterested = true;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -157,6 +176,8 @@ class FeedViewModel with ChangeNotifier {
       await _postRepository.deleteRemoteGroupDislike(groupId);
       feedList[index].groupPost?.unInterested = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -168,6 +189,8 @@ class FeedViewModel with ChangeNotifier {
       await _groupRepositoty.remoteGroupJoin(groupId);
       feedList[index].groupPost?.isJoin = true;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('groupJoin: ${e.toString()}');
     }
@@ -178,6 +201,8 @@ class FeedViewModel with ChangeNotifier {
       await _groupRepositoty.remoteDeleteGroupJoin(groupId);
       feedList[index].groupPost?.isJoin = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('groupJoin: ${e.toString()}');
     }
@@ -199,6 +224,8 @@ class FeedViewModel with ChangeNotifier {
       feedList[index].post!.author.following = true;
       debugPrint("postFollow:  교체!");
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('postFollow error: ${e.toString()}');
     }
@@ -213,6 +240,8 @@ class FeedViewModel with ChangeNotifier {
       await _userRepository.deleteRemoteUserFollow(username);
       feedList[index].post!.author.following = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('deleteFollow error: ${e.toString()}');
     }

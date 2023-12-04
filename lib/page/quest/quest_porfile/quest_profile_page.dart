@@ -15,6 +15,7 @@ import 'package:flutter_application_1/page/common/post/post_image_view.dart';
 import 'package:flutter_application_1/page/common/showDialog.dart';
 import 'package:flutter_application_1/page/quest/example_quest/example_quest_page_model.dart';
 import 'package:flutter_application_1/page/quest/quest_porfile/quest_profile_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,7 @@ class QuestProfilePage extends StatelessWidget {
     return ChangeNotifierProvider<QuestProfileViewModel>(
       create: (_) {
         final QuestProfileViewModel viewModel = QuestProfileViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           questRepository: QuestRepository(),
           questId: questId,
           quest: quest,

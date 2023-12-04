@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/interest.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreateGroupViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final GroupRepositoty _groupRepositoty;
   final UserRepository _userRepository;
 
@@ -23,8 +26,10 @@ class CreateGroupViewModel with ChangeNotifier {
   CreateGroupViewModel({
     required GroupRepositoty groupRepositoty,
     required UserRepository userRepository,
+    required errorStatusProvider,
   })  : _groupRepositoty = groupRepositoty,
-        _userRepository = userRepository;
+        _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider;
 
   void getInterests() async {
     if (interest.isNotEmpty) {
@@ -36,8 +41,8 @@ class CreateGroupViewModel with ChangeNotifier {
       interest = await _userRepository.getRemoteInterest();
       debugPrint('getInterests end');
       notifyListeners();
-    } on Exception catch (e) {
-      debugPrint('getInterests error: ${e.toString()}');
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     }
   }
 
@@ -49,7 +54,9 @@ class CreateGroupViewModel with ChangeNotifier {
       debugPrint('${e.message} ');
       if (e.code == 'GRP-01') {
         isDuplicateGroupName = true;
+        return;
       }
+      _errorStatusProvider.setErrorStatus(true, e.message);
     }
     notifyListeners();
   }
@@ -59,6 +66,8 @@ class CreateGroupViewModel with ChangeNotifier {
       await _groupRepositoty.createGroup(
           selectInterest, groupName, groupDescription, image!);
       isDuplicateGroupName = false;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('createGroup error: ${e.toString} ');
     }

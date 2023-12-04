@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/failed_post.dart';
 import 'package:flutter_application_1/model/class/post_image.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 
 class GroupQuestJudgmentViewModel extends ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final GroupRepositoty _groupRepositoty;
   final QuestRepository _questRepository;
   final int groupId;
@@ -23,8 +26,10 @@ class GroupQuestJudgmentViewModel extends ChangeNotifier {
     required GroupRepositoty groupRepositoty,
     required QuestRepository questRepository,
     required this.groupId,
+    required errorStatusProvider,
   })  : _groupRepositoty = groupRepositoty,
-        _questRepository = questRepository;
+        _questRepository = questRepository,
+        _errorStatusProvider = errorStatusProvider;
 
   Future<void> load() async {
     try {
@@ -32,6 +37,8 @@ class GroupQuestJudgmentViewModel extends ChangeNotifier {
       selectQuest = groupQuestList.isEmpty ? null : groupQuestList[0];
       status = Status.loaded;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('load error: ${e.toString()}');
     }
@@ -57,6 +64,8 @@ class GroupQuestJudgmentViewModel extends ChangeNotifier {
       notifyListeners();
       debugPrint("getFailedGroupQuestListModel end");
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint("getFailedGroupQuestList error: ${e.toString()}");
     }
@@ -68,6 +77,8 @@ class GroupQuestJudgmentViewModel extends ChangeNotifier {
       await _groupRepositoty.postRemotePostJudgment(postId, false);
       debugPrint("postJudgmentFail end");
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint("postJudgmentFail error: ${e.toString()}");
     }
@@ -79,6 +90,8 @@ class GroupQuestJudgmentViewModel extends ChangeNotifier {
       await _groupRepositoty.postRemotePostJudgment(postId, true);
       debugPrint("postJudgmentSuccess end");
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint("postJudgmentSuccess error: ${e.toString()}");
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
+import 'package:flutter_application_1/page/common/showSnackBarFunction.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page.dart';
 import 'package:flutter_application_1/page/feed/feed_page.dart';
 import 'package:flutter_application_1/page/group/create_group/create_group_page.dart';
@@ -24,10 +25,12 @@ import 'package:flutter_application_1/page/quest/quest_porfile/quest_profile_pag
 import 'package:flutter_application_1/page/quest/quest_post/quest_post_page.dart';
 import 'package:flutter_application_1/page/search/search_page.dart';
 import 'package:flutter_application_1/page/search/search_result/search_result_page.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
+import 'package:provider/provider.dart';
 import './model/dataSource/remote_data_source.dart';
 import './page/my_profile/my_profile_page.dart';
 import 'page/my_profile/account_disclosure/account_disclosure_page.dart';
@@ -233,8 +236,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
+    return ChangeNotifierProvider(
+      create: (context) => ErrorStatusProvider(),
+      child: MaterialApp.router(
+        routerConfig: _router,
+      ),
     );
   }
 }
@@ -291,6 +297,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     Widget bodyWidget;
+
+    bool errorStatus = context.watch<ErrorStatusProvider>().errorStatus;
+    String errorMessage = context.watch<ErrorStatusProvider>().errorMessage;
+
+    if (errorStatus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSnackBarFun(context, errorMessage);
+        context.read<ErrorStatusProvider>().setErrorStatus(false, '');
+      });
+    }
 
     switch (_selectedIndex) {
       case 0:
