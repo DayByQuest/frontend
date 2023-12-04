@@ -237,11 +237,11 @@ class _MyMenuBarState extends State<MyMenuBar> {
 
     return AppBar(
       toolbarHeight: 48,
-      leading: Center(
-        child: Text(
-          username,
-          style: TextStyle(fontSize: 18),
-        ),
+      leadingWidth: 0,
+      title: Text(
+        username,
+        maxLines: 1,
+        style: TextStyle(fontSize: 18),
       ),
       actions: [
         SubmenuButton(

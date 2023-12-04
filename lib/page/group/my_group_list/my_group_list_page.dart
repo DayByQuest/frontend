@@ -69,8 +69,14 @@ class MyGroupListView extends StatelessWidget {
       child: Stack(
         children: [
           ListView.builder(
-            itemCount: groupCount,
+            itemCount: (groupCount + 1),
             itemBuilder: (context, index) {
+              if (groupCount == index) {
+                return SizedBox(
+                  height: 80,
+                );
+              }
+
               return GroupItem(
                 index: index,
               );
@@ -92,7 +98,7 @@ class MyGroupListView extends StatelessWidget {
                     ),
                   ),
                 )
-              : Container()
+              : Container(),
         ],
       ),
     );

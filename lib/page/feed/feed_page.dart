@@ -58,8 +58,10 @@ class FeedView extends StatelessWidget {
         slivers: <Widget>[
           SliverAppBar(
             expandedHeight: 48.0,
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
             floating: true,
-            title: Text("title"),
+            title: const Text("Day by Quest"),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),

@@ -203,17 +203,39 @@ class _FailedQuestListState extends State<FailedQuestList> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextButton(
-              onPressed: () {
-                controller.swipeLeft();
-              },
-              child: Text('취소'),
+            Container(
+              width: width * 0.45,
+              child: OutlinedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                ),
+                onPressed: () {
+                  controller.swipeLeft();
+                },
+                child: Text(
+                  '취소',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
-            TextButton(
-              onPressed: () {
-                controller.swipeRight();
-              },
-              child: Text('승인'),
+            Container(
+              width: width * 0.45,
+              child: OutlinedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                ),
+                onPressed: () {
+                  controller.swipeRight();
+                },
+                child: Text(
+                  '승인',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ],
         )
