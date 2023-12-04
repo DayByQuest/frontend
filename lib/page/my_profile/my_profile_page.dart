@@ -233,11 +233,15 @@ class _MyMenuBarState extends State<MyMenuBar> {
     bool isClose = context.watch<MyProfileViewModel>().isClose;
     void setClose(bool setClose) =>
         context.read<MyProfileViewModel>().setIsClose(setClose);
+    String username = context.read<MyProfileViewModel>().user.username;
 
     return AppBar(
-      title: const Text(
-        "Username",
-        style: TextStyle(fontSize: 18),
+      toolbarHeight: 48,
+      leading: Center(
+        child: Text(
+          username,
+          style: TextStyle(fontSize: 18),
+        ),
       ),
       actions: [
         SubmenuButton(
