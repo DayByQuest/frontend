@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,10 @@ class MyFollowingListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) {
-        return MyFollowingListViewModel(userRepository: UserRepository());
+        return MyFollowingListViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
+          userRepository: UserRepository(),
+        );
       },
       child: MyFollowingListView(),
     );

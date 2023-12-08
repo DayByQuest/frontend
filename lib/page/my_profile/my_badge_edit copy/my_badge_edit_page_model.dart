@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -8,6 +10,7 @@ import '../../../model/class/badge.dart' as BadgeClass;
 import '../../../model/repository/user_repository.dart';
 
 class MyBadgeEditViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final UserRepository _userRepository;
   Status _status = Status.loading;
   final PagingController<String, BadgeClass.Badge> _pagingController =
@@ -21,7 +24,9 @@ class MyBadgeEditViewModel with ChangeNotifier {
 
   MyBadgeEditViewModel({
     required UserRepository userRepository,
-  }) : _userRepository = userRepository {
+    required errorStatusProvider,
+  })  : _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider {
     _pagingController.addPageRequestListener((lastId) {
       loadAllBageList(lastId);
     });
@@ -51,6 +56,8 @@ class MyBadgeEditViewModel with ChangeNotifier {
         _pagingController.appendLastPage(newBadgeList);
       }
       debugPrint("loadAllBageList: 동작중! _lastId: $_lastTime");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('loadAllBageList error: ${e.toString()}');
       _pagingController.error = e;
@@ -69,6 +76,8 @@ class MyBadgeEditViewModel with ChangeNotifier {
 
       debugPrint("patchBadgeList 잘 동작함.");
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('patchBadgeList error: ${e.toString()}');
     }
@@ -82,13 +91,18 @@ class MyBadgeEditViewModel with ChangeNotifier {
       debugPrint("loadCurrentBageList 잘 동작함.");
       _status = Status.loaded;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('loadCurrentBageList error: ${e.toString()}');
     }
   }
 
   void addNewBadge(BadgeClass.Badge badge) {
-    if (!myCurrentBadList.contains(badge) && myCurrentBadList.length < 10) {
+    int findSameBadge =
+        myCurrentBadList.indexWhere((curBadge) => curBadge.id == badge.id);
+
+    if (findSameBadge == -1 && myCurrentBadList.length < 10) {
       myCurrentBadList.add(badge);
       debugPrint("추가!");
       notifyListeners();

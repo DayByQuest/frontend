@@ -1,10 +1,12 @@
 import 'package:flutter_application_1/page/common/Loding.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/class/badge.dart' as BadgeClass;
 import '../../model/class/user.dart';
+import '../../widget/tracker_view.dart';
 import '../common/Status.dart';
 import './my_profile_page_model.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +20,10 @@ class MyProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MyProfileViewModel>(
         create: (_) {
-          final MyProfileViewModel viewModel =
-              MyProfileViewModel(userRepository: UserRepository());
+          final MyProfileViewModel viewModel = MyProfileViewModel(
+            errorStatusProvider: context.read<ErrorStatusProvider>(),
+            userRepository: UserRepository(),
+          );
           return viewModel;
         },
         child: MyProfileView());
@@ -40,6 +44,9 @@ class MyProfileView extends StatelessWidget {
       return Loading(context: context);
     }
 
+    List<int> tracker = context.read<MyProfileViewModel>().tracker;
+    int postCount = context.read<MyProfileViewModel>().user.postCount;
+
     return ListView(
       physics: const ScrollPhysics(),
       children: [
@@ -48,7 +55,10 @@ class MyProfileView extends StatelessWidget {
         SizedBox(
           height: 16,
         ),
-        TrackerView(),
+        TrackerView(
+          tracker: tracker,
+          postCount: postCount,
+        ),
         SizedBox(
           height: 16,
         ),
@@ -71,8 +81,9 @@ class BadgeView extends StatelessWidget {
 
     return InkWell(
       onTap: () async {
-        context.go('/badge-edit');
+        await context.push<bool>('/badge-edit');
         setClose(true);
+        viewModel.setStatusLoding();
       },
       child: Container(
         decoration: BoxDecoration(
@@ -104,47 +115,6 @@ class BadgeView extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class TrackerView extends StatelessWidget {
-  const TrackerView({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    List<int> tracker = context.read<MyProfileViewModel>().tracker;
-
-    return Column(
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'total: ${tracker.length} 퀘스트 완료',
-            style: const TextStyle(
-              fontSize: 14,
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        GridView.count(
-          crossAxisCount: 12,
-          crossAxisSpacing: 4,
-          mainAxisSpacing: 4,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: List.generate(60, (index) {
-            return Container(
-              color: Color.fromRGBO(
-                  35, 236, 116, (tracker[index].toDouble() * 0.06) + 0.1),
-            );
-          }),
-        ),
-      ],
     );
   }
 }
@@ -263,10 +233,14 @@ class _MyMenuBarState extends State<MyMenuBar> {
     bool isClose = context.watch<MyProfileViewModel>().isClose;
     void setClose(bool setClose) =>
         context.read<MyProfileViewModel>().setIsClose(setClose);
+    String username = context.read<MyProfileViewModel>().user.username;
 
     return AppBar(
-      title: const Text(
-        "Username",
+      toolbarHeight: 48,
+      leadingWidth: 0,
+      title: Text(
+        username,
+        maxLines: 1,
         style: TextStyle(fontSize: 18),
       ),
       actions: [

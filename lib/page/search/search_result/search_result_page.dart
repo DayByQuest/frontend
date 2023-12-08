@@ -9,6 +9,7 @@ import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/search/search_result/search_result_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,7 @@ class SearchResultPage extends StatelessWidget {
     return ChangeNotifierProvider<SearchResultViewModel>(
       create: (_) {
         final SearchResultViewModel viewModel = SearchResultViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           questRepository: QuestRepository(),
           userRepository: UserRepository(),
           groupRepositoty: GroupRepositoty(),

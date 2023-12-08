@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 
 class GroupProfileViewModel extends ChangeNotifier {
+  final ErrorStatusProvider _errorStatusModel;
   final GroupRepositoty _groupRepositoty;
   final QuestRepository _questRepository;
   final int groupId;
   Status status = Status.loading;
   late Group group;
   List<QuestDetail> groupQuestList = [];
-  bool errorStatus = false;
-  String errorMessage = '';
 
   GroupProfileViewModel({
     required GroupRepositoty groupRepositoty,
     required QuestRepository questRepository,
+    required ErrorStatusProvider errorStatusModel,
     required this.groupId,
   })  : _groupRepositoty = groupRepositoty,
-        _questRepository = questRepository;
+        _questRepository = questRepository,
+        _errorStatusModel = errorStatusModel;
 
   Future<void> load() async {
     try {
@@ -29,6 +32,8 @@ class GroupProfileViewModel extends ChangeNotifier {
       groupQuestList = await _questRepository.getRemoteGroupQuestList(groupId);
       status = Status.loaded;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusModel.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('load error: ${e.toString()}');
     }
@@ -39,6 +44,8 @@ class GroupProfileViewModel extends ChangeNotifier {
       await _groupRepositoty.remoteGroupJoin(groupId);
       group.isGroupMember = true;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusModel.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('joinGroup error: ${e.toString()}');
     }
@@ -50,8 +57,7 @@ class GroupProfileViewModel extends ChangeNotifier {
       group.isGroupMember = false;
       notifyListeners();
     } on ErrorException catch (e) {
-      debugPrint(e.message);
-      setErrorStatus(true, e.message);
+      _errorStatusModel.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('quitGroup error: ${e.toString()}');
     }
@@ -62,6 +68,8 @@ class GroupProfileViewModel extends ChangeNotifier {
       await _questRepository.postRemoteQuestAccept(questId);
       groupQuestList[index].state = QuestMap[QuestState.DOING] ?? 'NOT';
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusModel.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('questAccept error: ${e.toString()}');
     }
@@ -72,14 +80,10 @@ class GroupProfileViewModel extends ChangeNotifier {
       await _questRepository.deleteRemoteQuestAccept(questId);
       groupQuestList[index].state = QuestMap[QuestState.NOT] ?? 'DOING';
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusModel.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('questDelete error: ${e.toString()}');
     }
-  }
-
-  void setErrorStatus(bool status, String message) {
-    errorStatus = status;
-    errorMessage = message;
-    notifyListeners();
   }
 }

@@ -13,6 +13,7 @@ import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/post/Interested_post.dart';
 import 'package:flutter_application_1/page/common/post/uninterested_post.dart';
 import 'package:flutter_application_1/page/feed/feed_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class FeedPage extends StatelessWidget {
     return ChangeNotifierProvider<FeedViewModel>(
       create: (_) {
         final FeedViewModel viewModel = FeedViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           postRepository: PostRepository(),
           groupRepositoty: GroupRepositoty(),
           userRepository: UserRepository(),
@@ -56,8 +58,10 @@ class FeedView extends StatelessWidget {
         slivers: <Widget>[
           SliverAppBar(
             expandedHeight: 48.0,
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
             floating: true,
-            title: Text("title"),
+            title: const Text("Day by Quest"),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),

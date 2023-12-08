@@ -11,6 +11,7 @@ import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/group/group_search/group_search_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -26,6 +27,7 @@ class GroupSearchPage extends StatelessWidget {
     return ChangeNotifierProvider<GroupSearchViewModel>(
       create: (_) {
         final GroupSearchViewModel viewModel = GroupSearchViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           groupRepositoty: GroupRepositoty(),
           userRepository: UserRepository(),
         );

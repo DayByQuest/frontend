@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class MyPostPage extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (_) {
           return MyPostViewModel(
+            errorStatusProvider: context.read<ErrorStatusProvider>(),
             postRepository: PostRepository(),
             userRepository: UserRepository(),
             username: username,

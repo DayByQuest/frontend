@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/post.dart';
 import 'package:flutter_application_1/model/class/post_image.dart';
 import 'package:flutter_application_1/model/class/user.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class DetailViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final PostRepository _postRepository;
   final UserRepository _userRepository;
 
@@ -31,8 +34,10 @@ class DetailViewModel with ChangeNotifier {
     required PostRepository postRepository,
     required UserRepository userRepository,
     required this.postId,
+    required errorStatusProvider,
   })  : _postRepository = postRepository,
-        _userRepository = userRepository {
+        _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider {
     _pagingController.addPageRequestListener((lastId) {
       loadCommentList(lastId);
     });
@@ -50,6 +55,8 @@ class DetailViewModel with ChangeNotifier {
       status = Status.loaded;
       notifyListeners();
       debugPrint("loding됨!");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('load error: ${e.toString()}');
     }
@@ -76,6 +83,8 @@ class DetailViewModel with ChangeNotifier {
       }
 
       debugPrint("loadCommentList: 동작중! _lastId: $lastId");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint("loadCommentList error: ${e.toString()}");
     }
@@ -88,6 +97,8 @@ class DetailViewModel with ChangeNotifier {
       _post.author.following = true;
       debugPrint("postFollow:  교체!");
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('postFollow error: ${e.toString()}');
     }
@@ -98,6 +109,8 @@ class DetailViewModel with ChangeNotifier {
       await _userRepository.deleteRemoteUserFollow(username);
       _post.author.following = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('deleteFollow error: ${e.toString()}');
     }
@@ -107,6 +120,8 @@ class DetailViewModel with ChangeNotifier {
     try {
       await _postRepository.postRemoteDislike(postId);
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -116,6 +131,8 @@ class DetailViewModel with ChangeNotifier {
     try {
       await _postRepository.deleteRemoteDislike(postId);
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -134,6 +151,8 @@ class DetailViewModel with ChangeNotifier {
       }
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -144,6 +163,8 @@ class DetailViewModel with ChangeNotifier {
       await _postRepository.postRemoteLike(postId);
       _post.liked = true;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
       _post.liked = false;
@@ -155,6 +176,8 @@ class DetailViewModel with ChangeNotifier {
       await _postRepository.deleteRemoteLike(postId);
       _post.liked = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
       _post.liked = true;
@@ -174,6 +197,8 @@ class DetailViewModel with ChangeNotifier {
       notifyListeners();
       //List<Comment> newCommentList = List.from([newComment]);
       //_pagingController.appendPage(newCommentList, _lastId);
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }

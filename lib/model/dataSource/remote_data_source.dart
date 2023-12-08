@@ -43,13 +43,17 @@ class RemoteDataSource {
     dio.options.baseUrl = API_BASE_URL!;
   }
 
-  String throwError(DioException e) {
+  Never throwError(DioException e) {
     if (e.response != null) {
       debugPrint('DioException: ${e.response?.data.toString()}');
     } else {
       debugPrint(e.message);
     }
-    return e.response?.data.message;
+    throw ErrorException(
+      code: e.response?.data['code'],
+      message: e.response?.data['message'],
+      fields: List<String>.from(e.response?.data['fields']),
+    );
   }
 
   Future<User> getMyProfile() async {
@@ -65,7 +69,6 @@ class RemoteDataSource {
       return user;
     } on DioException catch (e) {
       throwError(e);
-      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -231,7 +234,7 @@ class RemoteDataSource {
 
     try {
       Map<String, dynamic> data = {
-        "badges": badgeIdList,
+        "badgeIds": badgeIdList,
       };
       final jsonData = jsonEncode(data);
 
@@ -1051,11 +1054,7 @@ class RemoteDataSource {
       debugPrint('quitGroup 성공: ${response}');
       return;
     } on DioException catch (e) {
-      throw ErrorException(
-        code: e.response!.data['code'],
-        message: e.response!.data['message'],
-        fields: List<String>.from(e.response!.data['fields']),
-      );
+      throwError(e);
     } catch (e) {
       rethrow;
     }

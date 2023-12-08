@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../model/class/post.dart';
 import '../../../model/class/post_image.dart';
 
 class GroupPostViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final PostRepository _postRepository;
   final GroupRepositoty _groupRepository;
   final UserRepository _userRepository;
@@ -24,9 +27,11 @@ class GroupPostViewModel with ChangeNotifier {
     required PostRepository postRepository,
     required UserRepository userRepository,
     required this.groupId,
+    required errorStatusProvider,
   })  : _groupRepository = groupRepository,
         _postRepository = postRepository,
-        _userRepository = userRepository {
+        _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider {
     _pagingController.addPageRequestListener((int lastId) {
       debugPrint('lastId: $lastId');
       loadPostList(lastId);
@@ -58,6 +63,8 @@ class GroupPostViewModel with ChangeNotifier {
       debugPrint("loadFollowerList: 동작중! _lastId: $_lastId");
       debugPrint(
           "newPostList[0]: ${newPostList[0].id}, ${newPostList[0].author}");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('loadPostList error: ${e.toString()}');
     }
@@ -68,6 +75,8 @@ class GroupPostViewModel with ChangeNotifier {
       await _postRepository.postRemoteDislike(postId);
       postList[index].unInterested = true;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -78,6 +87,8 @@ class GroupPostViewModel with ChangeNotifier {
       await _postRepository.deleteRemoteDislike(postId);
       postList[index].unInterested = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -97,6 +108,8 @@ class GroupPostViewModel with ChangeNotifier {
       }
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -107,6 +120,8 @@ class GroupPostViewModel with ChangeNotifier {
       await _postRepository.postRemoteLike(postId);
       postList[index].liked = true;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
       postList[index].liked = false;
@@ -118,6 +133,8 @@ class GroupPostViewModel with ChangeNotifier {
       await _postRepository.deleteRemoteLike(postId);
       postList[index].liked = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
       postList[index].liked = true;
@@ -131,6 +148,8 @@ class GroupPostViewModel with ChangeNotifier {
       postList[index].author.following = true;
       debugPrint("postFollow:  교체!");
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('postFollow error: ${e.toString()}');
     }
@@ -141,6 +160,8 @@ class GroupPostViewModel with ChangeNotifier {
       await _userRepository.deleteRemoteUserFollow(username);
       postList[index].author.following = false;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('deleteFollow error: ${e.toString()}');
     }

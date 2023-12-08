@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 
 class QuestListViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final QuestRepository _questRepository;
   List<QuestDetail> questList = [];
   int questTargetIndex = -1;
@@ -13,7 +16,9 @@ class QuestListViewModel with ChangeNotifier {
 
   QuestListViewModel({
     required QuestRepository questRepository,
-  }) : _questRepository = questRepository;
+    required errorStatusProvider,
+  })  : _questRepository = questRepository,
+        _errorStatusProvider = errorStatusProvider;
 
   void load() async {
     try {
@@ -22,6 +27,8 @@ class QuestListViewModel with ChangeNotifier {
       status = Status.loaded;
       notifyListeners();
       debugPrint("loding됨!");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('load error: ${e.toString()}');
     }

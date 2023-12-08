@@ -5,6 +5,7 @@ import 'package:flutter_application_1/model/dataSource/mock_data_source.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/my_profile/profile_image_edit/profile_image_edit_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +26,10 @@ class ProfileImageEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ProfileImageEditViewModel>(
       create: (_) {
-        final ProfileImageEditViewModel viewModel =
-            ProfileImageEditViewModel(userRepository: UserRepository());
+        final ProfileImageEditViewModel viewModel = ProfileImageEditViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
+          userRepository: UserRepository(),
+        );
         viewModel.load(imageUrl);
         return viewModel;
       },

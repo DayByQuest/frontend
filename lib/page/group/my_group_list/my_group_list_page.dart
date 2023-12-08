@@ -7,6 +7,7 @@ import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/group/my_group_list/my_group_list_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class MyGroupListPage extends StatelessWidget {
     return ChangeNotifierProvider<MyGroupListViewModel>(
       create: (_) {
         final MyGroupListViewModel viewModel = MyGroupListViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           groupRepositoty: GroupRepositoty(),
         );
         return viewModel;
@@ -67,8 +69,14 @@ class MyGroupListView extends StatelessWidget {
       child: Stack(
         children: [
           ListView.builder(
-            itemCount: groupCount,
+            itemCount: (groupCount + 1),
             itemBuilder: (context, index) {
+              if (groupCount == index) {
+                return SizedBox(
+                  height: 80,
+                );
+              }
+
               return GroupItem(
                 index: index,
               );
@@ -90,7 +98,7 @@ class MyGroupListView extends StatelessWidget {
                     ),
                   ),
                 )
-              : Container()
+              : Container(),
         ],
       ),
     );

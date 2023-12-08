@@ -11,6 +11,7 @@ import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/common/forward_bar.dart';
 import 'package:flutter_application_1/page/group/group_quest_judgment/group_quest_judgment_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ class GroupQuestJudgmentPage extends StatelessWidget {
       create: (_) {
         final GroupQuestJudgmentViewModel viewModel =
             GroupQuestJudgmentViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           groupRepositoty: GroupRepositoty(),
           questRepository: QuestRepository(),
           groupId: groupId,
@@ -201,17 +203,39 @@ class _FailedQuestListState extends State<FailedQuestList> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextButton(
-              onPressed: () {
-                controller.swipeLeft();
-              },
-              child: Text('취소'),
+            Container(
+              width: width * 0.45,
+              child: OutlinedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                ),
+                onPressed: () {
+                  controller.swipeLeft();
+                },
+                child: Text(
+                  '취소',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
-            TextButton(
-              onPressed: () {
-                controller.swipeRight();
-              },
-              child: Text('승인'),
+            Container(
+              width: width * 0.45,
+              child: OutlinedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                ),
+                onPressed: () {
+                  controller.swipeRight();
+                },
+                child: Text(
+                  '승인',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ],
         )

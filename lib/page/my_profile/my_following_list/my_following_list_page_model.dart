@@ -1,10 +1,13 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_application_1/model/class/error_exception.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../model/class/user.dart';
 import '../../../model/repository/user_repository.dart';
 
 class MyFollowingListViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final UserRepository _userRepository;
   final PagingController<int, User> _pagingController =
       PagingController(firstPageKey: -1);
@@ -15,7 +18,9 @@ class MyFollowingListViewModel with ChangeNotifier {
 
   MyFollowingListViewModel({
     required UserRepository userRepository,
-  }) : _userRepository = userRepository {
+    required errorStatusProvider,
+  })  : _userRepository = userRepository,
+        _errorStatusProvider = errorStatusProvider {
     _pagingController.addPageRequestListener((lastId) {
       loadFollowingList(lastId);
     });
@@ -43,6 +48,8 @@ class MyFollowingListViewModel with ChangeNotifier {
         _pagingController.appendLastPage(newFollowingList);
       }
       debugPrint("loadFollowingList: 동작중! _lastId: $lastId");
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('loadFollowingList error: ${e.toString()}');
     }
@@ -54,6 +61,8 @@ class MyFollowingListViewModel with ChangeNotifier {
       _followingList[index].following = !_followingList[index].following;
       debugPrint("postFollow: $index 교체!");
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('postFollow error: ${e.toString()}');
     }
@@ -65,6 +74,8 @@ class MyFollowingListViewModel with ChangeNotifier {
       await _userRepository.deleteRemoteUserFollow(username);
       _followingList[index].following = !_followingList[index].following;
       notifyListeners();
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('deleteFollow error: ${e.toString()}');
     }

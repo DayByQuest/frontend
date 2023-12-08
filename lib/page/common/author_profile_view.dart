@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
-import 'package:flutter_application_1/page/post/detail_post_page.dart';
+import 'package:flutter_application_1/page/common/showSnackBarFunction.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 
@@ -122,7 +123,8 @@ class AuthorProfileView extends StatelessWidget {
               MenuItemButton(
                 onPressed: () async {
                   await uninterestedPost();
-                  showSnackBarFun(context, postId, cancelUninterestedPost);
+                  showSnackDetailPostBarFun(
+                      context, postId, cancelUninterestedPost);
                 },
                 child: Container(
                   width: 252,

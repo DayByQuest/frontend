@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
@@ -9,10 +10,13 @@ import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/group/group_profile/group_profile_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/forward_bar.dart';
+import '../../common/showSnackBarFunction.dart';
 
 class GroupProfilePage extends StatelessWidget {
   final int groupId;
@@ -27,6 +31,7 @@ class GroupProfilePage extends StatelessWidget {
     return ChangeNotifierProvider<GroupProfileViewModel>(
       create: (_) {
         final GroupProfileViewModel viewModel = GroupProfileViewModel(
+          errorStatusModel: context.read<ErrorStatusProvider>(),
           groupRepositoty: GroupRepositoty(),
           questRepository: QuestRepository(),
           groupId: groupId,
@@ -62,15 +67,6 @@ class GroupProfileView extends StatelessWidget {
     bool canCreateQuset = isGroupManager && questList.length < 10;
     bool isGroupMember = group.isGroupMember;
     int userCount = group.userCount;
-    bool errorStatus = context.read<GroupProfileViewModel>().errorStatus;
-    String errorMessage = context.read<GroupProfileViewModel>().errorMessage;
-
-    if (errorStatus) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showErrorSnackBarFun(context, errorMessage);
-        context.read<GroupProfileViewModel>().setErrorStatus(false, '');
-      });
-    }
 
     void createQuest() {
       context.push('/create-group-quest?groupId=${groupId}');

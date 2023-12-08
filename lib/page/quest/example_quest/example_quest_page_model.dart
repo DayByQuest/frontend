@@ -7,9 +7,11 @@ import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ExampleQuestViewModel with ChangeNotifier {
+  final ErrorStatusProvider _errorStatusProvider;
   final QuestRepository _questRepository;
   final int questId;
   Status status = Status.loading;
@@ -19,7 +21,9 @@ class ExampleQuestViewModel with ChangeNotifier {
   ExampleQuestViewModel({
     required QuestRepository questRepository,
     required this.questId,
-  }) : _questRepository = questRepository;
+    required errorStatusProvider,
+  })  : _questRepository = questRepository,
+        _errorStatusProvider = errorStatusProvider;
 
   void load() async {
     try {
@@ -31,6 +35,8 @@ class ExampleQuestViewModel with ChangeNotifier {
       notifyListeners();
       debugPrint('load end: ');
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint('load error: ${e.toString()}');
     }
@@ -41,6 +47,8 @@ class ExampleQuestViewModel with ChangeNotifier {
       exampleImages.index = nextImageIndex;
       notifyListeners();
       return;
+    } on ErrorException catch (e) {
+      _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
       debugPrint(e.toString());
     }

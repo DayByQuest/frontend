@@ -8,6 +8,7 @@ import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/group/create_group_quest/create_detail_group_quest_page_model.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,7 @@ class CreateDetailGroupQuestPage extends StatelessWidget {
       create: (_) {
         final CreateDetailGroupQuestViewModel viewModel =
             CreateDetailGroupQuestViewModel(
+          errorStatusProvider: context.read<ErrorStatusProvider>(),
           groupRepositoty: GroupRepositoty(),
           userRepository: UserRepository(),
           questId: questId,

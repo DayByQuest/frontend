@@ -1,3 +1,5 @@
+
+
 plugins {
     id "com.android.application"
     id "kotlin-android"
@@ -26,6 +28,11 @@ android {
     namespace "com.example.flutter_application_1"
     compileSdkVersion 34
     ndkVersion flutter.ndkVersion
+
+    
+ext {
+    kotlin_version = '1.5.31' 
+}
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

@@ -1,5 +1,7 @@
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
+import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/widget/tracker_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +24,7 @@ class ProfilePage extends StatelessWidget {
     return ChangeNotifierProvider<ProfileViewModel>(
         create: (_) {
           final ProfileViewModel viewModel = ProfileViewModel(
+            errorStatusProvider: context.read<ErrorStatusProvider>(),
             userRepository: UserRepository(),
             username: username,
           );
@@ -42,32 +45,38 @@ class ProfileView extends StatelessWidget {
     if (isLoading) {
       viewModel.load();
       return Loading(context: context);
-    } else {
-      return Scaffold(
-        body: ListView(
-          physics: const ScrollPhysics(),
-          children: const [
-            MenuBar(),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  ProfileInfomation(),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  TrackerView(),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  BadgeView(),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
     }
+
+    List<int> tracker = context.read<ProfileViewModel>().tracker;
+    int postCount = context.read<ProfileViewModel>().user.postCount;
+
+    return Scaffold(
+      body: ListView(
+        physics: const ScrollPhysics(),
+        children: [
+          MenuBar(),
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                ProfileInfomation(),
+                SizedBox(
+                  height: 16,
+                ),
+                TrackerView(
+                  tracker: tracker,
+                  postCount: postCount,
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                BadgeView(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -110,47 +119,6 @@ class BadgeView extends StatelessWidget {
           }),
         ),
       ),
-    );
-  }
-}
-
-class TrackerView extends StatelessWidget {
-  const TrackerView({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    List<int> tracker = context.read<ProfileViewModel>().tracker;
-
-    return Column(
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'total: ${tracker.length} 퀘스트 완료',
-            style: const TextStyle(
-              fontSize: 14,
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        GridView.count(
-          crossAxisCount: 12,
-          crossAxisSpacing: 4,
-          mainAxisSpacing: 4,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: List.generate(60, (index) {
-            return Container(
-              color: Color.fromRGBO(
-                  35, 236, 116, (tracker[index].toDouble() * 0.06) + 0.1),
-            );
-          }),
-        ),
-      ],
     );
   }
 }
