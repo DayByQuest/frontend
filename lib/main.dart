@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/page/common/showSnackBarFunction.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page.dart';
 import 'package:flutter_application_1/page/feed/feed_page.dart';
@@ -128,6 +129,10 @@ class _MyHomePageState extends State<MyHomePage> {
       default:
         bodyWidget = Container();
     }
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
