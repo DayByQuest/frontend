@@ -166,7 +166,6 @@ class CurBadgeItem extends StatelessWidget {
         Draggable<BadgeClass.Badge>(
           data: badge,
           feedback: Container(
-            color: Colors.deepOrange,
             height: itemSize,
             width: itemSize,
             child: Image.network(
