@@ -49,6 +49,10 @@ class FeedView extends StatelessWidget {
   Widget build(BuildContext context) {
     FeedViewModel viewModel = context.read<FeedViewModel>();
 
+    void setClose(bool setClose) {
+      viewModel.setIsClose(setClose);
+    }
+
     void moveQuestPage() {
       context.push('/quest');
     }
@@ -68,6 +72,7 @@ class FeedView extends StatelessWidget {
                 child: IconButton(
                   onPressed: () {
                     moveQuestPage();
+                    setClose(true);
                   },
                   icon: Icon(
                     Icons.check_box_outlined,
