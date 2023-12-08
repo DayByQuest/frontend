@@ -17,7 +17,7 @@ class QuestRepository {
 
   Future<List<QuestDetail>> getRemoteDoingQuest() async {
     try {
-      return _RemoteDataSource.getQuest(DOING);
+      return await _RemoteDataSource.getQuest(DOING);
     } catch (e) {
       rethrow;
     }
@@ -25,7 +25,7 @@ class QuestRepository {
 
   Future<List<QuestDetail>> getRemoteFinishedQuest() async {
     try {
-      return _RemoteDataSource.getQuest(FINISTHED);
+      return await _RemoteDataSource.getQuest(FINISTHED);
     } catch (e) {
       rethrow;
     }
@@ -33,7 +33,7 @@ class QuestRepository {
 
   Future<List<QuestDetail>> getRemoteContinueQuest() async {
     try {
-      return _RemoteDataSource.getQuest(CONTINUE);
+      return await _RemoteDataSource.getQuest(CONTINUE);
     } catch (e) {
       rethrow;
     }
@@ -41,7 +41,7 @@ class QuestRepository {
 
   Future<List<QuestDetail>> getRemoteNewQuest() async {
     try {
-      return _RemoteDataSource.getQuest(NOT);
+      return await _RemoteDataSource.getQuest(NOT);
     } catch (e) {
       rethrow;
     }
@@ -49,7 +49,7 @@ class QuestRepository {
 
   Future<List<QuestDetail>> getRemoteRecommendQuest() async {
     try {
-      return _RemoteDataSource.getRecommendQuest();
+      return await _RemoteDataSource.getRecommendQuest();
     } catch (e) {
       rethrow;
     }
@@ -57,7 +57,7 @@ class QuestRepository {
 
   Future<List<QuestDetail>> getRemoteGroupQuestList(int groupId) async {
     try {
-      return _RemoteDataSource.getGroupQuestList(groupId);
+      return await _RemoteDataSource.getGroupQuestList(groupId);
     } catch (e) {
       rethrow;
     }
@@ -65,7 +65,7 @@ class QuestRepository {
 
   Future<void> postRemoteQuestAccept(int questId) async {
     try {
-      return _RemoteDataSource.postQuestAccept(questId);
+      return await _RemoteDataSource.postQuestAccept(questId);
     } catch (e) {
       rethrow;
     }
@@ -73,7 +73,7 @@ class QuestRepository {
 
   Future<void> deleteRemoteQuestAccept(int questId) async {
     try {
-      return _RemoteDataSource.deleteQuestAccept(questId);
+      return await _RemoteDataSource.deleteQuestAccept(questId);
     } catch (e) {
       rethrow;
     }
@@ -81,7 +81,7 @@ class QuestRepository {
 
   Future<(PostImages, String)> getRemoteExampleQuest(int questId) async {
     try {
-      return _RemoteDataSource.getExampleQuest(questId);
+      return await _RemoteDataSource.getExampleQuest(questId);
     } catch (e) {
       rethrow;
     }
@@ -89,7 +89,7 @@ class QuestRepository {
 
   Future<void> patchFinishQuest(int questId) async {
     try {
-      return _RemoteDataSource.patchFinishQuest(questId);
+      return await _RemoteDataSource.patchFinishQuest(questId);
     } catch (e) {
       rethrow;
     }
@@ -97,7 +97,7 @@ class QuestRepository {
 
   Future<void> patchRewardQuest(int questId) async {
     try {
-      return _RemoteDataSource.patchRewardQuest(questId);
+      return await _RemoteDataSource.patchRewardQuest(questId);
     } catch (e) {
       rethrow;
     }
@@ -105,7 +105,7 @@ class QuestRepository {
 
   Future<void> patchRestartQuest(int questId) async {
     try {
-      return _RemoteDataSource.patchContinueQuest(questId);
+      return await _RemoteDataSource.patchContinueQuest(questId);
     } catch (e) {
       rethrow;
     }
@@ -114,7 +114,7 @@ class QuestRepository {
   Future<(List<Post>, bool hasNextPage, int lastId)> getQuestPostList(
       int limit, int lastId, int questId) async {
     try {
-      return _RemoteDataSource.getQuestPostList(limit, lastId, questId);
+      return await _RemoteDataSource.getQuestPostList(limit, lastId, questId);
     } catch (e) {
       rethrow;
     }
@@ -123,7 +123,7 @@ class QuestRepository {
   Future<(List<QuestDetail>, bool hasNextPage, int lastId)> getSearchQuestList(
       int lastId, int limit, String keyword) async {
     try {
-      return _RemoteDataSource.getSearchQuestList(lastId, limit, keyword);
+      return await _RemoteDataSource.getSearchQuestList(lastId, limit, keyword);
     } catch (e) {
       rethrow;
     }

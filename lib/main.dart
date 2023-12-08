@@ -41,6 +41,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class MainPage extends StatelessWidget {
+  const MainPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: MyHomePage(),
+    );
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
     super.key,

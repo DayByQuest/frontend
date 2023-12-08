@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
@@ -15,7 +16,7 @@ class PostRepository {
   Future<(List<Post> userPosts, bool hasNextPage, int lastId)>
       getRemoteUserPost(int limit, int lastId) async {
     try {
-      return _RemoteDataSource.getUserPost(limit, lastId);
+      return await _RemoteDataSource.getUserPost(limit, lastId);
     } catch (e) {
       rethrow;
     }
@@ -23,7 +24,7 @@ class PostRepository {
 
   Future<void> postRemoteLike(int postId) async {
     try {
-      _RemoteDataSource.postLike(postId);
+      await _RemoteDataSource.postLike(postId);
     } catch (e) {
       rethrow;
     }
@@ -31,7 +32,7 @@ class PostRepository {
 
   Future<void> deleteRemoteLike(int postId) async {
     try {
-      _RemoteDataSource.deleteLike(postId);
+      await _RemoteDataSource.deleteLike(postId);
     } catch (e) {
       rethrow;
     }
@@ -39,7 +40,7 @@ class PostRepository {
 
   Future<void> postRemoteDislike(int postId) async {
     try {
-      _RemoteDataSource.postDislike(postId);
+      await _RemoteDataSource.postDislike(postId);
     } catch (e) {
       rethrow;
     }
@@ -47,15 +48,16 @@ class PostRepository {
 
   Future<void> deleteRemoteDislike(int postId) async {
     try {
-      _RemoteDataSource.deleteDislike(postId);
+      await _RemoteDataSource.deleteDislike(postId);
     } catch (e) {
+      debugPrint('에러 dio 감지! throwError rethrow');
       rethrow;
     }
   }
 
   Future<void> postRemoteSwipe(int postId) async {
     try {
-      _RemoteDataSource.postSwipe(postId);
+      await _RemoteDataSource.postSwipe(postId);
     } catch (e) {
       rethrow;
     }
@@ -64,7 +66,7 @@ class PostRepository {
   Future<(List<Post>, bool hasNextPage, int lastId)> getRemoteFeed(
       int limit, int lastId) async {
     try {
-      return _RemoteDataSource.getFeed(limit, lastId);
+      return await _RemoteDataSource.getFeed(limit, lastId);
     } catch (e) {
       rethrow;
     }
@@ -72,7 +74,7 @@ class PostRepository {
 
   Future<List<GroupPost>> getRemoteGroupFeed() async {
     try {
-      return _RemoteDataSource.getGroupFeed();
+      return await _RemoteDataSource.getGroupFeed();
     } catch (e) {
       rethrow;
     }
@@ -80,7 +82,7 @@ class PostRepository {
 
   Future<void> postRemoteGroupDislike(int groupId) async {
     try {
-      _RemoteDataSource.postGroupDislike(groupId);
+      await _RemoteDataSource.postGroupDislike(groupId);
     } catch (e) {
       rethrow;
     }
@@ -88,7 +90,7 @@ class PostRepository {
 
   Future<void> deleteRemoteGroupDislike(int groupId) async {
     try {
-      _RemoteDataSource.deleteDislike(groupId);
+      await _RemoteDataSource.deleteDislike(groupId);
     } catch (e) {
       rethrow;
     }
@@ -96,7 +98,7 @@ class PostRepository {
 
   Future<Post> getRemoteDetailPost(int postId) async {
     try {
-      return _RemoteDataSource.getDetailPost(postId);
+      return await _RemoteDataSource.getDetailPost(postId);
     } catch (e) {
       rethrow;
     }
@@ -105,7 +107,7 @@ class PostRepository {
   Future<(List<Comment>, bool hasNextPage, int lastId)> getRemoteComment(
       int postId, int limit, int lastId) async {
     try {
-      return _RemoteDataSource.getComment(postId, limit, lastId);
+      return await _RemoteDataSource.getComment(postId, limit, lastId);
     } catch (e) {
       rethrow;
     }
@@ -113,7 +115,7 @@ class PostRepository {
 
   Future<void> postRemoteComment(int postId, String comment) async {
     try {
-      _RemoteDataSource.postComment(postId, comment);
+      await _RemoteDataSource.postComment(postId, comment);
     } catch (e) {
       rethrow;
     }
@@ -122,7 +124,7 @@ class PostRepository {
   Future<void> postCreatePost(List<SelectedByte> selectedByte, String content,
       {int? questId}) async {
     try {
-      _RemoteDataSource.postCreatePost(
+      await _RemoteDataSource.postCreatePost(
         selectedByte,
         content,
         questId: questId,
