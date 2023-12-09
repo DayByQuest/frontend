@@ -12,6 +12,7 @@ import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/common/post/post_bar.dart';
 import 'package:flutter_application_1/page/common/post/post_content.dart';
 import 'package:flutter_application_1/page/common/post/post_image_view.dart';
@@ -208,6 +209,9 @@ class DetailViewBody extends StatelessWidget {
           PagedSliverList<int, Comment>(
             pagingController: viewModel.pagingController,
             builderDelegate: PagedChildBuilderDelegate<Comment>(
+              noItemsFoundIndicatorBuilder: (context) {
+                return ShowEmptyList(content: '댓글이 없습니다');
+              },
               itemBuilder: (context, comment, index) => CommentItem(
                 index: index,
                 comment: comment,

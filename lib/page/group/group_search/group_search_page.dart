@@ -222,6 +222,11 @@ class InterestedGroupListView extends StatelessWidget {
     return PagedListView<int, Group>(
       pagingController: viewModel.pagingController,
       builderDelegate: PagedChildBuilderDelegate<Group>(
+        noItemsFoundIndicatorBuilder: (context) {
+          return Center(
+            child: Text('해당하는 그룹이 없습니다.'),
+          );
+        },
         itemBuilder: (context, user, index) => GroupItem(
           index: index,
         ),

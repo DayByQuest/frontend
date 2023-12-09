@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -54,6 +55,9 @@ class MyPostView extends StatelessWidget {
       body: PagedListView<int, Post>(
         pagingController: viewModel.pagingController,
         builderDelegate: PagedChildBuilderDelegate<Post>(
+          noItemsFoundIndicatorBuilder: (context) {
+            return ShowEmptyList(content: '내 게시물이 없습니다.');
+          },
           itemBuilder: (context, post, index) => MyPost(postIndex: index),
         ),
       ),

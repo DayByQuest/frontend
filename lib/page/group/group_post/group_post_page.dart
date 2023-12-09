@@ -60,6 +60,11 @@ class GroupPostView extends StatelessWidget {
             primary: false,
             pagingController: viewModel.pagingController,
             builderDelegate: PagedChildBuilderDelegate<Post>(
+              noItemsFoundIndicatorBuilder: (context) {
+                return Center(
+                  child: Text('그룹 게시물이 없습니다.'),
+                );
+              },
               itemBuilder: (context, post, index) =>
                   GroupPost(postIndex: index),
             ),

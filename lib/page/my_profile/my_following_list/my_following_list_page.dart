@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -62,6 +63,9 @@ class FollwingList extends StatelessWidget {
     return PagedListView<int, User>(
       pagingController: viewModel.pagingController,
       builderDelegate: PagedChildBuilderDelegate<User>(
+        noItemsFoundIndicatorBuilder: (context) {
+          return ShowEmptyList(content: '팔로우하는 사용자가 없습니다');
+        },
         itemBuilder: (context, user, index) => ListItem(
           index: index,
         ),

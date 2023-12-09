@@ -84,6 +84,11 @@ class FeedView extends StatelessWidget {
           PagedSliverList(
             pagingController: viewModel.pagingController,
             builderDelegate: PagedChildBuilderDelegate<Feed>(
+              noItemsFoundIndicatorBuilder: (context) {
+                return Center(
+                  child: Text('게시물이 없습니다.'),
+                );
+              },
               itemBuilder: (context, feed, index) => FeedItem(
                 feedIndex: index,
                 feed: feed,
