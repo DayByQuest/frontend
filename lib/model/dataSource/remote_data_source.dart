@@ -561,7 +561,7 @@ class RemoteDataSource {
     }
 
     Response response;
-    String url = '/feed?limit=5$lastIdUrl';
+    String url = '/feed?limit=$limit$lastIdUrl';
 
     try {
       debugPrint('getFeed start: $url');
