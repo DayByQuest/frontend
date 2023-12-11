@@ -183,7 +183,7 @@ class ProfileInfomation extends StatelessWidget {
               width: 91,
               height: 28,
               child: CommonBtn(
-                isPurple: isFollwing,
+                isPurple: !isFollwing,
                 onPressFunc: isFollwing ? unFollow : follow,
                 context: context,
                 btnTitle: isFollwing ? "팔로잉" : "팔로우",
