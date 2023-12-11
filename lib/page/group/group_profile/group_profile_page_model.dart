@@ -35,6 +35,7 @@ class GroupProfileViewModel extends ChangeNotifier {
       group = await _groupRepositoty.getRemoteGroupProfile(groupId);
       groupQuestList = await _questRepository.getRemoteGroupQuestList(groupId);
       status = Status.loaded;
+      _groupJoinStatusProvider.updateGroupList(group);
       notifyListeners();
     } on ErrorException catch (e) {
       _errorStatusModel.setErrorStatus(true, e.message);
