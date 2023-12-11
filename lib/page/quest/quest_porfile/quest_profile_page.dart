@@ -236,7 +236,7 @@ class DoingQuestItem extends StatelessWidget {
                     handleCloseBtn();
                   },
                   context: context,
-                  btnTitle: '삭제',
+                  btnTitle: '취소',
                   fontSize: 16,
                 ),
               ),

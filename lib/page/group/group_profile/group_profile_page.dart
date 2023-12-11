@@ -260,6 +260,15 @@ class QuestItem extends StatelessWidget {
     bool isDoing = (state == QuestMap[QuestState.DOING]) ||
         (state == QuestMap[QuestState.CONTINUE]);
 
+    void moveQuestProfile() async {
+      bool? isLoad = await context.push<bool>('/quest-profile?questId=$questId',
+          extra: quest);
+
+      if (isLoad == true) {
+        viewModel.load();
+      }
+    }
+
     void onClick() {
       if (isDoing) {
         viewModel.questDelete(questId, index);
@@ -269,71 +278,76 @@ class QuestItem extends StatelessWidget {
       viewModel.questAccept(questId, index);
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  questTitle,
-                  style: const TextStyle(
-                    fontSize: 16,
+    return InkWell(
+      onTap: () {
+        moveQuestProfile();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    questTitle,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text('그룹 퀘스트'),
-              ],
-            ),
-            Container(
-              width: 62,
-              height: 28,
-              child: CommonBtn(
-                isPurple: isDoing,
-                onPressFunc: () {
-                  onClick();
-                },
-                context: context,
-                btnTitle: isDoing ? '삭제' : '신청',
-                fontSize: 16,
+                  Text('그룹 퀘스트'),
+                ],
               ),
-            )
-          ],
-        ),
-        Gap8(),
-        Text(
-          questDescriotion,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        Gap8(),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Stack(
-              children: [
-                Container(
-                  height: 20,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 1.0),
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
+              Container(
+                width: 62,
+                height: 28,
+                child: CommonBtn(
+                  isPurple: !isDoing,
+                  onPressFunc: () {
+                    onClick();
+                  },
+                  context: context,
+                  btnTitle: isDoing ? '취소' : '수행',
+                  fontSize: 16,
                 ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${currentCount}',
-                    style: const TextStyle(fontSize: 18),
+              )
+            ],
+          ),
+          Gap8(),
+          Text(
+            questDescriotion,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Gap8(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(
+                children: [
+                  Container(
+                    height: 20,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 1.0),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        )
-      ],
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '${currentCount}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 }
