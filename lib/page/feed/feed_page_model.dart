@@ -10,6 +10,7 @@ import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/groupJoin_status_provider.dart';
 import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -17,6 +18,7 @@ class FeedViewModel with ChangeNotifier {
   final ErrorStatusProvider _errorStatusProvider;
   final FollowStatusProvider followStatusProvider;
   final PostLikeStatusProvider _postLikeStatusProvider;
+  final GroupJoinStatusProvider _groupJoinStatusProvider;
   final PostRepository _postRepository;
   final GroupRepositoty _groupRepositoty;
 
@@ -36,10 +38,12 @@ class FeedViewModel with ChangeNotifier {
     required errorStatusProvider,
     required this.followStatusProvider,
     required postLikeStatusProvider,
+    required groupJoinStatusProvider,
   })  : _postRepository = postRepository,
         _groupRepositoty = groupRepositoty,
         _errorStatusProvider = errorStatusProvider,
-        _postLikeStatusProvider = postLikeStatusProvider {
+        _postLikeStatusProvider = postLikeStatusProvider,
+        _groupJoinStatusProvider = groupJoinStatusProvider {
     _pagingController.addPageRequestListener((lastId) {
       loadFeedList(lastId);
     });
@@ -72,6 +76,7 @@ class FeedViewModel with ChangeNotifier {
       if (groupList.isEmpty) {
         final groupResult = await _postRepository.getRemoteGroupFeed();
         groupList.addAll(groupResult);
+        _groupJoinStatusProvider.updateAllGroupList(groupResult);
       }
 
       if (groupList.isNotEmpty) {
@@ -174,29 +179,12 @@ class FeedViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> groupJoin(int groupId, int index) async {
-    try {
-      debugPrint('groupJoin: ${groupId}');
-      await _groupRepositoty.remoteGroupJoin(groupId);
-      feedList[index].groupPost?.isJoin = true;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('groupJoin: ${e.toString()}');
-    }
+  Future<void> groupJoin(int groupId) async {
+    await _groupJoinStatusProvider.joinGroup(groupId);
   }
 
-  Future<void> cancleGroupJoin(int groupId, int index) async {
-    try {
-      await _groupRepositoty.remoteDeleteGroupJoin(groupId);
-      feedList[index].groupPost?.isJoin = false;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('groupJoin: ${e.toString()}');
-    }
+  Future<void> cancleGroupJoin(int groupId) async {
+    await _groupJoinStatusProvider.quitGroup(groupId);
   }
 
   void setIsClose(bool isClose) {

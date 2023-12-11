@@ -16,6 +16,7 @@ import 'package:flutter_application_1/page/common/post/uninterested_post.dart';
 import 'package:flutter_application_1/page/feed/feed_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/groupJoin_status_provider.dart';
 import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -34,6 +35,7 @@ class FeedPage extends StatelessWidget {
           errorStatusProvider: context.read<ErrorStatusProvider>(),
           followStatusProvider: context.read<FollowStatusProvider>(),
           postLikeStatusProvider: context.read<PostLikeStatusProvider>(),
+          groupJoinStatusProvider: context.read<GroupJoinStatusProvider>(),
           postRepository: PostRepository(),
           groupRepositoty: GroupRepositoty(),
         );
@@ -245,8 +247,9 @@ class GroupPostItem extends StatelessWidget {
     FeedViewModel viewModel = context.read<FeedViewModel>();
     Group groupPost =
         context.watch<FeedViewModel>().feedList[feedIndex].groupPost!;
-    bool isJoin = groupPost.isJoin;
     int groupId = groupPost.groupId;
+    bool isJoin =
+        context.watch<GroupJoinStatusProvider>().hasjoinGroupList(groupId);
     bool isUnInterested = groupPost.unInterested;
     String groupName = groupPost.name;
     String description = groupPost.description;
@@ -257,8 +260,8 @@ class GroupPostItem extends StatelessWidget {
       debugPrint('groupId: $groupId');
 
       isJoin
-          ? viewModel.cancleGroupJoin(groupId, feedIndex)
-          : viewModel.groupJoin(groupId, feedIndex);
+          ? viewModel.cancleGroupJoin(groupId)
+          : viewModel.groupJoin(groupId);
     }
 
     void uninterestedGroup() {
@@ -273,17 +276,23 @@ class GroupPostItem extends StatelessWidget {
       viewModel.setIsClose(setClose);
     }
 
+    void moveGroupProfile() {
+      context.push('/group-profile?groupId=$groupId');
+    }
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       child: AnimatedCrossFade(
         duration: const Duration(milliseconds: 300),
-        firstChild: Column(
-          children: [
-            Row(
-              children: [
-                InkWell(
-                  onTap: () {},
-                  child: Row(
+        firstChild: InkWell(
+          onTap: () {
+            moveGroupProfile();
+          },
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Row(
                     children: [
                       SizedBox(
                         width: 48,
@@ -304,93 +313,93 @@ class GroupPostItem extends StatelessWidget {
                       )
                     ],
                   ),
-                ),
-                Expanded(
-                  child: Container(),
-                ),
-                SizedBox(
-                  width: 78,
-                  height: 28,
-                  child: CommonBtn(
-                    isPurple: !isJoin,
-                    onPressFunc: changeJoinGroup,
-                    context: context,
-                    btnTitle: isJoin ? "탈퇴" : "가입",
-                    fontSize: 16,
+                  Expanded(
+                    child: Container(),
                   ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                SubmenuButton(
-                  controller: menu,
-                  onOpen: () {
-                    if (isClose) {
-                      menu.close();
-                      setClose(false);
-                    }
-                  },
-                  alignmentOffset: const Offset(-275, 0),
-                  menuStyle: const MenuStyle(
-                      alignment: Alignment.bottomRight,
-                      backgroundColor: MaterialStatePropertyAll(
-                          Color.fromARGB(255, 255, 255, 255)),
-                      side: MaterialStatePropertyAll(
-                        BorderSide(),
-                      )),
-                  style: const ButtonStyle(
-                    padding: MaterialStatePropertyAll(
-                      EdgeInsets.all(0),
-                    ),
-                    minimumSize: MaterialStatePropertyAll(Size(28, 28)),
-                  ),
-                  menuChildren: [
-                    MenuItemButton(
-                      onPressed: uninterestedGroup,
-                      child: Container(
-                        width: 252,
-                        height: 48,
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        margin: const EdgeInsets.all(0),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '이 그룹에 관심 없음',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            Icon(Icons.block)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                  child: Container(
-                    width: 28,
+                  SizedBox(
+                    width: 78,
                     height: 28,
-                    child: Icon(
-                      Icons.more_horiz,
-                      size: 28,
+                    child: CommonBtn(
+                      isPurple: !isJoin,
+                      onPressFunc: changeJoinGroup,
+                      context: context,
+                      btnTitle: isJoin ? "탈퇴" : "가입",
+                      fontSize: 16,
                     ),
                   ),
-                )
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  const SizedBox(
+                    height: 8,
                   ),
-                ),
-              ],
-            ),
-            Gap16(),
-          ],
+                  // SubmenuButton(
+                  //   controller: menu,
+                  //   onOpen: () {
+                  //     if (isClose) {
+                  //       menu.close();
+                  //       setClose(false);
+                  //     }
+                  //   },
+                  //   alignmentOffset: const Offset(-275, 0),
+                  //   menuStyle: const MenuStyle(
+                  //       alignment: Alignment.bottomRight,
+                  //       backgroundColor: MaterialStatePropertyAll(
+                  //           Color.fromARGB(255, 255, 255, 255)),
+                  //       side: MaterialStatePropertyAll(
+                  //         BorderSide(),
+                  //       )),
+                  //   style: const ButtonStyle(
+                  //     padding: MaterialStatePropertyAll(
+                  //       EdgeInsets.all(0),
+                  //     ),
+                  //     minimumSize: MaterialStatePropertyAll(Size(28, 28)),
+                  //   ),
+                  //   menuChildren: [
+                  //     MenuItemButton(
+                  //       onPressed: uninterestedGroup,
+                  //       child: Container(
+                  //         width: 252,
+                  //         height: 48,
+                  //         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  //         margin: const EdgeInsets.all(0),
+                  //         child: const Row(
+                  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //           children: [
+                  //             Text(
+                  //               '이 그룹에 관심 없음',
+                  //               style: TextStyle(
+                  //                 fontSize: 16,
+                  //               ),
+                  //             ),
+                  //             Icon(Icons.block)
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  //   child: Container(
+                  //     width: 28,
+                  //     height: 28,
+                  //     child: Icon(
+                  //       Icons.more_horiz,
+                  //       size: 28,
+                  //     ),
+                  //   ),
+                  // )
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              Gap16(),
+            ],
+          ),
         ),
         secondChild: UninterestedPost(
           cancleUninterestedPost: cancelUninterestedGroup,

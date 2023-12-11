@@ -12,6 +12,7 @@ import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/group/group_profile/group_profile_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/groupJoin_status_provider.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +34,7 @@ class GroupProfilePage extends StatelessWidget {
       create: (_) {
         final GroupProfileViewModel viewModel = GroupProfileViewModel(
           errorStatusModel: context.read<ErrorStatusProvider>(),
+          groupJoinStatusProvider: context.read<GroupJoinStatusProvider>(),
           groupRepositoty: GroupRepositoty(),
           questRepository: QuestRepository(),
           groupId: groupId,
@@ -66,7 +68,8 @@ class GroupProfileView extends StatelessWidget {
     bool isGroupManager = group.isGroupManager;
     List<QuestDetail> questList = viewModel.groupQuestList;
     bool canCreateQuset = isGroupManager && questList.length < 10;
-    bool isGroupMember = group.isGroupMember;
+    bool isGroupMember =
+        context.watch<GroupJoinStatusProvider>().hasjoinGroupList(groupId);
     int userCount = group.userCount;
 
     void createQuest() {

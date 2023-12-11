@@ -141,17 +141,17 @@ class GroupItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MyGroupListViewModel viewModel = context.read<MyGroupListViewModel>();
     Group curGroup = context.read<MyGroupListViewModel>().groupList[index];
     String imageUrl = curGroup.imageUrl;
     String name = curGroup.name;
     String userCount = '멤버수: ${curGroup.userCount}명';
     String description = curGroup.description;
     int groupId = curGroup.groupId;
-    String url = '/group-profile?groupId=$groupId';
 
-    void moveUserProfile() {
-      debugPrint("move!");
-      context.go(url);
+    void moveUserProfile() async {
+      bool? isLoad = await context.push('/group-profile?groupId=$groupId');
+      viewModel.setStatusLoding();
     }
 
     return InkWell(

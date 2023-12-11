@@ -24,7 +24,7 @@ class GroupJoinStatusProvider with ChangeNotifier {
   }
 
   void updateGroupList(Group group) {
-    if (hasjoinGroupList(group.groupId) || !group.isJoin) {
+    if (hasjoinGroupList(group.groupId) || !group.isGroupMember) {
       return;
     }
 
