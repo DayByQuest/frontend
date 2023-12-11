@@ -3,6 +3,7 @@ import 'package:flutter_application_1/model/dataSource/mock_data_source.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/my_profile/my_follower_list/my_follower_list_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
@@ -62,6 +63,9 @@ class FollwerList extends StatelessWidget {
     return PagedListView<int, User>(
       pagingController: viewModel.pagingController,
       builderDelegate: PagedChildBuilderDelegate<User>(
+        noItemsFoundIndicatorBuilder: (context) {
+          return ShowEmptyList(content: '나를 팔로우하는 사용자가 없습니다');
+        },
         itemBuilder: (context, user, index) => ListItem(
           index: index,
         ),

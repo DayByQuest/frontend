@@ -10,8 +10,10 @@ import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/group/group_search/group_search_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/groupJoin_status_provider.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -28,6 +30,7 @@ class GroupSearchPage extends StatelessWidget {
       create: (_) {
         final GroupSearchViewModel viewModel = GroupSearchViewModel(
           errorStatusProvider: context.read<ErrorStatusProvider>(),
+          groupJoinStatusProvider: context.read<GroupJoinStatusProvider>(),
           groupRepositoty: GroupRepositoty(),
           userRepository: UserRepository(),
         );
@@ -222,6 +225,9 @@ class InterestedGroupListView extends StatelessWidget {
     return PagedListView<int, Group>(
       pagingController: viewModel.pagingController,
       builderDelegate: PagedChildBuilderDelegate<Group>(
+        noItemsFoundIndicatorBuilder: (context) {
+          return const ShowEmptyList(content: '해당하는 그룹이 없습니다');
+        },
         itemBuilder: (context, user, index) => GroupItem(
           index: index,
         ),
@@ -248,7 +254,8 @@ class GroupItem extends StatelessWidget {
     String groupName = group.name;
     int userCount = group.userCount;
     String description = group.description;
-    bool isMember = group.isGroupMember;
+    bool isMember =
+        context.watch<GroupJoinStatusProvider>().hasjoinGroupList(groupId);
 
     void btnClick() {
       if (isMember) {

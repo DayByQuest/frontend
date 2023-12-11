@@ -7,6 +7,7 @@ import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/common/showDialog.dart';
 import 'package:flutter_application_1/page/common/showSnackBarFunction.dart';
 import 'package:flutter_application_1/page/quest/quest_page_model.dart';
@@ -70,6 +71,7 @@ class QuestView extends StatelessWidget {
           ),
           bottom: TabBar(
             labelColor: Colors.black,
+            indicatorColor: Color(0xFF82589F),
             onTap: (int value) {
               debugPrint('value $value');
               return;
@@ -130,9 +132,7 @@ class DoingQuestList extends StatelessWidget {
     }
 
     if (questLength == 0) {
-      return const Center(
-        child: Text('수행중인 퀘스트가 없습니다.'),
-      );
+      return ShowEmptyList(content: '수행중인 퀘스트가 없습니다.');
     }
 
     return Padding(
@@ -381,9 +381,7 @@ class NewQuestList extends StatelessWidget {
     }
 
     if (questLength == 0) {
-      return const Center(
-        child: Text('새로운 퀘스트가 없습니다.'),
-      );
+      return ShowEmptyList(content: '새로운 퀘스트가 없습니다.');
     }
 
     return Padding(

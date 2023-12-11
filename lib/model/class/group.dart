@@ -9,6 +9,8 @@ class Group {
   int userCount;
   final bool isGroupManager;
   bool isGroupMember;
+  bool isJoin;
+  bool unInterested;
 
   static String? IMAGE_BASE_URL = dotenv.env['IMAGE_BASE_URL'] ?? '';
 
@@ -21,6 +23,8 @@ class Group {
     required this.userCount,
     required this.isGroupManager,
     required this.isGroupMember,
+    this.isJoin = false,
+    this.unInterested = false,
   });
 
   factory Group.fromJson(Map<String, dynamic> json) {

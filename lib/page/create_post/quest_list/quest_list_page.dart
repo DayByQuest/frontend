@@ -75,11 +75,17 @@ class QuestListView extends StatelessWidget {
         child: Stack(
           children: [
             ListView.separated(
-              itemCount: questLength,
+              itemCount: questLength + 1,
               separatorBuilder: (_, index) => const Divider(
                 color: Colors.black,
               ),
               itemBuilder: (context, index) {
+                if (questLength == index) {
+                  return SizedBox(
+                    height: 80,
+                  );
+                }
+
                 String title = questList[index].title;
                 String subTitle = questList[index].content;
                 return QuestItem(

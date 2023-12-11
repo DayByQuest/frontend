@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
-import 'package:flutter_application_1/model/class/group_post.dart';
+import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/post.dart';
 import 'package:flutter_application_1/model/class/post_image.dart';
+import 'package:flutter_application_1/model/class/user.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/groupJoin_status_provider.dart';
+import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class FeedViewModel with ChangeNotifier {
   final ErrorStatusProvider _errorStatusProvider;
+  final FollowStatusProvider followStatusProvider;
+  final PostLikeStatusProvider _postLikeStatusProvider;
+  final GroupJoinStatusProvider _groupJoinStatusProvider;
   final PostRepository _postRepository;
   final GroupRepositoty _groupRepositoty;
-  final UserRepository _userRepository;
 
   final PagingController<int, Feed> _pagingController =
       PagingController(firstPageKey: -1);
@@ -24,17 +30,20 @@ class FeedViewModel with ChangeNotifier {
   final int _limit = 10;
   bool _isClose = false;
   int groupCnt = 0;
-  List<GroupPost> groupList = [];
+  List<Group> groupList = [];
 
   FeedViewModel({
     required PostRepository postRepository,
     required GroupRepositoty groupRepositoty,
-    required UserRepository userRepository,
     required errorStatusProvider,
+    required this.followStatusProvider,
+    required postLikeStatusProvider,
+    required groupJoinStatusProvider,
   })  : _postRepository = postRepository,
         _groupRepositoty = groupRepositoty,
-        _userRepository = userRepository,
-        _errorStatusProvider = errorStatusProvider {
+        _errorStatusProvider = errorStatusProvider,
+        _postLikeStatusProvider = postLikeStatusProvider,
+        _groupJoinStatusProvider = groupJoinStatusProvider {
     _pagingController.addPageRequestListener((lastId) {
       loadFeedList(lastId);
     });
@@ -58,15 +67,20 @@ class FeedViewModel with ChangeNotifier {
 
       for (Post post in newPostList) {
         newFeedList.add(Feed.post(isPost: true, post: post));
+
+        User author = post.author;
+        followStatusProvider.updateFollowingList(author);
+        _postLikeStatusProvider.updatePostLikeList(post);
       }
 
       if (groupList.isEmpty) {
         final groupResult = await _postRepository.getRemoteGroupFeed();
         groupList.addAll(groupResult);
+        _groupJoinStatusProvider.updateAllGroupList(groupResult);
       }
 
       if (groupList.isNotEmpty) {
-        GroupPost groupPost = groupList[0];
+        Group groupPost = groupList[0];
         groupList.removeAt(0);
         newFeedList.add(Feed.group(isPost: false, groupPost: groupPost));
       }
@@ -133,30 +147,12 @@ class FeedViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> likePost(int postId, int index) async {
-    try {
-      await _postRepository.postRemoteLike(postId);
-      feedList[index].post?.liked = true;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint(e.toString());
-      feedList[index].post?.liked = false;
-    }
+  Future<void> likePost(int postId) async {
+    await _postLikeStatusProvider.likePost(postId);
   }
 
-  Future<void> cancelLikePost(int postId, int index) async {
-    try {
-      await _postRepository.deleteRemoteLike(postId);
-      feedList[index].post?.liked = false;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint(e.toString());
-      feedList[index].post?.liked = true;
-    }
+  Future<void> cancelLikePost(int postId) async {
+    await _postLikeStatusProvider.cancelLikePost(postId);
   }
 
   Future<void> uninterestedGroupPost(int groupId, int index) async {
@@ -183,29 +179,12 @@ class FeedViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> groupJoin(int groupId, int index) async {
-    try {
-      debugPrint('groupJoin: ${groupId}');
-      await _groupRepositoty.remoteGroupJoin(groupId);
-      feedList[index].groupPost?.isJoin = true;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('groupJoin: ${e.toString()}');
-    }
+  Future<void> groupJoin(int groupId) async {
+    await _groupJoinStatusProvider.joinGroup(groupId);
   }
 
-  Future<void> cancleGroupJoin(int groupId, int index) async {
-    try {
-      await _groupRepositoty.remoteDeleteGroupJoin(groupId);
-      feedList[index].groupPost?.isJoin = false;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('groupJoin: ${e.toString()}');
-    }
+  Future<void> cancleGroupJoin(int groupId) async {
+    await _groupJoinStatusProvider.quitGroup(groupId);
   }
 
   void setIsClose(bool isClose) {
@@ -213,37 +192,11 @@ class FeedViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> postFollow(String username, int index) async {
-    try {
-      if (!feedList[index].isPost) {
-        return;
-      }
-
-      debugPrint("username:  $username");
-      await _userRepository.postRemoteUserFollow(username);
-      feedList[index].post!.author.following = true;
-      debugPrint("postFollow:  교체!");
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('postFollow error: ${e.toString()}');
-    }
+  Future<void> postFollow(String username) async {
+    await followStatusProvider.addFollowingUser(username);
   }
 
-  Future<void> deleteFollow(String username, index) async {
-    try {
-      if (!feedList[index].isPost) {
-        return;
-      }
-
-      await _userRepository.deleteRemoteUserFollow(username);
-      feedList[index].post!.author.following = false;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('deleteFollow error: ${e.toString()}');
-    }
+  Future<void> deleteFollow(String username) async {
+    await followStatusProvider.unFollowUser(username);
   }
 }

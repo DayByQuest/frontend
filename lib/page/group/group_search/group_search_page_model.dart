@@ -6,11 +6,13 @@ import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/groupJoin_status_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class GroupSearchViewModel with ChangeNotifier {
   final ErrorStatusProvider _errorStatusProvider;
+  final GroupJoinStatusProvider _groupJoinStatusProvider;
   final GroupRepositoty _groupRepositoty;
   final UserRepository _userRepository;
 
@@ -30,9 +32,11 @@ class GroupSearchViewModel with ChangeNotifier {
     required GroupRepositoty groupRepositoty,
     required UserRepository userRepository,
     required errorStatusProvider,
+    required groupJoinStatusProvider,
   })  : _groupRepositoty = groupRepositoty,
         _userRepository = userRepository,
-        _errorStatusProvider = errorStatusProvider {
+        _errorStatusProvider = errorStatusProvider,
+        _groupJoinStatusProvider = groupJoinStatusProvider {
     pagingController.addPageRequestListener((lastId) {
       loadInterestedGroupList(lastId);
     });
@@ -81,6 +85,7 @@ class GroupSearchViewModel with ChangeNotifier {
       _lastId = groupResult.$3;
 
       interestedGroupList.addAll(newGroupList);
+      _groupJoinStatusProvider.updateAllGroupList(newGroupList);
 
       if (_hasNextPage) {
         pagingController.appendPage(newGroupList, _lastId);
@@ -98,8 +103,7 @@ class GroupSearchViewModel with ChangeNotifier {
 
   Future<void> joinGroup(int groupId, int index) async {
     try {
-      await _groupRepositoty.remoteGroupJoin(groupId);
-      interestedGroupList[index].isGroupMember = true;
+      await _groupJoinStatusProvider.joinGroup(groupId);
       interestedGroupList[index].userCount += 1;
       notifyListeners();
     } on ErrorException catch (e) {
@@ -111,8 +115,7 @@ class GroupSearchViewModel with ChangeNotifier {
 
   Future<void> quitGroup(int groupId, int index) async {
     try {
-      await _groupRepositoty.remoteQuitGroup(groupId);
-      interestedGroupList[index].isGroupMember = false;
+      await _groupJoinStatusProvider.quitGroup(groupId);
       interestedGroupList[index].userCount -= 1;
       notifyListeners();
     } on ErrorException catch (e) {

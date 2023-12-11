@@ -9,7 +9,6 @@ import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/failed_post.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
 import 'package:flutter_application_1/model/class/group.dart';
-import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:flutter_application_1/model/class/interest.dart';
 import 'package:flutter_application_1/model/class/post_image.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
@@ -423,7 +422,7 @@ class RemoteDataSource {
   }
 
   Future<(List<Post> userPosts, bool hasNextPage, int lastId)> getUserPost(
-      int limit, int lastId) async {
+      int limit, int lastId, String username) async {
     String lastIdUrl = '&lastId=$lastId';
 
     if (lastId == -1) {
@@ -431,7 +430,7 @@ class RemoteDataSource {
     }
 
     Response response;
-    String url = '/profile/${USER_NAME}/post?limit=$limit$lastIdUrl';
+    String url = '/profile/$username/post?limit=$limit$lastIdUrl';
 
     ///profile/{username}/post?limit=5&lastid=2
 
@@ -561,7 +560,7 @@ class RemoteDataSource {
     }
 
     Response response;
-    String url = '/feed?limit=5$lastIdUrl';
+    String url = '/feed?limit=$limit$lastIdUrl';
 
     try {
       debugPrint('getFeed start: $url');
@@ -583,7 +582,7 @@ class RemoteDataSource {
     }
   }
 
-  Future<List<GroupPost>> getGroupFeed() async {
+  Future<List<Group>> getGroupFeed() async {
     Response response;
     String url = '/group/recommendation';
 
@@ -592,8 +591,8 @@ class RemoteDataSource {
       Map<String, dynamic> jsonData = response.data;
       List<dynamic> groupsJson = jsonData['groups'];
       debugPrint('getGroupFeed groupsJson: ${groupsJson.toString()}');
-      List<GroupPost> groupPosts =
-          groupsJson.map((groupJson) => GroupPost.fromJson(groupJson)).toList();
+      List<Group> groupPosts =
+          groupsJson.map((groupJson) => Group.fromJson(groupJson)).toList();
 
       return groupPosts;
     } on DioException catch (e) {

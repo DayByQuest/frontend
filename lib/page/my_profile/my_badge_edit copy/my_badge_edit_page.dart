@@ -257,6 +257,11 @@ class AllBadgeList extends StatelessWidget {
               crossAxisCount: 5,
             ),
             builderDelegate: PagedChildBuilderDelegate<BadgeClass.Badge>(
+              noItemsFoundIndicatorBuilder: (context) {
+                return const Center(
+                  child: Text('획득한 뱃지가 없습니다.'),
+                );
+              },
               itemBuilder: (context, badge, index) =>
                   BadgeItem(badge: badge, index: index),
             ),

@@ -12,11 +12,14 @@ import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/common/post/post_bar.dart';
 import 'package:flutter_application_1/page/common/post/post_content.dart';
 import 'package:flutter_application_1/page/common/post/post_image_view.dart';
 import 'package:flutter_application_1/page/post/detail_post_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -38,6 +41,8 @@ class DetailPage extends StatelessWidget {
       create: (_) {
         final DetailViewModel viewModel = DetailViewModel(
           errorStatusProvider: context.read<ErrorStatusProvider>(),
+          followStatusProvider: context.read<FollowStatusProvider>(),
+          postLikeStatusProvider: context.read<PostLikeStatusProvider>(),
           postRepository: PostRepository(),
           userRepository: UserRepository(),
           postId: postId,
@@ -104,7 +109,9 @@ class DetailViewBody extends StatelessWidget {
     String authorProfileImage = author.imageUrl;
     String authorUserName = author.username;
     String authorName = author.name;
-    bool isFollowing = author.following;
+    bool isFollowing =
+        context.watch<FollowStatusProvider>().hasUser(authorUserName);
+
     bool isClose = context.watch<DetailViewModel>().isClose;
 
     String content = post.content;
@@ -112,7 +119,7 @@ class DetailViewBody extends StatelessWidget {
     List<PostImage> postImageList = List.from(postImages.postImageList);
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
-    bool isLike = post.liked;
+    bool isLike = context.watch<PostLikeStatusProvider>().hasLikePost(postId);
     // imageList imageLength changeCurIdx
 
     void follow() async {
@@ -208,6 +215,9 @@ class DetailViewBody extends StatelessWidget {
           PagedSliverList<int, Comment>(
             pagingController: viewModel.pagingController,
             builderDelegate: PagedChildBuilderDelegate<Comment>(
+              noItemsFoundIndicatorBuilder: (context) {
+                return ShowEmptyList(content: '댓글이 없습니다');
+              },
               itemBuilder: (context, comment, index) => CommentItem(
                 index: index,
                 comment: comment,

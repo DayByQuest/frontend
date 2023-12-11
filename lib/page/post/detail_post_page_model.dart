@@ -8,11 +8,15 @@ import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class DetailViewModel with ChangeNotifier {
   final ErrorStatusProvider _errorStatusProvider;
+  final FollowStatusProvider _followStatusProvider;
+  final PostLikeStatusProvider _postLikeStatusProvider;
   final PostRepository _postRepository;
   final UserRepository _userRepository;
 
@@ -35,9 +39,13 @@ class DetailViewModel with ChangeNotifier {
     required UserRepository userRepository,
     required this.postId,
     required errorStatusProvider,
+    required followStatusProvider,
+    required postLikeStatusProvider,
   })  : _postRepository = postRepository,
         _userRepository = userRepository,
-        _errorStatusProvider = errorStatusProvider {
+        _errorStatusProvider = errorStatusProvider,
+        _followStatusProvider = followStatusProvider,
+        _postLikeStatusProvider = postLikeStatusProvider {
     _pagingController.addPageRequestListener((lastId) {
       loadCommentList(lastId);
     });
@@ -91,29 +99,11 @@ class DetailViewModel with ChangeNotifier {
   }
 
   Future<void> postFollow(String username) async {
-    try {
-      debugPrint("username:  $username");
-      await _userRepository.postRemoteUserFollow(username);
-      _post.author.following = true;
-      debugPrint("postFollow:  교체!");
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('postFollow error: ${e.toString()}');
-    }
+    await _followStatusProvider.addFollowingUser(username);
   }
 
   Future<void> deleteFollow(String username) async {
-    try {
-      await _userRepository.deleteRemoteUserFollow(username);
-      _post.author.following = false;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('deleteFollow error: ${e.toString()}');
-    }
+    await _followStatusProvider.unFollowUser(username);
   }
 
   Future<void> uninterestedPost(int postId) async {
@@ -159,29 +149,11 @@ class DetailViewModel with ChangeNotifier {
   }
 
   Future<void> likePost(int postId) async {
-    try {
-      await _postRepository.postRemoteLike(postId);
-      _post.liked = true;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint(e.toString());
-      _post.liked = false;
-    }
+    await _postLikeStatusProvider.likePost(postId);
   }
 
   Future<void> cancelLikePost(int postId) async {
-    try {
-      await _postRepository.deleteRemoteLike(postId);
-      _post.liked = false;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint(e.toString());
-      _post.liked = true;
-    }
+    await _postLikeStatusProvider.cancelLikePost(postId);
   }
 
   Future<void> postComment(int postId, String comment) async {

@@ -1,6 +1,7 @@
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:flutter_application_1/widget/tracker_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class ProfilePage extends StatelessWidget {
         create: (_) {
           final ProfileViewModel viewModel = ProfileViewModel(
             errorStatusProvider: context.read<ErrorStatusProvider>(),
+            followStatusProvider: context.read<FollowStatusProvider>(),
             userRepository: UserRepository(),
             username: username,
           );
@@ -133,7 +135,7 @@ class ProfileInfomation extends StatelessWidget {
     ProfileViewModel viewModel = context.read<ProfileViewModel>();
     User user = context.watch<ProfileViewModel>().user;
     String username = user.username;
-    bool isFollwing = user.following;
+    bool isFollwing = context.watch<FollowStatusProvider>().hasUser(username);
     String postCount = '0';
 
     void follow() async {
@@ -142,6 +144,10 @@ class ProfileInfomation extends StatelessWidget {
 
     void unFollow() async {
       await viewModel.deleteFollow(username);
+    }
+
+    void moveUserPost() {
+      context.push('/my-post?username=$username');
     }
 
     if (user.postCount != Null) {
@@ -159,22 +165,27 @@ class ProfileInfomation extends StatelessWidget {
               radius: 40,
               backgroundImage: NetworkImage(user.imageUrl),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(postCount,
-                    style: const TextStyle(
-                      fontSize: 18,
+            InkWell(
+              onTap: () {
+                moveUserPost();
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(postCount,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                      )),
+                  const Text(
+                    '게시물',
+                    style: TextStyle(
+                      fontSize: 14,
                       color: Colors.black,
-                    )),
-                const Text(
-                  '게시물',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(
               width: 8,
@@ -183,7 +194,7 @@ class ProfileInfomation extends StatelessWidget {
               width: 91,
               height: 28,
               child: CommonBtn(
-                isPurple: isFollwing,
+                isPurple: !isFollwing,
                 onPressFunc: isFollwing ? unFollow : follow,
                 context: context,
                 btnTitle: isFollwing ? "팔로잉" : "팔로우",

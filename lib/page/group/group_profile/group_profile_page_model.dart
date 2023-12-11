@@ -7,11 +7,13 @@ import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/groupJoin_status_provider.dart';
 
 class GroupProfileViewModel extends ChangeNotifier {
   final ErrorStatusProvider _errorStatusModel;
   final GroupRepositoty _groupRepositoty;
   final QuestRepository _questRepository;
+  final GroupJoinStatusProvider _groupJoinStatusProvider;
   final int groupId;
   Status status = Status.loading;
   late Group group;
@@ -21,10 +23,12 @@ class GroupProfileViewModel extends ChangeNotifier {
     required GroupRepositoty groupRepositoty,
     required QuestRepository questRepository,
     required ErrorStatusProvider errorStatusModel,
+    required groupJoinStatusProvider,
     required this.groupId,
   })  : _groupRepositoty = groupRepositoty,
         _questRepository = questRepository,
-        _errorStatusModel = errorStatusModel;
+        _errorStatusModel = errorStatusModel,
+        _groupJoinStatusProvider = groupJoinStatusProvider;
 
   Future<void> load() async {
     try {
@@ -40,27 +44,15 @@ class GroupProfileViewModel extends ChangeNotifier {
   }
 
   Future<void> joinGroup(int groupId) async {
-    try {
-      await _groupRepositoty.remoteGroupJoin(groupId);
-      group.isGroupMember = true;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusModel.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('joinGroup error: ${e.toString()}');
-    }
+    await _groupJoinStatusProvider.joinGroup(groupId);
+    group.userCount += 1;
+    notifyListeners();
   }
 
   Future<void> quitGroup(int groupId) async {
-    try {
-      await _groupRepositoty.remoteQuitGroup(groupId);
-      group.isGroupMember = false;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusModel.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('quitGroup error: ${e.toString()}');
-    }
+    await _groupJoinStatusProvider.quitGroup(groupId);
+    group.userCount -= 1;
+    notifyListeners();
   }
 
   Future<void> questAccept(int questId, int index) async {

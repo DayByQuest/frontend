@@ -16,7 +16,7 @@ class UserRepository {
 
   Future<User> getRemoteMyProfile() async {
     try {
-      return _RemoteDataSource.getMyProfile();
+      return await _RemoteDataSource.getMyProfile();
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -24,7 +24,7 @@ class UserRepository {
 
   Future<User> getRemoteUserProfile(String username) async {
     try {
-      return _RemoteDataSource.getUserProfile(username);
+      return await _RemoteDataSource.getUserProfile(username);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -32,7 +32,7 @@ class UserRepository {
 
   Future<Tracker> getRemoteTracker(String username) async {
     try {
-      return _RemoteDataSource.getTracker(username);
+      return await _RemoteDataSource.getTracker(username);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -41,7 +41,7 @@ class UserRepository {
   Future<(List<BadgeClass.Badge>, bool hasNextPage, String lastTime)>
       getRemoteMyBadge(String lastTime) async {
     try {
-      return _RemoteDataSource.getMyBadge(lastTime);
+      return await _RemoteDataSource.getMyBadge(lastTime);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -49,7 +49,7 @@ class UserRepository {
 
   Future<List<BadgeClass.Badge>> getRemoteBadge(String username) async {
     try {
-      return _RemoteDataSource.getBadge(username);
+      return await _RemoteDataSource.getBadge(username);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -66,7 +66,7 @@ class UserRepository {
 
   Future<List<Interest>> getRemoteInterest() async {
     try {
-      return _RemoteDataSource.getInterest();
+      return await _RemoteDataSource.getInterest();
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -74,7 +74,7 @@ class UserRepository {
 
   Future<void> patchRemoteInterest(List<String> interest) async {
     try {
-      return _RemoteDataSource.patchInterest(interest);
+      return await _RemoteDataSource.patchInterest(interest);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -82,7 +82,7 @@ class UserRepository {
 
   Future<bool> getRemoteVisibility() async {
     try {
-      return _RemoteDataSource.getVisibility();
+      return await _RemoteDataSource.getVisibility();
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -90,7 +90,7 @@ class UserRepository {
 
   Future<void> patchRemoteVisibility(bool isVisibility) async {
     try {
-      _RemoteDataSource.patchVisibility(isVisibility);
+      await _RemoteDataSource.patchVisibility(isVisibility);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -98,7 +98,7 @@ class UserRepository {
 
   Future<void> patchRemoteProfileImage(XFile image) async {
     try {
-      _RemoteDataSource.patchProfileImage(image);
+      await _RemoteDataSource.patchProfileImage(image);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -107,7 +107,7 @@ class UserRepository {
   Future<(List<User>, bool hasNextPage, int lastId)> getRemoteFollowingList(
       int lastId, int limit) async {
     try {
-      return _RemoteDataSource.getFollowingList(lastId, limit);
+      return await _RemoteDataSource.getFollowingList(lastId, limit);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -116,7 +116,7 @@ class UserRepository {
   Future<(List<User>, bool hasNextPage, int lastId)> getRemoteFollowerList(
       int lastId, int limit) async {
     try {
-      return _RemoteDataSource.getFollowerList(lastId, limit);
+      return await _RemoteDataSource.getFollowerList(lastId, limit);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -124,7 +124,7 @@ class UserRepository {
 
   Future<void> deleteRemoteFollower(String username) async {
     try {
-      return _RemoteDataSource.deleteFollower(username);
+      return await _RemoteDataSource.deleteFollower(username);
     } catch (e) {
       rethrow;
     }
@@ -132,7 +132,7 @@ class UserRepository {
 
   Future<void> postRemoteUserFollow(String username) async {
     try {
-      _RemoteDataSource.postUserFollow(username);
+      await _RemoteDataSource.postUserFollow(username);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -140,7 +140,7 @@ class UserRepository {
 
   Future<void> deleteRemoteUserFollow(String username) async {
     try {
-      _RemoteDataSource.deleteUserfollow(username);
+      await _RemoteDataSource.deleteUserfollow(username);
     } catch (e) {
       rethrow;
     }
@@ -152,7 +152,7 @@ class UserRepository {
     String keyword,
   ) async {
     try {
-      return _RemoteDataSource.getSearchUserList(lastId, limit, keyword);
+      return await _RemoteDataSource.getSearchUserList(lastId, limit, keyword);
     } catch (e) {
       rethrow;
     }

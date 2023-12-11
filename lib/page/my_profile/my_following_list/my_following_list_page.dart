@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,7 @@ class MyFollowingListPage extends StatelessWidget {
       create: (_) {
         return MyFollowingListViewModel(
           errorStatusProvider: context.read<ErrorStatusProvider>(),
+          followStatusProvider: context.read<FollowStatusProvider>(),
           userRepository: UserRepository(),
         );
       },
@@ -62,6 +65,9 @@ class FollwingList extends StatelessWidget {
     return PagedListView<int, User>(
       pagingController: viewModel.pagingController,
       builderDelegate: PagedChildBuilderDelegate<User>(
+        noItemsFoundIndicatorBuilder: (context) {
+          return ShowEmptyList(content: '팔로우하는 사용자가 없습니다');
+        },
         itemBuilder: (context, user, index) => ListItem(
           index: index,
         ),
@@ -86,14 +92,14 @@ class ListItem extends StatelessWidget {
     String imageUrl = user.imageUrl;
     String name = user.name;
     String username = user.username;
-    bool isFollwing = user.following;
+    bool isFollowing = context.watch<FollowStatusProvider>().hasUser(username);
 
     void follow() async {
-      await viewModel.postFollow(username, index);
+      await viewModel.postFollow(username);
     }
 
     void unFollow() async {
-      await viewModel.deleteFollow(username, index);
+      await viewModel.deleteFollow(username);
     }
 
     return Column(
@@ -141,10 +147,10 @@ class ListItem extends StatelessWidget {
                 width: 77,
                 height: 28,
                 child: CommonBtn(
-                  isPurple: isFollwing,
-                  onPressFunc: isFollwing ? unFollow : follow,
+                  isPurple: !isFollowing,
+                  onPressFunc: isFollowing ? unFollow : follow,
                   context: context,
-                  btnTitle: isFollwing ? "팔로잉" : "팔로우",
+                  btnTitle: isFollowing ? "팔로우" : "팔로잉",
                   fontSize: 16,
                 ),
               )
