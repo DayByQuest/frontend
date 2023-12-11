@@ -9,6 +9,7 @@ import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/group/group_profile/group_profile_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 
@@ -229,9 +230,7 @@ class GroupProfileView extends StatelessWidget {
                         )
                       ],
                     )
-                  : Center(
-                      child: Text('퀘스트가 없습니다.'),
-                    ),
+                  : const ShowEmptyList(content: '퀘스트가 없습니다.'),
             ],
           ),
         ),

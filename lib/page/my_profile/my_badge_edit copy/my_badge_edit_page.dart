@@ -258,7 +258,7 @@ class AllBadgeList extends StatelessWidget {
             ),
             builderDelegate: PagedChildBuilderDelegate<BadgeClass.Badge>(
               noItemsFoundIndicatorBuilder: (context) {
-                return Center(
+                return const Center(
                   child: Text('획득한 뱃지가 없습니다.'),
                 );
               },

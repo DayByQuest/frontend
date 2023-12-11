@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/showSnackBarFunction.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_application_1/page/group/groupPage.dart';
 import 'package:flutter_application_1/page/search/search_page.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:flutter_application_1/routes/routes.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
@@ -42,6 +44,12 @@ class MyApp extends StatelessWidget {
           create: (context) => FollowStatusProvider(
             errorStatusProvider: context.read<ErrorStatusProvider>(),
             userRepository: UserRepository(),
+          ),
+        ),
+        ChangeNotifierProvider<PostLikeStatusProvider>(
+          create: (context) => PostLikeStatusProvider(
+            errorStatusProvider: context.read<ErrorStatusProvider>(),
+            postRepository: PostRepository(),
           ),
         ),
       ],

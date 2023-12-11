@@ -10,11 +10,13 @@ import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/common/post/Interested_post.dart';
 import 'package:flutter_application_1/page/common/post/uninterested_post.dart';
 import 'package:flutter_application_1/page/feed/feed_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +33,7 @@ class FeedPage extends StatelessWidget {
         final FeedViewModel viewModel = FeedViewModel(
           errorStatusProvider: context.read<ErrorStatusProvider>(),
           followStatusProvider: context.read<FollowStatusProvider>(),
+          postLikeStatusProvider: context.read<PostLikeStatusProvider>(),
           postRepository: PostRepository(),
           groupRepositoty: GroupRepositoty(),
         );
@@ -86,9 +89,7 @@ class FeedView extends StatelessWidget {
             pagingController: viewModel.pagingController,
             builderDelegate: PagedChildBuilderDelegate<Feed>(
               noItemsFoundIndicatorBuilder: (context) {
-                return const Center(
-                  child: Text('게시물이 없습니다.'),
-                );
+                return const ShowEmptyList(content: '게시물이 없습니다.');
               },
               itemBuilder: (context, feed, index) => FeedItem(
                 feedIndex: index,
@@ -142,7 +143,7 @@ class PostItem extends StatelessWidget {
     int postId = post.id;
     String content = post.content;
     PostImages postImages = post.postImages;
-    bool isLike = post.liked;
+    bool isLike = context.watch<PostLikeStatusProvider>().hasLikePost(postId);
     List<PostImage> postImageList = List.from(postImages.postImageList);
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
@@ -153,9 +154,7 @@ class PostItem extends StatelessWidget {
     }
 
     void changeLikePost() {
-      isLike
-          ? viewModel.cancelLikePost(postId, feedIndex)
-          : viewModel.likePost(postId, feedIndex);
+      isLike ? viewModel.cancelLikePost(postId) : viewModel.likePost(postId);
     }
 
     void cancelUninterestedPost() {

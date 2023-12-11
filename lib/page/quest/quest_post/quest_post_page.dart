@@ -5,6 +5,7 @@ import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +34,7 @@ class QuestPostPage extends StatelessWidget {
           return QuestPostViewModel(
             errorStatusProvider: context.read<ErrorStatusProvider>(),
             followStatusProvider: context.read<FollowStatusProvider>(),
+            postLikeStatusProvider: context.read<PostLikeStatusProvider>(),
             postRepository: PostRepository(),
             userRepository: UserRepository(),
             questRepository: QuestRepository(),
@@ -93,7 +95,7 @@ class QuestPost extends StatelessWidget {
     int postId = post.id;
     String content = post.content;
     PostImages postImages = post.postImages;
-    bool isLike = post.liked;
+    bool isLike = context.watch<PostLikeStatusProvider>().hasLikePost(postId);
     List<PostImage> postImageList = List.from(postImages.postImageList);
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
@@ -103,9 +105,7 @@ class QuestPost extends StatelessWidget {
     }
 
     void changeLikePost() {
-      isLike
-          ? viewModel.cancelLikePost(postId, postIndex)
-          : viewModel.likePost(postId, postIndex);
+      isLike ? viewModel.cancelLikePost(postId) : viewModel.likePost(postId);
     }
 
     void cancelUninterestedPost() {

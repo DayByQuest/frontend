@@ -10,6 +10,7 @@ import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/group/group_search/group_search_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 
@@ -223,9 +224,7 @@ class InterestedGroupListView extends StatelessWidget {
       pagingController: viewModel.pagingController,
       builderDelegate: PagedChildBuilderDelegate<Group>(
         noItemsFoundIndicatorBuilder: (context) {
-          return Center(
-            child: Text('해당하는 그룹이 없습니다.'),
-          );
+          return const ShowEmptyList(content: '해당하는 그룹이 없습니다');
         },
         itemBuilder: (context, user, index) => GroupItem(
           index: index,

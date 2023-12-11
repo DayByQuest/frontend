@@ -6,6 +6,7 @@ import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/group/my_group_list/my_group_list_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:go_router/go_router.dart';
@@ -66,9 +67,7 @@ class MyGroupListView extends StatelessWidget {
         height: height,
         child: Stack(
           children: [
-            const Center(
-              child: Text('내가 가입한 그룹이 없습니다!'),
-            ),
+            const ShowEmptyList(content: '내가 가입한 그룹이 없습니다'),
             canMakeGroup
                 ? Positioned(
                     bottom: 16,

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +32,7 @@ class GroupPostPage extends StatelessWidget {
           return GroupPostViewModel(
             errorStatusProvider: context.read<ErrorStatusProvider>(),
             followStatusProvider: context.watch<FollowStatusProvider>(),
+            postLikeStatusProvider: context.read<PostLikeStatusProvider>(),
             groupRepository: GroupRepositoty(),
             postRepository: PostRepository(),
             userRepository: UserRepository(),
@@ -63,8 +66,8 @@ class GroupPostView extends StatelessWidget {
             pagingController: viewModel.pagingController,
             builderDelegate: PagedChildBuilderDelegate<Post>(
               noItemsFoundIndicatorBuilder: (context) {
-                return Center(
-                  child: Text('그룹 게시물이 없습니다.'),
+                return const ShowEmptyList(
+                  content: '그룹 게시물이 없습니다.',
                 );
               },
               itemBuilder: (context, post, index) =>
@@ -99,7 +102,7 @@ class GroupPost extends StatelessWidget {
     int postId = post.id;
     String content = post.content;
     PostImages postImages = post.postImages;
-    bool isLike = post.liked;
+    bool isLike = context.watch<PostLikeStatusProvider>().hasLikePost(postId);
     List<PostImage> postImageList = List.from(postImages.postImageList);
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
@@ -109,9 +112,7 @@ class GroupPost extends StatelessWidget {
     }
 
     void changeLikePost() {
-      isLike
-          ? viewModel.cancelLikePost(postId, postIndex)
-          : viewModel.likePost(postId, postIndex);
+      isLike ? viewModel.cancelLikePost(postId) : viewModel.likePost(postId);
     }
 
     void cancelUninterestedPost() {

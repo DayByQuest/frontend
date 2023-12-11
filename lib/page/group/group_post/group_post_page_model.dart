@@ -6,6 +6,7 @@ import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../model/class/post.dart';
@@ -14,6 +15,7 @@ import '../../../model/class/post_image.dart';
 class GroupPostViewModel with ChangeNotifier {
   final ErrorStatusProvider _errorStatusProvider;
   final FollowStatusProvider followStatusProvider;
+  final PostLikeStatusProvider _postLikeStatusProvider;
   final PostRepository _postRepository;
   final GroupRepositoty _groupRepository;
   final UserRepository _userRepository;
@@ -32,10 +34,12 @@ class GroupPostViewModel with ChangeNotifier {
     required this.groupId,
     required errorStatusProvider,
     required this.followStatusProvider,
+    required postLikeStatusProvider,
   })  : _groupRepository = groupRepository,
         _postRepository = postRepository,
         _userRepository = userRepository,
-        _errorStatusProvider = errorStatusProvider {
+        _errorStatusProvider = errorStatusProvider,
+        _postLikeStatusProvider = postLikeStatusProvider {
     _pagingController.addPageRequestListener((int lastId) {
       debugPrint('lastId: $lastId');
       loadPostList(lastId);
@@ -66,6 +70,7 @@ class GroupPostViewModel with ChangeNotifier {
 
       List<User> authorList = newPostList.map((post) => post.author).toList();
       followStatusProvider.updateAllFollowingList(authorList);
+      _postLikeStatusProvider.updateAllPostLikeList(newPostList);
 
       debugPrint("loadFollowerList: 동작중! _lastId: $_lastId");
       debugPrint(
@@ -122,30 +127,12 @@ class GroupPostViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> likePost(int postId, int index) async {
-    try {
-      await _postRepository.postRemoteLike(postId);
-      postList[index].liked = true;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint(e.toString());
-      postList[index].liked = false;
-    }
+  Future<void> likePost(int postId) async {
+    await _postLikeStatusProvider.likePost(postId);
   }
 
-  Future<void> cancelLikePost(int postId, int index) async {
-    try {
-      await _postRepository.deleteRemoteLike(postId);
-      postList[index].liked = false;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint(e.toString());
-      postList[index].liked = true;
-    }
+  Future<void> cancelLikePost(int postId) async {
+    await _postLikeStatusProvider.cancelLikePost(postId);
   }
 
   Future<void> postFollow(String username) async {

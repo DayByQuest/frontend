@@ -48,7 +48,6 @@ class FollowStatusProvider with ChangeNotifier {
       _followingList.add(username);
       notifyListeners();
     } on ErrorException catch (e) {
-      debugPrint('aaaa');
       _errorStatusProvider.setErrorStatus(true, e.message);
     }
 
@@ -70,16 +69,4 @@ class FollowStatusProvider with ChangeNotifier {
 
     return;
   }
-
-  // void unFollowUser(String username) {
-  //   if (!hasUser(username)) {
-  //     return;
-  //   }
-
-  //   int targetIndex = _followingList
-  //       .indexWhere((followingUser) => followingUser.username == user.username);
-  //   _followingList.removeAt(targetIndex);
-  //   notifyListeners();
-  //   return;
-  // }
 }

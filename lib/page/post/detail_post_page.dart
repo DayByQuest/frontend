@@ -19,6 +19,7 @@ import 'package:flutter_application_1/page/common/post/post_image_view.dart';
 import 'package:flutter_application_1/page/post/detail_post_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -41,6 +42,7 @@ class DetailPage extends StatelessWidget {
         final DetailViewModel viewModel = DetailViewModel(
           errorStatusProvider: context.read<ErrorStatusProvider>(),
           followStatusProvider: context.read<FollowStatusProvider>(),
+          postLikeStatusProvider: context.read<PostLikeStatusProvider>(),
           postRepository: PostRepository(),
           userRepository: UserRepository(),
           postId: postId,
@@ -117,7 +119,7 @@ class DetailViewBody extends StatelessWidget {
     List<PostImage> postImageList = List.from(postImages.postImageList);
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
-    bool isLike = post.liked;
+    bool isLike = context.watch<PostLikeStatusProvider>().hasLikePost(postId);
     // imageList imageLength changeCurIdx
 
     void follow() async {

@@ -8,6 +8,7 @@ import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
+import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/page/search/search_result/search_result_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_application_1/provider/follow_status_provider.dart';
@@ -174,8 +175,8 @@ class SearchUserList extends StatelessWidget {
           index: index,
         ),
         noItemsFoundIndicatorBuilder: (context) {
-          return const Center(
-            child: Text('해당하는 사용자가 없습니다.'),
+          return const ShowEmptyList(
+            content: '해당하는 사용자가 없습니다.',
           );
         },
       ),
@@ -292,8 +293,8 @@ class SearchGroupListView extends StatelessWidget {
           index: index,
         ),
         noItemsFoundIndicatorBuilder: (context) {
-          return const Center(
-            child: Text('해당하는 그룹이 없습니다.'),
+          return const ShowEmptyList(
+            content: '해당하는 그룹이 없습니다.',
           );
         },
       ),
@@ -418,8 +419,8 @@ class SearchQuestList extends StatelessWidget {
           index: index,
         ),
         noItemsFoundIndicatorBuilder: (context) {
-          return const Center(
-            child: Text('해당하는 퀘스트가 없습니다.'),
+          return const ShowEmptyList(
+            content: '해당하는 퀘스트가 없습니다.',
           );
         },
       ),

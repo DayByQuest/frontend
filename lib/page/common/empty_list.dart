@@ -10,8 +10,14 @@ class ShowEmptyList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(content),
+    double width = MediaQuery.of(context).size.width - 32;
+
+    return SizedBox(
+      width: width,
+      height: width,
+      child: Center(
+        child: Text(content),
+      ),
     );
   }
 }
