@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/showSnackBarFunction.dart';
 import 'package:flutter_application_1/page/create_post/create_post_page.dart';
 import 'package:flutter_application_1/page/feed/feed_page.dart';
 import 'package:flutter_application_1/page/group/groupPage.dart';
 import 'package:flutter_application_1/page/search/search_page.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:flutter_application_1/routes/routes.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
@@ -31,8 +33,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ErrorStatusProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ErrorStatusProvider>(
+          create: (_) => ErrorStatusProvider(),
+        ),
+        ChangeNotifierProvider<FollowStatusProvider>(
+          create: (context) => FollowStatusProvider(
+            errorStatusProvider: context.read<ErrorStatusProvider>(),
+            userRepository: UserRepository(),
+          ),
+        ),
+      ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         routerConfig: router,

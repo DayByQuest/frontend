@@ -4,6 +4,7 @@ import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,7 @@ class QuestPostPage extends StatelessWidget {
         create: (_) {
           return QuestPostViewModel(
             errorStatusProvider: context.read<ErrorStatusProvider>(),
+            followStatusProvider: context.read<FollowStatusProvider>(),
             postRepository: PostRepository(),
             userRepository: UserRepository(),
             questRepository: QuestRepository(),
@@ -86,6 +88,7 @@ class QuestPost extends StatelessWidget {
     User author = post.author;
     String username = author.username;
     String userImageUrl = author.imageUrl;
+    bool isFollowing = context.watch<FollowStatusProvider>().hasUser(username);
     bool isUnInterested = post.unInterested;
     int postId = post.id;
     String content = post.content;
@@ -94,7 +97,6 @@ class QuestPost extends StatelessWidget {
     List<PostImage> postImageList = List.from(postImages.postImageList);
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
-    bool isFollowing = author.following;
 
     void changeCurIdx(nextImageIndex) {
       viewModel.changeCurImageIndex(nextImageIndex, postIndex, postId);
@@ -116,11 +118,11 @@ class QuestPost extends StatelessWidget {
     }
 
     void follow() async {
-      await viewModel.postFollow(username, postIndex);
+      await viewModel.postFollow(username);
     }
 
     void unFollow() async {
-      await viewModel.deleteFollow(username, postIndex);
+      await viewModel.deleteFollow(username);
     }
 
     void clickFollowBtn() {

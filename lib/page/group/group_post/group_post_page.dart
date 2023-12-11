@@ -3,6 +3,7 @@ import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,7 @@ class GroupPostPage extends StatelessWidget {
         create: (_) {
           return GroupPostViewModel(
             errorStatusProvider: context.read<ErrorStatusProvider>(),
+            followStatusProvider: context.watch<FollowStatusProvider>(),
             groupRepository: GroupRepositoty(),
             postRepository: PostRepository(),
             userRepository: UserRepository(),
@@ -92,6 +94,7 @@ class GroupPost extends StatelessWidget {
     User author = post.author;
     String username = author.username;
     String userImageUrl = author.imageUrl;
+    bool isFollowing = context.watch<FollowStatusProvider>().hasUser(username);
     bool isUnInterested = post.unInterested;
     int postId = post.id;
     String content = post.content;
@@ -100,7 +103,6 @@ class GroupPost extends StatelessWidget {
     List<PostImage> postImageList = List.from(postImages.postImageList);
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
-    bool isFollowing = author.following;
 
     void changeCurIdx(nextImageIndex) {
       viewModel.changeCurImageIndex(nextImageIndex, postIndex, postId);
@@ -122,11 +124,11 @@ class GroupPost extends StatelessWidget {
     }
 
     void follow() async {
-      await viewModel.postFollow(username, postIndex);
+      await viewModel.postFollow(username);
     }
 
     void unFollow() async {
-      await viewModel.deleteFollow(username, postIndex);
+      await viewModel.deleteFollow(username);
     }
 
     void clickFollowBtn() {

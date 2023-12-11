@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/error_exception.dart';
+import 'package:flutter_application_1/model/class/user.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../model/class/post.dart';
@@ -11,6 +13,7 @@ import '../../../model/class/post_image.dart';
 
 class QuestPostViewModel with ChangeNotifier {
   final ErrorStatusProvider _errorStatusProvider;
+  final FollowStatusProvider _followStatusProvider;
   final QuestRepository _questRepository;
   final UserRepository _userRepository;
   final PostRepository _postRepository;
@@ -29,10 +32,12 @@ class QuestPostViewModel with ChangeNotifier {
     required PostRepository postRepository,
     required this.questId,
     required errorStatusProvider,
+    required followStatusProvider,
   })  : _questRepository = questRepository,
         _userRepository = userRepository,
         _postRepository = postRepository,
-        _errorStatusProvider = errorStatusProvider {
+        _errorStatusProvider = errorStatusProvider,
+        _followStatusProvider = followStatusProvider {
     _pagingController.addPageRequestListener((int lastId) {
       loadQuestPostList(lastId);
     });
@@ -59,6 +64,9 @@ class QuestPostViewModel with ChangeNotifier {
       }
 
       postList.addAll(newPostList);
+
+      List<User> authorList = newPostList.map((post) => post.author).toList();
+      _followStatusProvider.updateAllFollowingList(authorList);
 
       debugPrint("loadQuestPostList: 동작중! _lastId: $_lastId");
     } on ErrorException catch (e) {
@@ -139,29 +147,11 @@ class QuestPostViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> postFollow(String username, int index) async {
-    try {
-      debugPrint("username:  $username");
-      await _userRepository.postRemoteUserFollow(username);
-      postList[index].author.following = true;
-      debugPrint("postFollow:  교체!");
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('postFollow error: ${e.toString()}');
-    }
+  Future<void> postFollow(String username) async {
+    await _followStatusProvider.addFollowingUser(username);
   }
 
-  Future<void> deleteFollow(String username, index) async {
-    try {
-      await _userRepository.deleteRemoteUserFollow(username);
-      postList[index].author.following = false;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('deleteFollow error: ${e.toString()}');
-    }
+  Future<void> deleteFollow(String username) async {
+    await _followStatusProvider.unFollowUser(username);
   }
 }

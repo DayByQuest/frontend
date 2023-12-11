@@ -8,10 +8,12 @@ import 'package:flutter_application_1/model/repository/quest_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Status.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class SearchResultViewModel extends ChangeNotifier {
   final ErrorStatusProvider _errorStatusProvider;
+  final FollowStatusProvider _followStatusProvider;
   final QuestRepository _questRepository;
   final UserRepository _userRepository;
   final GroupRepositoty _groupRepositoty;
@@ -47,10 +49,12 @@ class SearchResultViewModel extends ChangeNotifier {
     required GroupRepositoty groupRepositoty,
     required this.keyword,
     required errorStatusProvider,
+    required followStatusProvider,
   })  : _questRepository = questRepository,
         _userRepository = userRepository,
         _groupRepositoty = groupRepositoty,
-        _errorStatusProvider = errorStatusProvider {
+        _errorStatusProvider = errorStatusProvider,
+        _followStatusProvider = followStatusProvider {
     textEditingController = TextEditingController(text: keyword);
     userPagingController.addPageRequestListener((lastId) {
       loadSearchUserList(lastId);
@@ -83,6 +87,8 @@ class SearchResultViewModel extends ChangeNotifier {
       } else {
         userPagingController.appendLastPage(newSearchList);
       }
+
+      _followStatusProvider.updateAllFollowingList(newSearchList);
       debugPrint("loadSearchUserList: 동작중! _lastId: $lastId");
     } on ErrorException catch (e) {
       _errorStatusProvider.setErrorStatus(true, e.message);
@@ -91,30 +97,12 @@ class SearchResultViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> postFollow(String username, int index) async {
-    try {
-      await _userRepository.postRemoteUserFollow(username);
-      searchUserList[index].following = !searchUserList[index].following;
-      debugPrint("postFollow: $index 교체!");
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('postFollow error: ${e.toString()}');
-    }
+  Future<void> postFollow(String username) async {
+    await _followStatusProvider.addFollowingUser(username);
   }
 
-  Future<void> deleteFollow(String username, int index) async {
-    try {
-      debugPrint('deleteFollow username $username');
-      await _userRepository.deleteRemoteUserFollow(username);
-      searchUserList[index].following = !searchUserList[index].following;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('deleteFollow error: ${e.toString()}');
-    }
+  Future<void> deleteFollow(String username) async {
+    await _followStatusProvider.unFollowUser(username);
   }
 
   Future<void> loadSearchGroupList(int lastId) async {

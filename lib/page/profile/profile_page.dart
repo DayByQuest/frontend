@@ -1,6 +1,7 @@
 import 'package:flutter_application_1/page/common/Appbar.dart';
 import 'package:flutter_application_1/page/common/Loding.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:flutter_application_1/widget/tracker_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class ProfilePage extends StatelessWidget {
         create: (_) {
           final ProfileViewModel viewModel = ProfileViewModel(
             errorStatusProvider: context.read<ErrorStatusProvider>(),
+            followStatusProvider: context.read<FollowStatusProvider>(),
             userRepository: UserRepository(),
             username: username,
           );
@@ -133,7 +135,7 @@ class ProfileInfomation extends StatelessWidget {
     ProfileViewModel viewModel = context.read<ProfileViewModel>();
     User user = context.watch<ProfileViewModel>().user;
     String username = user.username;
-    bool isFollwing = user.following;
+    bool isFollwing = context.watch<FollowStatusProvider>().hasUser(username);
     String postCount = '0';
 
     void follow() async {

@@ -4,17 +4,19 @@ import 'package:flutter_application_1/model/class/feed.dart';
 import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:flutter_application_1/model/class/post.dart';
 import 'package:flutter_application_1/model/class/post_image.dart';
+import 'package:flutter_application_1/model/class/user.dart';
 import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class FeedViewModel with ChangeNotifier {
   final ErrorStatusProvider _errorStatusProvider;
+  final FollowStatusProvider followStatusProvider;
   final PostRepository _postRepository;
   final GroupRepositoty _groupRepositoty;
-  final UserRepository _userRepository;
 
   final PagingController<int, Feed> _pagingController =
       PagingController(firstPageKey: -1);
@@ -29,11 +31,10 @@ class FeedViewModel with ChangeNotifier {
   FeedViewModel({
     required PostRepository postRepository,
     required GroupRepositoty groupRepositoty,
-    required UserRepository userRepository,
     required errorStatusProvider,
+    required this.followStatusProvider,
   })  : _postRepository = postRepository,
         _groupRepositoty = groupRepositoty,
-        _userRepository = userRepository,
         _errorStatusProvider = errorStatusProvider {
     _pagingController.addPageRequestListener((lastId) {
       loadFeedList(lastId);
@@ -58,6 +59,9 @@ class FeedViewModel with ChangeNotifier {
 
       for (Post post in newPostList) {
         newFeedList.add(Feed.post(isPost: true, post: post));
+
+        User author = post.author;
+        followStatusProvider.updateFollowingList(author);
       }
 
       if (groupList.isEmpty) {
@@ -213,37 +217,11 @@ class FeedViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> postFollow(String username, int index) async {
-    try {
-      if (!feedList[index].isPost) {
-        return;
-      }
-
-      debugPrint("username:  $username");
-      await _userRepository.postRemoteUserFollow(username);
-      feedList[index].post!.author.following = true;
-      debugPrint("postFollow:  교체!");
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('postFollow error: ${e.toString()}');
-    }
+  Future<void> postFollow(String username) async {
+    await followStatusProvider.addFollowingUser(username);
   }
 
-  Future<void> deleteFollow(String username, index) async {
-    try {
-      if (!feedList[index].isPost) {
-        return;
-      }
-
-      await _userRepository.deleteRemoteUserFollow(username);
-      feedList[index].post!.author.following = false;
-      notifyListeners();
-    } on ErrorException catch (e) {
-      _errorStatusProvider.setErrorStatus(true, e.message);
-    } catch (e) {
-      debugPrint('deleteFollow error: ${e.toString()}');
-    }
+  Future<void> deleteFollow(String username) async {
+    await followStatusProvider.unFollowUser(username);
   }
 }

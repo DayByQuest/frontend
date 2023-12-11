@@ -14,6 +14,7 @@ import 'package:flutter_application_1/page/common/post/Interested_post.dart';
 import 'package:flutter_application_1/page/common/post/uninterested_post.dart';
 import 'package:flutter_application_1/page/feed/feed_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -29,9 +30,9 @@ class FeedPage extends StatelessWidget {
       create: (_) {
         final FeedViewModel viewModel = FeedViewModel(
           errorStatusProvider: context.read<ErrorStatusProvider>(),
+          followStatusProvider: context.read<FollowStatusProvider>(),
           postRepository: PostRepository(),
           groupRepositoty: GroupRepositoty(),
-          userRepository: UserRepository(),
         );
         return viewModel;
       },
@@ -85,7 +86,7 @@ class FeedView extends StatelessWidget {
             pagingController: viewModel.pagingController,
             builderDelegate: PagedChildBuilderDelegate<Feed>(
               noItemsFoundIndicatorBuilder: (context) {
-                return Center(
+                return const Center(
                   child: Text('게시물이 없습니다.'),
                 );
               },
@@ -136,6 +137,7 @@ class PostItem extends StatelessWidget {
     User author = post.author;
     String username = author.username;
     String userImageUrl = author.imageUrl;
+    bool isFollowing = context.watch<FollowStatusProvider>().hasUser(username);
     bool isUnInterested = post.unInterested;
     int postId = post.id;
     String content = post.content;
@@ -145,7 +147,6 @@ class PostItem extends StatelessWidget {
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
     bool isClose = context.watch<FeedViewModel>().isClose;
-    bool isFollowing = author.following;
 
     void changeCurIdx(nextImageIndex) {
       viewModel.changeCurImageIndex(nextImageIndex, feedIndex, postId);
@@ -174,11 +175,11 @@ class PostItem extends StatelessWidget {
     }
 
     void follow() async {
-      await viewModel.postFollow(username, feedIndex);
+      await viewModel.postFollow(username);
     }
 
     void unFollow() async {
-      await viewModel.deleteFollow(username, feedIndex);
+      await viewModel.deleteFollow(username);
     }
 
     void clickFollowBtn() {

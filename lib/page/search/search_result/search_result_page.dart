@@ -10,6 +10,7 @@ import 'package:flutter_application_1/page/common/Buttons.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/page/search/search_result/search_result_page_model.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,7 @@ class SearchResultPage extends StatelessWidget {
       create: (_) {
         final SearchResultViewModel viewModel = SearchResultViewModel(
           errorStatusProvider: context.read<ErrorStatusProvider>(),
+          followStatusProvider: context.watch<FollowStatusProvider>(),
           questRepository: QuestRepository(),
           userRepository: UserRepository(),
           groupRepositoty: GroupRepositoty(),
@@ -196,14 +198,14 @@ class UserListItem extends StatelessWidget {
     String imageUrl = user.imageUrl;
     String name = user.name;
     String username = user.username;
-    bool isFollwing = user.following;
+    bool isFollowing = context.watch<FollowStatusProvider>().hasUser(username);
 
     void follow() async {
-      await viewModel.postFollow(username, index);
+      await viewModel.postFollow(username);
     }
 
     void unFollow() async {
-      await viewModel.deleteFollow(username, index);
+      await viewModel.deleteFollow(username);
     }
 
     void moveUserProfile() async {
@@ -259,10 +261,10 @@ class UserListItem extends StatelessWidget {
                   width: 77,
                   height: 28,
                   child: CommonBtn(
-                    isPurple: isFollwing,
-                    onPressFunc: isFollwing ? unFollow : follow,
+                    isPurple: isFollowing,
+                    onPressFunc: isFollowing ? unFollow : follow,
                     context: context,
-                    btnTitle: isFollwing ? "팔로잉" : "팔로우",
+                    btnTitle: isFollowing ? "팔로잉" : "팔로우",
                     fontSize: 16,
                   ),
                 )
