@@ -222,7 +222,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
 
   @override
   Future<(List<Post> userPosts, bool hasNextPage, int lastId)> getUserPost(
-      int limit, int page) async {
+      int limit, int page, String username) async {
     try {
       final mockData = {
         "posts": List.generate(5, (index) {

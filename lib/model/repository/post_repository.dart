@@ -14,9 +14,9 @@ class PostRepository {
       : _RemoteDataSource = remoteDataSource ?? getIt.get<RemoteDataSource>();
 
   Future<(List<Post> userPosts, bool hasNextPage, int lastId)>
-      getRemoteUserPost(int limit, int lastId) async {
+      getRemoteUserPost(int limit, int lastId, String username) async {
     try {
-      return await _RemoteDataSource.getUserPost(limit, lastId);
+      return await _RemoteDataSource.getUserPost(limit, lastId, username);
     } catch (e) {
       rethrow;
     }

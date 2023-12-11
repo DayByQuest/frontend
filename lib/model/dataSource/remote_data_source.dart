@@ -422,7 +422,7 @@ class RemoteDataSource {
   }
 
   Future<(List<Post> userPosts, bool hasNextPage, int lastId)> getUserPost(
-      int limit, int lastId) async {
+      int limit, int lastId, String username) async {
     String lastIdUrl = '&lastId=$lastId';
 
     if (lastId == -1) {
@@ -430,7 +430,7 @@ class RemoteDataSource {
     }
 
     Response response;
-    String url = '/profile/${USER_NAME}/post?limit=$limit$lastIdUrl';
+    String url = '/profile/$username/post?limit=$limit$lastIdUrl';
 
     ///profile/{username}/post?limit=5&lastid=2
 

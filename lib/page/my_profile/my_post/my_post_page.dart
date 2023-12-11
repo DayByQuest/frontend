@@ -3,6 +3,7 @@ import 'package:flutter_application_1/model/class/post_images.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/empty_list.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_application_1/provider/follow_status_provider.dart';
 import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -29,6 +30,7 @@ class MyPostPage extends StatelessWidget {
         create: (_) {
           return MyPostViewModel(
             errorStatusProvider: context.read<ErrorStatusProvider>(),
+            followStatusProvider: context.read<FollowStatusProvider>(),
             postLikeStatusProvider: context.read<PostLikeStatusProvider>(),
             postRepository: PostRepository(),
             userRepository: UserRepository(),
@@ -84,6 +86,7 @@ class MyPost extends StatelessWidget {
     User author = post.author;
     String username = author.username;
     String userImageUrl = author.imageUrl;
+    bool isFollowing = context.watch<FollowStatusProvider>().hasUser(username);
     bool isUnInterested = post.unInterested;
     int postId = post.id;
     String content = post.content;
@@ -92,7 +95,6 @@ class MyPost extends StatelessWidget {
     List<PostImage> postImageList = List.from(postImages.postImageList);
     int curImageIndex = postImages.index;
     int imageLength = postImages.postImageList.length;
-    bool isFollowing = author.following;
 
     void changeCurIdx(nextImageIndex) {
       viewModel.changeCurImageIndex(nextImageIndex, postIndex, postId);

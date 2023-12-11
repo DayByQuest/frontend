@@ -146,6 +146,10 @@ class ProfileInfomation extends StatelessWidget {
       await viewModel.deleteFollow(username);
     }
 
+    void moveUserPost() {
+      context.push('/my-post?username=$username');
+    }
+
     if (user.postCount != Null) {
       postCount = user.postCount >= 999 ? "999+" : user.postCount.toString();
     }
@@ -161,22 +165,27 @@ class ProfileInfomation extends StatelessWidget {
               radius: 40,
               backgroundImage: NetworkImage(user.imageUrl),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(postCount,
-                    style: const TextStyle(
-                      fontSize: 18,
+            InkWell(
+              onTap: () {
+                moveUserPost();
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(postCount,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                      )),
+                  const Text(
+                    '게시물',
+                    style: TextStyle(
+                      fontSize: 14,
                       color: Colors.black,
-                    )),
-                const Text(
-                  '게시물',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(
               width: 8,
