@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
-import 'package:flutter_application_1/model/class/group_post.dart';
+import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/post.dart';
 import 'package:flutter_application_1/model/class/post_image.dart';
 import 'package:flutter_application_1/model/class/user.dart';
@@ -28,7 +28,7 @@ class FeedViewModel with ChangeNotifier {
   final int _limit = 10;
   bool _isClose = false;
   int groupCnt = 0;
-  List<GroupPost> groupList = [];
+  List<Group> groupList = [];
 
   FeedViewModel({
     required PostRepository postRepository,
@@ -75,7 +75,7 @@ class FeedViewModel with ChangeNotifier {
       }
 
       if (groupList.isNotEmpty) {
-        GroupPost groupPost = groupList[0];
+        Group groupPost = groupList[0];
         groupList.removeAt(0);
         newFeedList.add(Feed.group(isPost: false, groupPost: groupPost));
       }

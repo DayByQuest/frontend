@@ -9,7 +9,6 @@ import 'package:flutter_application_1/model/class/error_exception.dart';
 import 'package:flutter_application_1/model/class/failed_post.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
 import 'package:flutter_application_1/model/class/group.dart';
-import 'package:flutter_application_1/model/class/group_post.dart';
 import 'package:flutter_application_1/model/class/interest.dart';
 import 'package:flutter_application_1/model/class/post_image.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
@@ -583,7 +582,7 @@ class RemoteDataSource {
     }
   }
 
-  Future<List<GroupPost>> getGroupFeed() async {
+  Future<List<Group>> getGroupFeed() async {
     Response response;
     String url = '/group/recommendation';
 
@@ -592,8 +591,8 @@ class RemoteDataSource {
       Map<String, dynamic> jsonData = response.data;
       List<dynamic> groupsJson = jsonData['groups'];
       debugPrint('getGroupFeed groupsJson: ${groupsJson.toString()}');
-      List<GroupPost> groupPosts =
-          groupsJson.map((groupJson) => GroupPost.fromJson(groupJson)).toList();
+      List<Group> groupPosts =
+          groupsJson.map((groupJson) => Group.fromJson(groupJson)).toList();
 
       return groupPosts;
     } on DioException catch (e) {

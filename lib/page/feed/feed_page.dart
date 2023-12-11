@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/feed.dart';
-import 'package:flutter_application_1/model/class/group_post.dart';
+import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/post.dart';
 import 'package:flutter_application_1/model/class/post_image.dart';
 import 'package:flutter_application_1/model/class/post_images.dart';
@@ -243,7 +243,7 @@ class GroupPostItem extends StatelessWidget {
   Widget build(BuildContext context) {
     MenuController menu = MenuController();
     FeedViewModel viewModel = context.read<FeedViewModel>();
-    GroupPost groupPost =
+    Group groupPost =
         context.watch<FeedViewModel>().feedList[feedIndex].groupPost!;
     bool isJoin = groupPost.isJoin;
     int groupId = groupPost.groupId;

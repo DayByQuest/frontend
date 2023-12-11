@@ -1,10 +1,10 @@
-import 'package:flutter_application_1/model/class/group_post.dart';
+import 'package:flutter_application_1/model/class/group.dart';
 import 'package:flutter_application_1/model/class/post.dart';
 
 class Feed {
   final bool isPost;
   final Post? post;
-  final GroupPost? groupPost;
+  final Group? groupPost;
 
   Feed.post({
     required this.isPost,
@@ -25,7 +25,7 @@ class Feed {
     } else {
       return Feed.group(
         isPost: false,
-        groupPost: GroupPost.fromJson(json),
+        groupPost: Group.fromJson(json),
       );
     }
   }

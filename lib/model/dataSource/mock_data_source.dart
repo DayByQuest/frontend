@@ -3,7 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
-import 'package:flutter_application_1/model/class/group_post.dart';
+import 'package:flutter_application_1/model/class/group.dart';
+
 import 'package:flutter_application_1/model/class/interest.dart';
 import 'package:flutter_application_1/model/class/quest_detail.dart';
 import 'package:image_picker/image_picker.dart';
@@ -361,7 +362,7 @@ class MockDataSource extends Mock implements RemoteDataSource {
   }
 
   @override
-  Future<List<GroupPost>> getGroupFeed() async {
+  Future<List<Group>> getGroupFeed() async {
     String jsonData = '''
     {
       "groups": [
@@ -380,8 +381,8 @@ class MockDataSource extends Mock implements RemoteDataSource {
       debugPrint('getGroupPost: 시작');
       Map<String, dynamic> jsonMap = json.decode(jsonData);
       List<dynamic> groupsJson = jsonMap['groups'];
-      List<GroupPost> groupPosts =
-          groupsJson.map((groupJson) => GroupPost.fromJson(groupJson)).toList();
+      List<Group> groupPosts =
+          groupsJson.map((groupJson) => Group.fromJson(groupJson)).toList();
 
       debugPrint('getGroupPost: 동작');
       return groupPosts;

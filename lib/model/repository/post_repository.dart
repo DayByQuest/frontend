@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/model/class/comment.dart';
-import 'package:flutter_application_1/model/class/group_post.dart';
+import 'package:flutter_application_1/model/class/group.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
 
 import '../class/post.dart';
@@ -72,7 +72,7 @@ class PostRepository {
     }
   }
 
-  Future<List<GroupPost>> getRemoteGroupFeed() async {
+  Future<List<Group>> getRemoteGroupFeed() async {
     try {
       return await _RemoteDataSource.getGroupFeed();
     } catch (e) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/post_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/showSnackBarFunction.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_application_1/page/group/groupPage.dart';
 import 'package:flutter_application_1/page/search/search_page.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
 import 'package:flutter_application_1/provider/follow_status_provider.dart';
+import 'package:flutter_application_1/provider/groupJoin_status_provider.dart';
 import 'package:flutter_application_1/provider/postLike_status_provider%20copy.dart';
 import 'package:flutter_application_1/routes/routes.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -50,6 +52,12 @@ class MyApp extends StatelessWidget {
           create: (context) => PostLikeStatusProvider(
             errorStatusProvider: context.read<ErrorStatusProvider>(),
             postRepository: PostRepository(),
+          ),
+        ),
+        ChangeNotifierProvider<GroupJoinStatusProvider>(
+          create: (context) => GroupJoinStatusProvider(
+            errorStatusProvider: context.read<ErrorStatusProvider>(),
+            groupRepositoty: GroupRepositoty(),
           ),
         ),
       ],
