@@ -64,6 +64,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         routerConfig: router,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
       ),
     );
   }
@@ -173,62 +177,55 @@ class _MyHomePageState extends State<MyHomePage> {
       DeviceOrientation.portraitUp,
     ]);
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: Scaffold(
-        body: bodyWidget,
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                color: Colors.black,
-              ),
-              label: 'Feed',
-              backgroundColor: Colors.white,
+    return Scaffold(
+      body: bodyWidget,
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: Colors.black,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.search,
-                color: Colors.black,
-              ),
-              label: 'Search',
-              backgroundColor: Colors.white,
+            label: 'Feed',
+            backgroundColor: Colors.white,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.search,
+              color: Colors.black,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.add,
-                color: Colors.black,
-              ),
-              label: 'Add',
-              backgroundColor: Colors.white,
+            label: 'Search',
+            backgroundColor: Colors.white,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.add,
+              color: Colors.black,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.group,
-                color: Colors.black,
-              ),
-              label: 'Group',
-              backgroundColor: Colors.white,
+            label: 'Add',
+            backgroundColor: Colors.white,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.group,
+              color: Colors.black,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-                color: Colors.black,
-              ),
-              label: 'Person',
+            label: 'Group',
+            backgroundColor: Colors.white,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
             ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.amber[800],
-          onTap: (index) {
-            _onItemTapped(index, context);
-          },
-        ),
+            label: 'Person',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: (index) {
+          _onItemTapped(index, context);
+        },
       ),
     );
   }
