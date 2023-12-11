@@ -124,6 +124,10 @@ class GroupPost extends StatelessWidget {
       context.push('/detail?postId=$postId');
     }
 
+    void moveAuthorProfile() {
+      context.push('/user-profile?username=${username}');
+    }
+
     void follow() async {
       await viewModel.postFollow(username);
     }
@@ -163,7 +167,7 @@ class GroupPost extends StatelessWidget {
             isLike: isLike,
             changeCurIdx: changeCurIdx,
             changeLikePost: changeLikePost,
-            clickAuthorTap: () {},
+            clickAuthorTap: moveAuthorProfile,
             isClose: false,
             setClose: () {},
             isFollowing: isFollowing,
