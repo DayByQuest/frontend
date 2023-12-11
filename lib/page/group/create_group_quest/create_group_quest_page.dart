@@ -29,6 +29,8 @@ class CreateGroupQuestPage extends StatefulWidget {
 class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height - 32;
+
     Future<void> selectImageFile() async {
       ImagePickerPlus picker = ImagePickerPlus(context);
       SelectedImagesDetails? images;
@@ -76,7 +78,9 @@ class _CreateGroupQuestPage extends State<CreateGroupQuestPage> {
                 '퀘스트를 수행했음을 검증할 수 있는 성공 이미지를 3장 넣어주세요!',
                 style: TextStyle(fontSize: 16),
               ),
-              Gap16(),
+              SizedBox(
+                height: height * 0.15,
+              ),
               SizedBox(
                 height: 48,
                 child: CommonBtn(
