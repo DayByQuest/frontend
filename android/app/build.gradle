@@ -31,7 +31,7 @@ android {
 
     
 ext {
-    kotlin_version = '1.5.31' 
+    kotlin_version = '1.8.0' 
 }
 
     compileOptions {
