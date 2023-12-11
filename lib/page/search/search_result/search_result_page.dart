@@ -105,6 +105,7 @@ class SearchResultView extends StatelessWidget {
             ),
             bottom: TabBar(
               labelColor: Colors.black,
+              indicatorColor: Color(0xFF82589F),
               onTap: (int value) {
                 debugPrint('value $value');
                 return;
