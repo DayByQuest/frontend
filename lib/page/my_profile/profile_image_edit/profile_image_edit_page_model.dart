@@ -37,7 +37,6 @@ class ProfileImageEditViewModel with ChangeNotifier {
     }
   }
 
-  //이미지를 가져오는 함수
   Future<void> getImage() async {
     try {
       final XFile? pickedImage = await _picker.pickImage(
@@ -48,7 +47,6 @@ class ProfileImageEditViewModel with ChangeNotifier {
       );
 
       if (pickedImage != null) {
-        //가져온 이미지를 _image에 저장
         _image = XFile(pickedImage.path);
       }
       notifyListeners();
@@ -60,10 +58,7 @@ class ProfileImageEditViewModel with ChangeNotifier {
   Future<void> changeProfileImage() async {
     try {
       if (_image != null) {
-        _status = Status.loading;
-        notifyListeners();
         await _userRepository.patchRemoteProfileImage(_image!);
-        _status = Status.loaded;
         notifyListeners();
       }
       return;

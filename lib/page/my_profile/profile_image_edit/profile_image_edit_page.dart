@@ -127,10 +127,7 @@ class ImageSelectWidget extends StatelessWidget {
           onPressFunc: hasImage
               ? () async {
                   await viewModel.changeProfileImage();
-                  debugPrint("중간동작");
-
-                  // 추후 return 타입 생기면 뒤로가기 추가
-                  // context.pop(true);
+                  context.pop(true);
                 }
               : () {},
           context: context,

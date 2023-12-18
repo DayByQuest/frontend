@@ -595,9 +595,14 @@ class _LabelInputState extends State<LabelInput> {
             height: 48,
             child: CommonBtn(
               isPurple: hasSelectLabel,
-              onPressFunc: () => {
-                createGroupQuest(context),
-                context.pushReplacement('/main'),
+              onPressFunc: () {
+                createGroupQuest(context);
+
+                while (context.canPop()) {
+                  context.pop();
+                }
+
+                context.replace('/main');
               },
               context: context,
               btnTitle: '생성',

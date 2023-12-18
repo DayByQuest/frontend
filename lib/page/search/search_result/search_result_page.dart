@@ -53,7 +53,8 @@ class SearchResultView extends StatelessWidget {
         viewModel.textEditingController;
 
     void moveSearchResult(String keyword) {
-      context.go('/search?keyword=$keyword');
+      debugPrint('go $keyword');
+      context.pushReplacement('/search?keyword=$keyword');
     }
 
     return GestureDetector(

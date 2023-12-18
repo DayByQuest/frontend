@@ -102,17 +102,21 @@ class ListItem extends StatelessWidget {
       await viewModel.deleteFollow(username);
     }
 
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          child: Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  context.push('/user-profile?username=$username');
-                },
-                child: Container(
+    void moveUserProfile() {
+      context.go('/user-profile?username=$username');
+    }
+
+    return InkWell(
+      onTap: () {
+        moveUserProfile();
+      },
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            child: Row(
+              children: [
+                Container(
                   width: 48,
                   height: 48,
                   child: Image.network(
@@ -120,45 +124,45 @@ class ListItem extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    Text(
-                      username,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
-                    )
-                  ],
+                const SizedBox(
+                  width: 8,
                 ),
-              ),
-              Container(
-                width: 77,
-                height: 28,
-                child: CommonBtn(
-                  isPurple: !isFollowing,
-                  onPressFunc: isFollowing ? unFollow : follow,
-                  context: context,
-                  btnTitle: isFollowing ? "팔로우" : "팔로잉",
-                  fontSize: 16,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                      Text(
+                        username,
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              )
-            ],
+                Container(
+                  width: 77,
+                  height: 28,
+                  child: CommonBtn(
+                    isPurple: !isFollowing,
+                    onPressFunc: isFollowing ? unFollow : follow,
+                    context: context,
+                    btnTitle: isFollowing ? "팔로우" : "팔로잉",
+                    fontSize: 16,
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: 8),
-      ],
+          SizedBox(height: 8),
+        ],
+      ),
     );
   }
 }

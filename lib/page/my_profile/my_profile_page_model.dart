@@ -42,7 +42,6 @@ class MyProfileViewModel with ChangeNotifier {
     } on ErrorException catch (e) {
       _errorStatusProvider.setErrorStatus(true, e.message);
     } catch (e) {
-      // 추후 경고창으로 전환.
       debugPrint(e.toString());
     }
   }

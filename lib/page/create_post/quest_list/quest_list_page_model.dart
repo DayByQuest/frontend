@@ -23,7 +23,15 @@ class QuestListViewModel with ChangeNotifier {
   void load() async {
     try {
       debugPrint("load 시작!");
-      questList = await _questRepository.getRemoteDoingQuest();
+
+      List<dynamic> results = await Future.wait([
+        _questRepository.getRemoteDoingQuest(),
+        _questRepository.getRemoteContinueQuest(),
+      ]);
+
+      questList.addAll(results[0]);
+      questList.addAll(results[1]);
+
       status = Status.loaded;
       notifyListeners();
       debugPrint("loding됨!");

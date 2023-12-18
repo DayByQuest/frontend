@@ -152,7 +152,6 @@ class ProfileInfomation extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween, // 가로로 정렬
           children: [
-            // 프로필 사진
             InkWell(
               onTap: () async {
                 bool? isLoad = await context.push<bool>(
@@ -169,7 +168,6 @@ class ProfileInfomation extends StatelessWidget {
                 backgroundImage: NetworkImage(user.imageUrl),
               ),
             ),
-            // 게시물 수
             InkWell(
               onTap: () {
                 context.go('/my-post?username=$username');
