@@ -4,6 +4,7 @@ import 'package:flutter_application_1/model/repository/group_repository.dart';
 import 'package:flutter_application_1/model/repository/user_repository.dart';
 import 'package:flutter_application_1/page/common/Gap.dart';
 import 'package:flutter_application_1/provider/error_status_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -92,47 +93,61 @@ class MemberItem extends StatelessWidget {
     String memberUserName = member.username;
     String memberName = member.name;
     String memberRole = member.role!;
+    String? myUserName = dotenv.env['USER_NAME'];
 
-    return Row(
-      children: [
-        SizedBox(
-          width: 48,
-          height: 48,
-          child: Image.network(
-            memberImageUrl,
-            fit: BoxFit.fill,
+    void moveUserProfile() {
+      if (myUserName! == memberUserName) {
+        return;
+      }
+
+      context.push('/user-profile?username=$memberUserName');
+    }
+
+    return InkWell(
+      onTap: () {
+        moveUserProfile();
+      },
+      child: Row(
+        children: [
+          SizedBox(
+            width: 48,
+            height: 48,
+            child: Image.network(
+              memberImageUrl,
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
-        const SizedBox(
-          width: 8,
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                memberUserName,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-              Text(
-                memberRole,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-            ],
+          const SizedBox(
+            width: 8,
           ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-      ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  memberUserName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                Text(
+                  memberRole,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+        ],
+      ),
     );
   }
 }
