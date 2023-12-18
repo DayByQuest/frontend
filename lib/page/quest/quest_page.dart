@@ -621,8 +621,8 @@ class FinishQuestItem extends StatelessWidget {
     String expiredAt = hasExpiredAt ? '기한: $questExpiredAt' : '기한: 무기한';
     bool canShowAnimation = quest.canShowAnimation;
 
-    void restartQuest() {
-      viewModel.restartQuest(questId, index);
+    void restartQuest() async {
+      await viewModel.restartQuest(questId, index);
     }
 
     void moveQuestProfile() async {
@@ -683,33 +683,17 @@ class FinishQuestItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                AnimatedCrossFade(
-                  duration: const Duration(seconds: 1),
-                  crossFadeState: !canShowAnimation
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                  firstChild: Container(
-                    width: 77,
-                    height: 28,
-                    child: CommonBtn(
-                      isPurple: true,
-                      onPressFunc: () {
-                        restartQuest();
-                      },
-                      context: context,
-                      btnTitle: '재개',
-                      fontSize: 16,
-                    ),
-                  ),
-                  secondChild: Container(
-                    width: 77,
-                    height: 28,
-                    child: CommonIconBtn(
-                      isPurple: true,
-                      onPressFunc: () {},
-                      context: context,
-                      icon: Icons.check,
-                    ),
+                Container(
+                  width: 77,
+                  height: 28,
+                  child: CommonBtn(
+                    isPurple: true,
+                    onPressFunc: () {
+                      restartQuest();
+                    },
+                    context: context,
+                    btnTitle: '재개',
+                    fontSize: 16,
                   ),
                 ),
               ],
@@ -750,7 +734,7 @@ class FinishQuestItem extends StatelessWidget {
           ],
         ),
       ),
-      secondChild: Container(),
+      secondChild: SizedBox(),
     );
   }
 }

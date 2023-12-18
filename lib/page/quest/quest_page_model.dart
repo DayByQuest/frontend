@@ -33,7 +33,7 @@ class QuestViewModel extends ChangeNotifier {
   Future<void> load() async {
     try {
       debugPrint('load start: ');
-      finishedQuestList.clear();
+
       List<dynamic> results = await Future.wait([
         _questRepository.getRemoteDoingQuest(),
         _questRepository.getRemoteNewQuest(),
@@ -109,7 +109,7 @@ class QuestViewModel extends ChangeNotifier {
     }
   }
 
-  void restartQuest(int questId, int index) async {
+  Future<void> restartQuest(int questId, int index) async {
     try {
       await _questRepository.patchRestartQuest(questId);
       hasChange = true;
