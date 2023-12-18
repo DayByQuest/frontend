@@ -138,13 +138,15 @@ class QuestItem extends StatelessWidget {
     QuestDetail quest = context.watch<QuestProfileViewModel>().quest;
     String questState = quest.state;
 
-    if (questState == QuestMap[QuestState.DOING]) {
+    if (questState == QuestMap[QuestState.DOING] ||
+        questState == QuestMap[QuestState.CONTINUE]) {
       return DoingQuestItem();
     }
 
     if (questState == QuestMap[QuestState.NOT]) {
       return NewQuestItem();
     }
+
     return FinishQuestItem();
   }
 }
