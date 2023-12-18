@@ -617,7 +617,7 @@ class FinishQuestItem extends StatelessWidget {
     String count =
         isGroupQuest ? '$currentCount' : '$currentCount/$rewardCount';
     bool hasExpiredAt = quest.expiredAt != null;
-    String questExpiredAt = '23/10/02 23:55까지';
+    String questExpiredAt = quest.expiredAt!;
     String expiredAt = hasExpiredAt ? '기한: $questExpiredAt' : '기한: 무기한';
     bool canShowAnimation = quest.canShowAnimation;
 
