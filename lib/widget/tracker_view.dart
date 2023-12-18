@@ -45,6 +45,3 @@ class TrackerView extends StatelessWidget {
     );
   }
 }
-
-              // Color.fromRGBO(
-              //     35, 236, 116, (tracker[index].toDouble() * 0.06) + 0.1),
